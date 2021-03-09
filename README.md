@@ -14,7 +14,7 @@ plugin allows to easily build various projects using a single asset group.
 ### kie-assets-library-assets
 * Assets are placed under `src/main/resources`. Those are then in pom.xml in kie-assets-plugin configuration
 specified within `project-definitions->project-definition->copy-resources`.
-  * Each `project-definition` instance is resulting in a new set of generated projects (multiplied by number of `project-definition`s below.).
+  * Each `project-definition` instance is resulting in a new set of generated projects (multiplied by number of `project-structure`s below.).
   * See profile `dmn`.
 * Archetypes are configured in kie-assets-library-assets/pom.xml as `project-structures->project-structure->archetype`,
 the arguments passed to archetype:generate goal are taken from `project-definitions->project-definition` properties `groupId`,

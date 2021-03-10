@@ -12,7 +12,8 @@ public class ProjectDefinition {
     private String groupId;
     private String artifactId;
     private String packageName;
-    private List<Resource> copyResources =new ArrayList<>();
+    private List<Resource> copyResources = new ArrayList<>();
+    private List<String> configurationIds = new ArrayList<>();
 
     public String getGroupId() {
         return groupId;
@@ -44,5 +45,13 @@ public class ProjectDefinition {
 
     public void setCopyResources(List<Resource> copyResources) {
         this.copyResources = copyResources;
+    }
+
+    public List<String> getConfigurationIds() {
+        return configurationIds;
+    }
+
+    public void setConfigurationIds(List<String> configurationIds) {
+        this.configurationIds = configurationIds;
     }
 }

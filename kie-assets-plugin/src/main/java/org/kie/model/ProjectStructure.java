@@ -14,6 +14,8 @@ public class ProjectStructure {
     private Artifact archetype;
     private String resourcesFolder="src/main/resources";
     private List<Resource> deleteResources=new ArrayList<>();
+    private List<DependencyWithId> dependencies = new ArrayList<>();
+    private List<Package> copySources = new ArrayList<>();
 
     public Artifact getArchetype() {
         return archetype;
@@ -45,5 +47,21 @@ public class ProjectStructure {
 
     public void setDeleteResources(List<Resource> deleteResources) {
         this.deleteResources = deleteResources;
+    }
+
+    public List<DependencyWithId> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<DependencyWithId> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    public List<Package> getCopySources() {
+        return copySources;
+    }
+
+    public void setCopySources(List<Package> copySources) {
+        this.copySources = copySources;
     }
 }

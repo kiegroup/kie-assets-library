@@ -1,5 +1,6 @@
 package org.kie.mojos;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.kie.model.ProjectDefinition;
@@ -13,6 +14,9 @@ import java.util.List;
  * Abstract Mojo defining common parameters shared across implementing Mojos.
  */
 public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
+
+    @Parameter(defaultValue = "${session}", readonly = true)
+    protected MavenSession mavenSession;
 
     /**
      * Defining properties for the project to be generated including resources to be copied into it.

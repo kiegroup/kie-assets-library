@@ -92,22 +92,25 @@
                                                 </includes>
                                             </resource>
                                         </delete-resources>
-                                        <dependencies>
-                                            <dependency>
+                                        <config-sets>
+                                            <config-set>
                                                 <id>scesim</id>
-                                                <groupId>org.kie.kogito</groupId>
-                                                <artifactId>kogito-scenario-simulation</artifactId>
-                                                <scope>test</scope>
-                                            </dependency>
-                                        </dependencies>
-                                        <copy-sources>
-                                            <package>
-                                                <id>scesim</id>
-                                                <name>scesim.kogito</name>
-                                                <type>test</type>
-                                                <language>java</language>
-                                            </package>
-                                        </copy-sources>
+                                                <dependencies>
+                                                    <dependency>
+                                                        <groupId>org.kie.kogito</groupId>
+                                                        <artifactId>kogito-scenario-simulation</artifactId>
+                                                        <scope>test</scope>
+                                                    </dependency>
+                                                </dependencies>
+                                                <copy-sources>
+                                                    <package>
+                                                        <name>scesim.kogito</name>
+                                                        <type>test</type>
+                                                        <language>java</language>
+                                                    </package>
+                                                </copy-sources>
+                                            </config-set>
+                                        </config-sets>
                                     </project-structure>
                                 </project-structures>
                             </configuration>
@@ -151,22 +154,25 @@
                                                 </includes>
                                             </resource>
                                         </delete-resources>
-                                        <dependencies>
-                                            <dependency>
+                                        <config-sets>
+                                            <config-set>
                                                 <id>scesim</id>
-                                                <groupId>org.kie.kogito</groupId>
-                                                <artifactId>kogito-scenario-simulation</artifactId>
-                                                <scope>test</scope>
-                                            </dependency>
-                                        </dependencies>
-                                        <copy-sources>
-                                            <package>
-                                                <id>scesim</id>
-                                                <name>scesim.kogito</name>
-                                                <type>test</type>
-                                                <language>java</language>
-                                            </package>
-                                        </copy-sources>
+                                                <dependencies>
+                                                    <dependency>
+                                                        <groupId>org.kie.kogito</groupId>
+                                                        <artifactId>kogito-scenario-simulation</artifactId>
+                                                        <scope>test</scope>
+                                                    </dependency>
+                                                </dependencies>
+                                                <copy-sources>
+                                                    <package>
+                                                        <name>scesim.kogito</name>
+                                                        <type>test</type>
+                                                        <language>java</language>
+                                                    </package>
+                                                </copy-sources>
+                                            </config-set>
+                                        </config-sets>
                                     </project-structure>
                                 </project-structures>
                             </configuration>
@@ -200,22 +206,25 @@
                                                 </includes>
                                             </resource>
                                         </delete-resources>
-                                        <dependencies>
-                                            <dependency>
+                                        <config-sets>
+                                            <config-set>
                                                 <id>scesim</id>
-                                                <groupId>org.drools</groupId>
-                                                <artifactId>drools-scenario-simulation-backend</artifactId>
-                                                <scope>test</scope>
-                                            </dependency>
-                                        </dependencies>
-                                        <copy-sources>
-                                            <package>
-                                                <id>scesim</id>
-                                                <name>scesim.drools</name>
-                                                <type>test</type>
-                                                <language>java</language>
-                                            </package>
-                                        </copy-sources>
+                                                <dependencies>
+                                                    <dependency>
+                                                        <groupId>org.drools</groupId>
+                                                        <artifactId>drools-scenario-simulation-backend</artifactId>
+                                                        <scope>test</scope>
+                                                    </dependency>
+                                                </dependencies>
+                                                <copy-sources>
+                                                    <package>
+                                                        <name>scesim.drools</name>
+                                                        <type>test</type>
+                                                        <language>java</language>
+                                                    </package>
+                                                </copy-sources>
+                                            </config-set>
+                                        </config-sets>
                                     </project-structure>
                                 </project-structures>
                             </configuration>
@@ -247,9 +256,16 @@
                                                 </includes>
                                             </resource>
                                         </copy-resources>
-                                        <configurationIds>
-                                            <configurationId>scesim</configurationId>
-                                        </configurationIds>
+                                        <copy-sources>
+                                            <package>
+                                                <name>org.kie.traffic</name>
+                                                <type>main</type>
+                                                <language>java</language>
+                                            </package>
+                                        </copy-sources>
+                                        <config-set-references>
+                                            <config-set-reference>scesim</config-set-reference>
+                                        </config-set-references>
                                     </project-definition>
                                     <project-definition>
                                         <groupId>org.kie</groupId>

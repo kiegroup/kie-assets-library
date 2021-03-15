@@ -7,12 +7,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.kie.FileFilteringUtils;
 import org.kie.GeneratedProjectUtils;
+import org.kie.model.ConfigSet;
 import org.kie.model.Package;
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,10 +63,20 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
         }
     }
 
+    /**
+     * Copy source packages specified by one of:
+     * <ul>
+     *     <li>{@linkplain ProjectDefinition#getCopySources()}</li>
+     *     <li>{@linkplain ConfigSet#getCopySources()} taken from {@linkplain ProjectStructure#getConfigSets()}
+     *     with {@linkplain ConfigSet#getId()} matching one of {@linkplain ProjectDefinition#getConfigSetReferences()}</li>
+     * </ul>
+     * @throws IOException
+     */
     private void copyExternalSources() throws IOException {
         for (ProjectDefinition definition : projectDefinitions) {
             for (ProjectStructure structure : projectStructures) {
-                List<Package> filteredPackages = structure.getCopySources().stream().filter(it -> definition.getConfigurationIds().contains(it.getId())).collect(Collectors.toList());
+                List<Package> filteredPackages = structure.getConfigSets().stream().filter(it -> definition.getConfigSetReferences().contains(it.getId())).flatMap(it->it.getCopySources().stream()).collect(Collectors.toList());
+                filteredPackages.addAll(definition.getCopySources());
                 for (Package pack : filteredPackages) {
                     List<Path> files = new ArrayList<>();
                     Resource resource = new Resource();

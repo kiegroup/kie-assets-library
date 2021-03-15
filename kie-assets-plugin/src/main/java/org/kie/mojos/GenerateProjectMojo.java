@@ -11,6 +11,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.*;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.kie.GeneratedProjectUtils;
+import org.kie.model.ConfigSet;
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
 
@@ -88,6 +89,14 @@ public class GenerateProjectMojo
         }
     }
 
+    /**
+     * Manipulate the POM files of generated project. Add dependencies based on matching {@linkplain ConfigSet#getId()}
+     * of {@linkplain ProjectStructure#getConfigSets()} with values defined by {@linkplain ProjectDefinition#getConfigSetReferences()}.
+     *
+     * @param definition project definition to get references from
+     * @param structure  project structure to get config-set with matching ids from
+     * @throws MojoExecutionException on error during file manipulation
+     */
     private void addPomDependencies(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
         Path projectDir = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure);
         Path pomFile = projectDir.resolve("pom.xml");
@@ -106,9 +115,9 @@ public class GenerateProjectMojo
         ) {
             MavenProject project = new MavenProject(model);
             project.getDependencies().addAll(
-                    structure.getDependencies().stream().filter(
-                            it -> definition.getConfigurationIds().contains(it.getId())
-                    ).collect(Collectors.toList())
+                    structure.getConfigSets().stream().filter(
+                            it -> definition.getConfigSetReferences().contains(it.getId())
+                    ).flatMap(it -> it.getDependencies().stream()).collect(Collectors.toList())
             );
             MavenXpp3Writer mavenWriter = new MavenXpp3Writer();
             mavenWriter.write(fileWriter, model);

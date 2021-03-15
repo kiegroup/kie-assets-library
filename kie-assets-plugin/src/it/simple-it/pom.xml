@@ -34,9 +34,9 @@
                                     </includes>
                                 </resource>
                             </copy-resources>
-                            <configurationIds>
-                                <configurationId>scesim</configurationId>
-                            </configurationIds>
+                            <config-set-references>
+                                <config-set-reference>scesim</config-set-reference>
+                            </config-set-references>
                         </project-definition>
                         <project-definition>
                             <groupId>org.kie</groupId>
@@ -78,23 +78,26 @@
                                     </includes>
                                 </resource>
                             </delete-resources>
-                            <dependencies>
-                                <dependency>
+                            <config-sets>
+                                <config-set>
                                     <id>scesim</id>
-                                    <groupId>org.kie</groupId>
-                                    <artifactId>some-artifact-for-quarkus</artifactId>
-                                    <version>1.0.0.Final</version>
-                                    <scope>test</scope>
-                                </dependency>
-                            </dependencies>
-                            <copy-sources>
-                                <package>
-                                    <id>scesim</id>
-                                    <name>org.testscenario</name>
-                                    <type>test</type>
-                                    <language>java</language>
-                                </package>
-                            </copy-sources>
+                                    <dependencies>
+                                        <dependency>
+                                            <groupId>org.kie</groupId>
+                                            <artifactId>some-artifact-for-quarkus</artifactId>
+                                            <version>1.0.0.Final</version>
+                                            <scope>test</scope>
+                                        </dependency>
+                                    </dependencies>
+                                    <copy-sources>
+                                        <package>
+                                            <name>org.testscenario</name>
+                                            <type>test</type>
+                                            <language>java</language>
+                                        </package>
+                                    </copy-sources>
+                                </config-set>
+                            </config-sets>
                         </project-structure>
                         <project-structure>
                             <id>springboot</id>
@@ -121,15 +124,19 @@
                                     </includes>
                                 </resource>
                             </delete-resources>
-                            <dependencies>
-                                <dependency>
+                            <config-sets>
+                                <config-set>
                                     <id>scesim</id>
-                                    <groupId>org.kie</groupId>
-                                    <artifactId>some-artifact-for-springboot</artifactId>
-                                    <version>1.0.0.Final</version>
-                                    <scope>test</scope>
-                                </dependency>
-                            </dependencies>
+                                    <dependencies>
+                                        <dependency>
+                                            <groupId>org.kie</groupId>
+                                            <artifactId>some-artifact-for-springboot</artifactId>
+                                            <version>1.0.0.Final</version>
+                                            <scope>test</scope>
+                                        </dependency>
+                                    </dependencies>
+                                </config-set>
+                            </config-sets>
                         </project-structure>
                         <project-structure>
                             <id>kjar</id>
@@ -146,15 +153,19 @@
                                     </includes>
                                 </resource>
                             </delete-resources>
-                            <dependencies>
-                                <dependency>
+                            <config-sets>
+                                <config-set>
                                     <id>scesim</id>
-                                    <groupId>org.kie</groupId>
-                                    <artifactId>some-artifact-for-kjar</artifactId>
-                                    <version>1.0.0.Final</version>
-                                    <scope>test</scope>
-                                </dependency>
-                            </dependencies>
+                                    <dependencies>
+                                        <dependency>
+                                            <groupId>org.kie</groupId>
+                                            <artifactId>some-artifact-for-kjar</artifactId>
+                                            <version>1.0.0.Final</version>
+                                            <scope>test</scope>
+                                        </dependency>
+                                    </dependencies>
+                                </config-set>
+                            </config-sets>
                         </project-structure>
                     </project-structures>
                 </configuration>

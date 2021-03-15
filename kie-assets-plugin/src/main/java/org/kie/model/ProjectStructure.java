@@ -12,10 +12,10 @@ import java.util.List;
 public class ProjectStructure {
     private String id;
     private Artifact archetype;
-    private String resourcesFolder="src/main/resources";
-    private List<Resource> deleteResources=new ArrayList<>();
-    private List<DependencyWithId> dependencies = new ArrayList<>();
-    private List<Package> copySources = new ArrayList<>();
+    private String resourcesFolder = "src/main/resources";
+    private List<Resource> deleteResources = new ArrayList<>();
+    private ConfigSet commonConfig = null;
+    private List<ConfigSet> configSets = new ArrayList<>();
 
     public Artifact getArchetype() {
         return archetype;
@@ -49,19 +49,19 @@ public class ProjectStructure {
         this.deleteResources = deleteResources;
     }
 
-    public List<DependencyWithId> getDependencies() {
-        return dependencies;
+    public ConfigSet getCommonConfig() {
+        return commonConfig;
     }
 
-    public void setDependencies(List<DependencyWithId> dependencies) {
-        this.dependencies = dependencies;
+    public void setCommonConfig(ConfigSet commonConfig) {
+        this.commonConfig = commonConfig;
     }
 
-    public List<Package> getCopySources() {
-        return copySources;
+    public List<ConfigSet> getConfigSets() {
+        return configSets;
     }
 
-    public void setCopySources(List<Package> copySources) {
-        this.copySources = copySources;
+    public void setConfigSets(List<ConfigSet> configSets) {
+        this.configSets = configSets;
     }
 }

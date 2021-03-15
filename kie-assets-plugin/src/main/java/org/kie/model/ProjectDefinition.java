@@ -13,7 +13,8 @@ public class ProjectDefinition {
     private String artifactId;
     private String packageName;
     private List<Resource> copyResources = new ArrayList<>();
-    private List<String> configurationIds = new ArrayList<>();
+    private List<Package> copySources = new ArrayList<>();
+    private List<String> configSetReferences = new ArrayList<>();
 
     public String getGroupId() {
         return groupId;
@@ -47,11 +48,19 @@ public class ProjectDefinition {
         this.copyResources = copyResources;
     }
 
-    public List<String> getConfigurationIds() {
-        return configurationIds;
+    public List<Package> getCopySources() {
+        return copySources;
     }
 
-    public void setConfigurationIds(List<String> configurationIds) {
-        this.configurationIds = configurationIds;
+    public void setCopySources(List<Package> copySources) {
+        this.copySources = copySources;
+    }
+
+    public List<String> getConfigSetReferences() {
+        return configSetReferences;
+    }
+
+    public void setConfigSetReferences(List<String> configSetReferences) {
+        this.configSetReferences = configSetReferences;
     }
 }

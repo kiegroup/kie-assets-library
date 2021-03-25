@@ -98,6 +98,7 @@
                                             <name>org.testscenario</name>
                                             <type>test</type>
                                             <language>java</language>
+                                            <filesystem-root>${project.basedir}</filesystem-root>
                                         </package>
                                     </copy-sources>
                                 </config-set>

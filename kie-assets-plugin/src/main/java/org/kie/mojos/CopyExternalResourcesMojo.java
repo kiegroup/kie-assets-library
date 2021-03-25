@@ -125,7 +125,9 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
                 List<Path> files = new ArrayList<>();
                 Resource resource = new Resource();
                 resource.getIncludes().addAll(Arrays.asList("*", "**/*"));
-                files.addAll(FileFilteringUtils.filterFilesStartingAtPath(Paths.get(mavenSession.getCurrentProject().getBasedir().getPath(), "src", pack.getType(), pack.getLanguage(), fromPackageToPath(pack)), resource));
+                Path currentPath = Paths.get(mavenSession.getCurrentProject().getBasedir().getPath());
+                Path rootPath = currentPath.resolve(pack.getFilesystemRoot());
+                files.addAll(FileFilteringUtils.filterFilesStartingAtPath(rootPath.resolve(Paths.get("src", pack.getType(), pack.getLanguage(), fromPackageToPath(pack))), resource));
                 for (Path f : files) {
                     Path dest = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure)
                             .resolve("src").resolve(pack.getType()).resolve(pack.getLanguage()).resolve(fromPackageToPath(pack))

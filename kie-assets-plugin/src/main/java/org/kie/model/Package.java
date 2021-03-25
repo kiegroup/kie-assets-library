@@ -7,6 +7,7 @@ public class Package {
     private String name;
     private String type="main";
     private String language="java";
+    private String filesystemRoot="./";
 
     public String getName() {
         return name;
@@ -32,12 +33,21 @@ public class Package {
         this.language = language;
     }
 
+    public String getFilesystemRoot() {
+        return filesystemRoot;
+    }
+
+    public void setFilesystemRoot(String filesystemRoot) {
+        this.filesystemRoot = filesystemRoot;
+    }
+
     @Override
     public String toString() {
         return "Package{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", language='" + language + '\'' +
+                ", filesystemRoot='" + filesystemRoot + '\'' +
                 '}';
     }
 }

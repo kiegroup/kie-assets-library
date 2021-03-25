@@ -10,7 +10,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.*;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.kie.GeneratedProjectUtils;
+import org.kie.utils.MaskedMavenMojoException;
+import org.kie.utils.ThrowingBiConsumer;
+import org.kie.utils.GeneratedProjectUtils;
 import org.kie.model.ConfigSet;
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
@@ -18,6 +20,7 @@ import org.kie.model.ProjectStructure;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
@@ -41,24 +44,35 @@ public class GenerateProjectMojo
 
         try {
             generateProjectsAtTargetLocation();
-        } catch (MavenInvocationException e) {
+        } catch (MaskedMavenMojoException e) {
             throw new MojoExecutionException("Error while generating projects from archetype.", e);
         }
     }
 
     /**
-     * Based on {@linkplain AbstractMojoDefiningParameters#projectDefinitions} and {@linkplain AbstractMojoDefiningParameters#projectStructures}
-     * generates the directory structure for Cartesian product of these two lists.
-     *
-     * @throws MavenInvocationException up on failure during the project generation
+     * Using {@linkplain AbstractMojoDefiningParameters#getActiveSetup()}
+     * generates the directory structure for the current combination of definition and structure.
      */
-    private void generateProjectsAtTargetLocation() throws MavenInvocationException, MojoExecutionException {
-        for (ProjectDefinition definition : projectDefinitions) {
-            for (ProjectStructure structure : projectStructures) {
-                generateFromArchetype(definition, structure);
-                addPomDependencies(definition, structure);
-            }
-        }
+    private void generateProjectsAtTargetLocation() {
+        getLog().info("Importing resources");
+        getActiveSetup().apply(generateProjects());
+    }
+
+    /**
+     * Method that for given definition and structure generates the directory structure for all the active configurations.
+     * <p>
+     * A BiConsumer implementation to be used together with {@linkplain AbstractMojoDefiningParameters#getActiveSetup()},
+     * passed through method {@linkplain AbstractMojoDefiningParameters.ActiveSetup#apply(BiConsumer)}.
+     *
+     * @return BiConsumer action over {@linkplain ProjectDefinition} and {@linkplain ProjectStructure}.
+     */
+    private ThrowingBiConsumer generateProjects() {
+        return (definition, structure) -> {
+            getLog().info("active only"+activeStructureIds);
+            getLog().info("Invoked with "+definition.getId()+", strucutre:"+structure.getId());
+            generateFromArchetype(definition, structure);
+            addPomDependencies(definition, structure);
+        };
     }
 
     /**
@@ -70,6 +84,8 @@ public class GenerateProjectMojo
      * @throws MavenInvocationException upon maven archetype:generate run failure
      */
     private void generateFromArchetype(ProjectDefinition definition, ProjectStructure projectStructure) throws MavenInvocationException, MojoExecutionException {
+
+        getLog().info("Inside invoker "+definition.getId()+", strucutre:"+projectStructure.getId());
         InvocationRequest request = new DefaultInvocationRequest();
         request.setGoals(Collections.singletonList("archetype:generate"));
         Properties properties = new Properties();
@@ -90,9 +106,13 @@ public class GenerateProjectMojo
     }
 
     /**
-     * Manipulate the POM files of generated project. Add dependencies based on matching {@linkplain ConfigSet#getId()}
-     * of {@linkplain ProjectStructure#getConfigSets()} with values defined by {@linkplain ProjectDefinition#getConfigSetReferences()}.
-     *
+     * Manipulate the POM files of generated project. Add dependencies defined by {@linkplain ConfigSet#getDependencies()} in:
+     * <ul>
+     *     <li>{@linkplain ProjectDefinition#getConfig()}</li>
+     *     <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
+     *     <li>{@linkplain ProjectStructure#getConfigSets()}
+     *     with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
+     * </ul>
      * @param definition project definition to get references from
      * @param structure  project structure to get config-set with matching ids from
      * @throws MojoExecutionException on error during file manipulation
@@ -114,10 +134,13 @@ public class GenerateProjectMojo
                 FileOutputStream fileWriter = new FileOutputStream(pomFile.toFile());
         ) {
             MavenProject project = new MavenProject(model);
+            project.getDependencies().addAll(definition.getConfig().getDependencies());
+            project.getDependencies().addAll(structure.getCommonConfig().getDependencies());
             project.getDependencies().addAll(
-                    structure.getConfigSets().stream().filter(
-                            it -> definition.getConfigSetReferences().contains(it.getId())
-                    ).flatMap(it -> it.getDependencies().stream()).collect(Collectors.toList())
+                    structure.getConfigSets().stream()
+                            .filter(it -> activeConfigSets.contains(it.getId()))
+                            .flatMap(it -> it.getDependencies().stream())
+                            .collect(Collectors.toList())
             );
             MavenXpp3Writer mavenWriter = new MavenXpp3Writer();
             mavenWriter.write(fileWriter, model);

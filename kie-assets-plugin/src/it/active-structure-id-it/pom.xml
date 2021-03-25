@@ -4,10 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kie.it</groupId>
-    <artifactId>simple-it</artifactId>
+    <artifactId>active-structure-id-it</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <description>A simple IT verifying the basic use case.</description>
+    <description>Use active-structure-ids configuration to limit definition-structure pairs to be generated.
+    </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,34 +23,37 @@
                 <configuration>
                     <project-definitions>
                         <project-definition>
+                            <id>first</id>
                             <groupId>org.kie</groupId>
                             <artifactId>test-generated</artifactId>
                             <packageName>org.kie.test.generated</packageName>
-                            <copy-resources combine.children="append">
-                                <resource>
-                                    <directory>${project.basedir}/assets</directory>
-                                    <includes>
-                                        <include>*.dmn</include>
-                                        <include>**/*.dmn</include>
-                                    </includes>
-                                </resource>
-                            </copy-resources>
-                            <config-set-references>
-                                <config-set-reference>scesim</config-set-reference>
-                            </config-set-references>
+                            <config>
+                                <copy-resources combine.children="append">
+                                    <resource>
+                                        <directory>${project.basedir}/assets</directory>
+                                        <includes>
+                                            <include>*.dmn</include>
+                                            <include>**/*.dmn</include>
+                                        </includes>
+                                    </resource>
+                                </copy-resources>
+                            </config>
                         </project-definition>
                         <project-definition>
+                            <id>second</id>
                             <groupId>org.kie</groupId>
                             <artifactId>test-generated2</artifactId>
                             <packageName>org.kie.test.generated2</packageName>
-                            <copy-resources combine.children="append">
-                                <resource>
-                                    <directory>${project.basedir}/assets</directory>
-                                    <includes>
-                                        <include>*.dmn</include>
-                                    </includes>
-                                </resource>
-                            </copy-resources>
+                            <config>
+                                <copy-resources combine.children="append">
+                                    <resource>
+                                        <directory>${project.basedir}/assets</directory>
+                                        <includes>
+                                            <include>*.dmn</include>
+                                        </includes>
+                                    </resource>
+                                </copy-resources>
+                            </config>
                         </project-definition>
                     </project-definitions>
                     <project-structures>
@@ -177,6 +181,11 @@
                             <goal>clean-generated-resources</goal>
                             <goal>copy-external-resources</goal>
                         </goals>
+                        <configuration>
+                            <active-structures>
+                                <active-structure>kjar</active-structure>
+                            </active-structures>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

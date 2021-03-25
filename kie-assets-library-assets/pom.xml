@@ -3,12 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>kie-assets-library</artifactId>
+        <artifactId>kie-assets-library-support</artifactId>
         <groupId>org.kie</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../kie-assets-library-support</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
+    <artifactId>kie-assets-library-assets</artifactId>
+    <name>KIE Assets Library :: Assets</name>
+    <description>
+        Module defining project-definitions, most importantly the resources that are supposed to be copied into
+        the resulting projects. Builds up on ${parent.name} where all supported platforms are defined using
+        project-structures configuration.
+    </description>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -28,9 +36,13 @@
             <version>7.50.0.Final</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-assets-library-support</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
-
-    <artifactId>kie-assets-library-assets</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -38,255 +50,57 @@
     </properties>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-assets-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>generate-projects</id>
-                        <goals>
-                            <goal>generate-project</goal>
-                            <goal>clean-generated-resources</goal>
-                            <goal>copy-external-resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.kie</groupId>
+                    <artifactId>kie-assets-plugin</artifactId>
+                    <configuration>
+                        <project-definitions combine.children="append">
+                            <project-definition>
+                                <id>dmn-and-bpmn-generated</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>dmn-and-bpmn-generated</artifactId>
+                                <packageName>org.kie.generated.dmn</packageName>
+                                <config>
+                                    <copy-resources>
+                                        <resource>
+                                            <directory>${project.basedir}/src/main/resources/dmn</directory>
+                                            <includes>
+                                                <include>call centre drd.dmn</include>
+                                                <include>invoke call centre drd model.bpmn</include>
+                                            </includes>
+                                        </resource>
+                                    </copy-resources>
+                                    <copy-sources>
+                                        <package>
+                                            <name>org.kie.traffic</name>
+                                            <type>main</type>
+                                            <language>java</language>
+                                        </package>
+                                    </copy-sources>
+                                </config>
+                            </project-definition>
+                            <project-definition>
+                                <id>dmn-generated</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>dmn-generated</artifactId>
+                                <packageName>org.kie.generated.dmn</packageName>
+                                <config>
+                                    <copy-resources>
+                                        <resource>
+                                            <directory>${project.basedir}/src/main/resources/dmn</directory>
+                                            <includes>
+                                                <include>call centre drd.dmn</include>
+                                            </includes>
+                                        </resource>
+                                    </copy-resources>
+                                </config>
+                            </project-definition>
+                        </project-definitions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
-    <profiles>
-        <profile>
-            <id>quarkus</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.kie</groupId>
-                            <artifactId>kie-assets-plugin</artifactId>
-                            <configuration combine.self="append">
-                                <project-structures combine.children="append">
-                                    <project-structure>
-                                        <id>quarkus</id>
-                                        <archetype>
-                                            <groupId>org.kie.kogito</groupId>
-                                            <artifactId>kogito-quarkus-archetype</artifactId>
-                                            <version>1.3.0.Final</version>
-                                        </archetype>
-                                        <delete-resources>
-                                            <resource>
-                                                <directory>src/main/resources</directory>
-                                                <includes>
-                                                    <include>*</include>
-                                                    <include>**/*</include>
-                                                </includes>
-                                                <excludes>
-                                                    <exclude>application.properties</exclude>
-                                                </excludes>
-                                            </resource>
-                                            <resource>
-                                                <directory>./</directory>
-                                                <includes>
-                                                    <include>README.md</include>
-                                                </includes>
-                                            </resource>
-                                        </delete-resources>
-                                        <config-sets>
-                                            <config-set>
-                                                <id>scesim</id>
-                                                <dependencies>
-                                                    <dependency>
-                                                        <groupId>org.kie.kogito</groupId>
-                                                        <artifactId>kogito-scenario-simulation</artifactId>
-                                                        <scope>test</scope>
-                                                    </dependency>
-                                                </dependencies>
-                                                <copy-sources>
-                                                    <package>
-                                                        <name>scesim.kogito</name>
-                                                        <type>test</type>
-                                                        <language>java</language>
-                                                    </package>
-                                                </copy-sources>
-                                            </config-set>
-                                        </config-sets>
-                                    </project-structure>
-                                </project-structures>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>springboot</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.kie</groupId>
-                            <artifactId>kie-assets-plugin</artifactId>
-                            <configuration combine.self="append">
-                                <project-structures combine.children="append">
-                                    <project-structure>
-                                        <id>springboot</id>
-                                        <archetype>
-                                            <groupId>org.kie.kogito</groupId>
-                                            <artifactId>kogito-springboot-archetype</artifactId>
-                                            <version>1.3.0.Final</version>
-                                        </archetype>
-                                        <delete-resources>
-                                            <resource>
-                                                <directory>src/main/resources</directory>
-                                                <includes>
-                                                    <include>*</include>
-                                                    <include>**/*</include>
-                                                </includes>
-                                                <excludes>
-                                                    <exclude>application.properties</exclude>
-                                                </excludes>
-                                            </resource>
-                                            <resource>
-                                                <directory>./</directory>
-                                                <includes>
-                                                    <include>README.md</include>
-                                                </includes>
-                                            </resource>
-                                        </delete-resources>
-                                        <config-sets>
-                                            <config-set>
-                                                <id>scesim</id>
-                                                <dependencies>
-                                                    <dependency>
-                                                        <groupId>org.kie.kogito</groupId>
-                                                        <artifactId>kogito-scenario-simulation</artifactId>
-                                                        <scope>test</scope>
-                                                    </dependency>
-                                                </dependencies>
-                                                <copy-sources>
-                                                    <package>
-                                                        <name>scesim.kogito</name>
-                                                        <type>test</type>
-                                                        <language>java</language>
-                                                    </package>
-                                                </copy-sources>
-                                            </config-set>
-                                        </config-sets>
-                                    </project-structure>
-                                </project-structures>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>kjar</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.kie</groupId>
-                            <artifactId>kie-assets-plugin</artifactId>
-                            <configuration combine.self="append">
-                                <project-structures combine.children="append">
-                                    <project-structure>
-                                        <id>kjar</id>
-                                        <archetype>
-                                            <groupId>org.kie</groupId>
-                                            <artifactId>kie-kjar-archetype</artifactId>
-                                            <version>7.50.0.Final</version>
-                                        </archetype>
-                                        <delete-resources>
-                                            <resource>
-                                                <directory>./</directory>
-                                                <includes>
-                                                    <include>readme.md</include>
-                                                </includes>
-                                            </resource>
-                                        </delete-resources>
-                                        <config-sets>
-                                            <config-set>
-                                                <id>scesim</id>
-                                                <dependencies>
-                                                    <dependency>
-                                                        <groupId>org.drools</groupId>
-                                                        <artifactId>drools-scenario-simulation-backend</artifactId>
-                                                        <scope>test</scope>
-                                                    </dependency>
-                                                </dependencies>
-                                                <copy-sources>
-                                                    <package>
-                                                        <name>scesim.drools</name>
-                                                        <type>test</type>
-                                                        <language>java</language>
-                                                    </package>
-                                                </copy-sources>
-                                            </config-set>
-                                        </config-sets>
-                                    </project-structure>
-                                </project-structures>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>dmn</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.kie</groupId>
-                            <artifactId>kie-assets-plugin</artifactId>
-                            <configuration combine.self="append">
-                                <project-definitions combine.children="append">
-                                    <project-definition>
-                                        <groupId>org.kie</groupId>
-                                        <artifactId>dmn-and-bpmn-generated</artifactId>
-                                        <packageName>org.kie.generated.dmn</packageName>
-                                        <copy-resources>
-                                            <resource>
-                                                <directory>${project.basedir}/src/main/resources/dmn</directory>
-                                                <includes>
-                                                    <include>call centre drd.dmn</include>
-                                                    <include>invoke call centre drd model.bpmn</include>
-                                                </includes>
-                                            </resource>
-                                        </copy-resources>
-                                        <copy-sources>
-                                            <package>
-                                                <name>org.kie.traffic</name>
-                                                <type>main</type>
-                                                <language>java</language>
-                                            </package>
-                                        </copy-sources>
-                                        <config-set-references>
-                                            <config-set-reference>scesim</config-set-reference>
-                                        </config-set-references>
-                                    </project-definition>
-                                    <project-definition>
-                                        <groupId>org.kie</groupId>
-                                        <artifactId>dmn-generated</artifactId>
-                                        <packageName>org.kie.generated.dmn</packageName>
-                                        <copy-resources>
-                                            <resource>
-                                                <directory>${project.basedir}/src/main/resources/dmn</directory>
-                                                <includes>
-                                                    <include>call centre drd.dmn</include>
-                                                </includes>
-                                            </resource>
-                                        </copy-resources>
-                                    </project-definition>
-                                </project-definitions>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
-
 </project>

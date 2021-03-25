@@ -2,20 +2,21 @@ package org.kie.mojos;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.kie.FileFilteringUtils;
-import org.kie.GeneratedProjectUtils;
+import org.kie.utils.MaskedMavenMojoException;
+import org.kie.utils.ThrowingBiConsumer;
+import org.kie.utils.FileFilteringUtils;
+import org.kie.utils.GeneratedProjectUtils;
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * Goal which cleans requested artifacts from generated project. Follows after {@linkplain GenerateProjectMojo}.
@@ -48,10 +49,10 @@ public class CleanGeneratedResourcesMojo extends AbstractMojoDefiningParameters 
     private boolean wipeSrcTestResources;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         try {
             cleanupGeneratedResources();
-        } catch (IOException e) {
+        } catch (MaskedMavenMojoException e) {
             throw new MojoExecutionException("Couldn't cleanup generated resources.", e);
         }
     }
@@ -64,45 +65,54 @@ public class CleanGeneratedResourcesMojo extends AbstractMojoDefiningParameters 
      *     <li>considers {@linkplain #wipeSrcMain} and {@linkplain #wipeSrcMainResources}</li>
      *     <li>considers {@linkplain #wipeSrcTest} and {@linkplain #wipeSrcTestResources}</li>
      * </ul>
-     * @throws IOException
      */
-    private void cleanupGeneratedResources() throws IOException {
+    private void cleanupGeneratedResources() {
         getLog().info("Deleting resources");
-        for (ProjectDefinition definition : projectDefinitions) {
-            for (ProjectStructure structure : projectStructures) {
-                Path outputDirectoryForArchetype = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure);
-                List<Path> files = new ArrayList<>();
-                if (wipeSrcMain) {
-                    getLog().debug("Cleaning src/main directory in " + outputDirectoryForArchetype);
-                    Resource srcMainJavaResource = new Resource();
-                    srcMainJavaResource.setDirectory("src/main");
-                    srcMainJavaResource.getIncludes().add("**/*");
-                    if(!wipeSrcMainResources) {
-                        srcMainJavaResource.getExcludes().add("resources/*");
-                        srcMainJavaResource.getExcludes().add("resources/**/*");
-                    }
-                    files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(srcMainJavaResource.getDirectory()), srcMainJavaResource));
+        getActiveSetup().apply(cleanupAction());
+    }
+
+    /**
+     * Method that for given definition and structure processes the cleanup for all the active configurations.
+     * <p>
+     * A BiConsumer implementation to be used together with {@linkplain AbstractMojoDefiningParameters#getActiveSetup()},
+     * passed through method {@linkplain AbstractMojoDefiningParameters.ActiveSetup#apply(BiConsumer)}.
+     *
+     * @return BiConsumer action over {@linkplain ProjectDefinition} and {@linkplain ProjectStructure}.
+     */
+    private ThrowingBiConsumer cleanupAction() {
+        return (definition, structure) -> {
+            Path outputDirectoryForArchetype = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure);
+            List<Path> files = new ArrayList<>();
+            if (wipeSrcMain) {
+                getLog().debug("Cleaning src/main directory in " + outputDirectoryForArchetype);
+                Resource srcMainJavaResource = new Resource();
+                srcMainJavaResource.setDirectory("src/main");
+                srcMainJavaResource.getIncludes().add("**/*");
+                if (!wipeSrcMainResources) {
+                    srcMainJavaResource.getExcludes().add("resources/*");
+                    srcMainJavaResource.getExcludes().add("resources/**/*");
                 }
-                if (wipeSrcTest) {
-                    getLog().debug("Cleaning src/test directory in " + outputDirectoryForArchetype);
-                    Resource srcTestJavaResource = new Resource();
-                    srcTestJavaResource.setDirectory("src/test");
-                    srcTestJavaResource.getIncludes().add("*");
-                    srcTestJavaResource.getIncludes().add("**/*");
-                    if(!wipeSrcTestResources) {
-                        srcTestJavaResource.getExcludes().add("resources/*");
-                        srcTestJavaResource.getExcludes().add("resources/**/*");
-                    }
-                    files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(srcTestJavaResource.getDirectory()), srcTestJavaResource));
-                }
-                for (Resource resource : structure.getDeleteResources()) {
-                    files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(resource.getDirectory()), resource));
-                }
-                for (Path f : files) {
-                    getLog().debug(String.format("Cleaning up resource %s", f));
-                    Files.delete(f);
-                }
+                files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(srcMainJavaResource.getDirectory()), srcMainJavaResource));
             }
-        }
+            if (wipeSrcTest) {
+                getLog().debug("Cleaning src/test directory in " + outputDirectoryForArchetype);
+                Resource srcTestJavaResource = new Resource();
+                srcTestJavaResource.setDirectory("src/test");
+                srcTestJavaResource.getIncludes().add("*");
+                srcTestJavaResource.getIncludes().add("**/*");
+                if (!wipeSrcTestResources) {
+                    srcTestJavaResource.getExcludes().add("resources/*");
+                    srcTestJavaResource.getExcludes().add("resources/**/*");
+                }
+                files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(srcTestJavaResource.getDirectory()), srcTestJavaResource));
+            }
+            for (Resource resource : structure.getDeleteResources()) {
+                files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(resource.getDirectory()), resource));
+            }
+            for (Path f : files) {
+                getLog().debug(String.format("Cleaning up resource %s", f));
+                Files.delete(f);
+            }
+        };
     }
 }

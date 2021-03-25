@@ -4,17 +4,25 @@ import org.apache.maven.model.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Holds information about the project to be created and what resources should be copied into resulting project structure.
  */
 public class ProjectDefinition {
+    private String id;
     private String groupId;
     private String artifactId;
     private String packageName;
-    private List<Resource> copyResources = new ArrayList<>();
-    private List<Package> copySources = new ArrayList<>();
-    private List<String> configSetReferences = new ArrayList<>();
+    private ConfigSet config = new ConfigSet();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getGroupId() {
         return groupId;
@@ -40,27 +48,35 @@ public class ProjectDefinition {
         this.packageName = packageName;
     }
 
-    public List<Resource> getCopyResources() {
-        return copyResources;
+    public ConfigSet getConfig() {
+        return config;
     }
 
-    public void setCopyResources(List<Resource> copyResources) {
-        this.copyResources = copyResources;
+    public void setConfig(ConfigSet config) {
+        this.config = config;
     }
 
-    public List<Package> getCopySources() {
-        return copySources;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProjectDefinition that = (ProjectDefinition) o;
+        return id.equals(that.id);
     }
 
-    public void setCopySources(List<Package> copySources) {
-        this.copySources = copySources;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
-    public List<String> getConfigSetReferences() {
-        return configSetReferences;
-    }
-
-    public void setConfigSetReferences(List<String> configSetReferences) {
-        this.configSetReferences = configSetReferences;
+    @Override
+    public String toString() {
+        return "ProjectDefinition{" +
+                "id='" + id + '\'' +
+                ", groupId='" + groupId + '\'' +
+                ", artifactId='" + artifactId + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", config=" + config +
+                '}';
     }
 }

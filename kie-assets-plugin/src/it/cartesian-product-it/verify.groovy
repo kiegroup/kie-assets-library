@@ -4,6 +4,7 @@ import java.nio.file.Path
 def justTwo = ["test.dmn", "test3.dmn"]
 def allThree = ["test.dmn", "test2.dmn", "test3.dmn"]
 def applicationProperties = ["application.properties"]
+assert Files.list(basedir.toPath().resolve("target")).filter({Files.isDirectory(it)}).count()==6
 checkProjectAndResources("test-generated-quarkus", allThree + applicationProperties)
 checkProjectAndResources("test-generated-springboot", allThree + applicationProperties)
 checkProjectAndResources("test-generated-kjar", allThree)

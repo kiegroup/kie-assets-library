@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.kie</groupId>
+  <artifactId>kie-assets-plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Test Active Configurations of GenerateProjectMojo</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>kie-assets-plugin</artifactId>
+        <goals>
+          <goal>generate-project</goal>
+        </goals>
+        <configuration>
+          <project-definitions>
+            <project-definition>
+              <id>first</id>
+            </project-definition>
+            <project-definition>
+              <id>second</id>
+            </project-definition>
+            <project-definition>
+              <id>third</id>
+            </project-definition>
+          </project-definitions>
+          <project-structures>
+            <project-structure>
+              <id>A</id>
+            </project-structure>
+            <project-structure>
+              <id>B</id>
+            </project-structure>
+            <project-structure>
+              <id>C</id>
+            </project-structure>
+          </project-structures>
+          <active-definition-ids>
+            <active-definition-id>first</active-definition-id>
+            <active-definition-id>second</active-definition-id>
+          </active-definition-ids>
+          <active-structure-ids>
+            <active-structure-id>A</active-structure-id>
+            <active-structure-id>B</active-structure-id>
+          </active-structure-ids>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

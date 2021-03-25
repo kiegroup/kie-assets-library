@@ -1,4 +1,4 @@
-package org.kie;
+package org.kie.utils;
 
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;

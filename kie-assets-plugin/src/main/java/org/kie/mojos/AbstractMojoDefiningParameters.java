@@ -5,10 +5,14 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
+import org.kie.utils.GeneratedProjectUtils;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * Abstract Mojo defining common parameters shared across implementing Mojos.
@@ -23,6 +27,7 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      * <pre>
      *  &lt;project-definitions&gt;
      *    &lt;project-definition&gt;
+     *      &lt;id&gt;&lt;/id&gt;
      *      &lt;groupId&gt;&lt;/groupId&gt;
      *      &lt;artifactId&gt;&lt;/artifactId&gt;
      *      &lt;packageName&gt;&lt;/packageName&gt;
@@ -32,6 +37,13 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      *          &lt;excludes&gt;&lt;/excludes&gt;
      *        &lt;/resource&gt;
      *      &lt;/copy-resources&gt;
+     *      &lt;copy-sources&gt;
+     *        &lt;package&gt;
+     *          &lt;name&gt;org.kie.sth&lt;/name&gt;
+     *          &lt;type&gt;main&lt;/type&gt;
+     *          &lt;language&gt;java&lt;/language&gt;
+     *        &lt;/package&gt;
+     *      &lt;/copy-sources&gt;
      *    &lt;/project-definition&gt;
      *    &lt;project-definition&gt;
      *             ...
@@ -65,6 +77,37 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      *         &lt;/excludes&gt;
      *       &lt;/resource&gt;
      *     &lt;/delete-resources&gt;
+     *     &lt;common-config&gt;
+     *       &lt;copy-sources&gt;
+     *         &lt;package&gt;
+     *           &lt;name&gt;org.kie.sth&lt;/name&gt;
+     *           &lt;type&gt;test&lt;/type&gt;
+     *           &lt;language&gt;java&lt;/language&gt;
+     *         &lt;/package&gt;
+     *       &lt;/copy-sources&gt;
+     *       &lt;dependencies&gt;
+     *         &lt;dependency&gt;
+     *         ...
+     *         &lt;/dependency&gt;
+     *       &lt;/dependencies&gt;
+     *     &lt;/common-config&gt;
+     *     &lt;config-sets&gt;
+     *       &lt;config-set&gt;
+     *         &lt;id&gt;id-to-be-activated-by&lt;/id&gt;
+     *         &lt;copy-sources&gt;
+     *           &lt;package&gt;
+     *             &lt;name&gt;org.kie.sth&lt;/name&gt;
+     *             &lt;type&gt;test&lt;/type&gt;
+     *             &lt;language&gt;java&lt;/language&gt;
+     *           &lt;/package&gt;
+     *         &lt;/copy-sources&gt;
+     *         &lt;dependencies&gt;
+     *           &lt;dependency&gt;
+     *           ...
+     *           &lt;/dependency&gt;
+     *         &lt;/dependencies&gt;
+     *       &lt;/config-set&gt;
+     *     &lt;/config-sets&gt;
      * 	 &lt;/project-structure&gt;
      * &lt;/project-structures&gt;
      * </pre>
@@ -73,9 +116,159 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
     protected List<ProjectStructure> projectStructures;
 
     /**
+     * List parameter allowing to limit the combinations to just defined project-structures.
+     * <pre>
+     * &lt;active-structures&gt;
+     *   &lt;active-structure&gt;
+     *     name-of-the-structure-defined-already
+     *   &lt;/active-structure&gt;
+     *   &lt;active-structure&gt;
+     *     a-different-id
+     *   &lt;/active-structure&gt;
+     * &lt;/active-structures&gt;
+     * </pre>
+     */
+    @Parameter(readonly = true, alias = "active-structures", property = "active.structures")
+    protected Set<String> activeStructureIds = new HashSet<>();
+
+    /**
+     * List parameter allowing to limit the combinations to just defined project-definition.
+     * <pre>
+     * &lt;active-definitions&gt;
+     *   &lt;active-definition&gt;
+     *     name-of-the-definition-defined-already
+     *   &lt;/active-definition&gt;
+     *   &lt;active-definition&gt;
+     *     a-different-id
+     *   &lt;/active-definition&gt;
+     * &lt;/active-definition&gt;
+     * </pre>
+     */
+    @Parameter(readonly = true, alias = "active-definitions", property = "active.definitions")
+    protected Set<String> activeDefinitionIds = new HashSet<>();
+
+    /**
+     * List parameter to configure which pre-defined config-sets are supposed to be executed as part of execution.
+     * <pre>
+     * &lt;active-config-sets&gt;
+     *   &lt;active-config-set&gt;
+     *     name-of-the-config-set-defined-already
+     *   &lt;/active-config-set&gt;
+     *   &lt;active-config-set&gt;
+     *     a-different-id
+     *   &lt;/active-config-set&gt;
+     * &lt;/active-config-sets&gt;
+     * </pre>
+     */
+    @Parameter(readonly = true, alias = "active-config-sets", property = "active.config.sets")
+    protected Set<String> activeConfigSets = new HashSet();
+
+    /**
      * File denoting target directory for the generating project, not the generated one.<p/>
-     * For getting generated project location use {@linkplain org.kie.GeneratedProjectUtils#getOutputDirectoryForArchetype(Path, ProjectDefinition, ProjectStructure)}
+     * For getting generated project location use
+     * {@linkplain GeneratedProjectUtils#getOutputDirectoryForArchetype(Path, ProjectDefinition, ProjectStructure)}
      */
     @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
     protected File outputDirectory;
+
+    /**
+     * Decides if given {@linkplain ProjectDefinition}'s id is among the set of provided ids. To be used to filter
+     * through the Mojo's parameters {@linkplain #projectDefinitions} and picking just those whose id is defined by
+     * {@linkplain #activeDefinitionIds}.
+     *
+     * @param definitionIds
+     * @param toCheck
+     * @return true on match
+     */
+    protected static boolean isDefinitionActive(Set<String> definitionIds, ProjectDefinition toCheck) {
+        return definitionIds == null || definitionIds.isEmpty() || definitionIds.contains(toCheck.getId());
+    }
+
+    /**
+     * Decides if given {@linkplain ProjectStructure}'s id is among the set of provided ids. To be used to filter
+     * through the Mojo's parameters {@linkplain #projectStructures} and picking just those whose id is defined by
+     * {@linkplain #activeStructureIds}.
+     *
+     * @param structureIds
+     * @param toCheck
+     * @return true on match
+     */
+    protected static boolean isStructureActive(Set<String> structureIds, ProjectStructure toCheck) {
+        return structureIds == null || structureIds.isEmpty() || structureIds.contains(toCheck.getId());
+    }
+
+    /**
+     * Provides a way to access easily active pairs of {@linkplain ProjectDefinition}:{@linkplain ProjectStructure}.
+     *
+     * @return {@linkplain ActiveSetup} instance allowing to perform action defined by a {@linkplain BiConsumer} instance.
+     */
+    public ActiveSetup getActiveSetup() {
+        return new ActiveSetup()
+                .setProjectDefinitions(projectDefinitions)
+                .setActiveDefinitions(activeDefinitionIds)
+                .setProjectStructures(projectStructures)
+                .setActiveStructures(activeStructureIds);
+    }
+
+    /**
+     * Helper class to iterate over all {@linkplain ProjectDefinition} and {@linkplain ProjectStructure} instances and filter
+     * just those that are activated by {@linkplain #activeDefinitionIds} and {@linkplain #activeStructureIds}.
+     */
+    public static class ActiveSetup {
+        private List<ProjectDefinition> projectDefinitions;
+        private List<ProjectStructure> projectStructures;
+        private Set<String> activeDefinitions;
+        private Set<String> activeStructures;
+
+        public List<ProjectDefinition> getProjectDefinitions() {
+            return projectDefinitions;
+        }
+
+        public ActiveSetup setProjectDefinitions(List<ProjectDefinition> projectDefinitions) {
+            this.projectDefinitions = projectDefinitions;
+            return this;
+        }
+
+        public List<ProjectStructure> getProjectStructures() {
+            return projectStructures;
+        }
+
+        public ActiveSetup setProjectStructures(List<ProjectStructure> projectStructures) {
+            this.projectStructures = projectStructures;
+            return this;
+        }
+
+        public Set<String> getActiveDefinitions() {
+            return activeDefinitions;
+        }
+
+        public ActiveSetup setActiveDefinitions(Set<String> activeDefinitions) {
+            this.activeDefinitions = activeDefinitions;
+            return this;
+        }
+
+        public Set<String> getActiveStructures() {
+            return activeStructures;
+        }
+
+        public ActiveSetup setActiveStructures(Set<String> activeStructures) {
+            this.activeStructures = activeStructures;
+            return this;
+        }
+
+        /**
+         * BiConsumer which gets combinations of all activated {@linkplain ProjectDefinition} and {@linkplain ProjectStructure}.
+         * @param action a consumer to accept the active configurations.
+         */
+        public void apply(BiConsumer<ProjectDefinition, ProjectStructure> action) {
+            for (ProjectDefinition definition : projectDefinitions) {
+                if (isDefinitionActive(activeDefinitions, definition)) {
+                    for (ProjectStructure structure : projectStructures) {
+                        if (isStructureActive(activeStructures, structure))
+                            action.accept(definition, structure);
+                    }
+                }
+            }
+        }
+    }
 }

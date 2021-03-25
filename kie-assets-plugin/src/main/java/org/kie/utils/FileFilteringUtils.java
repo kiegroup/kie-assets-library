@@ -1,4 +1,4 @@
-package org.kie;
+package org.kie.utils;
 
 import java.io.IOException;
 import java.nio.file.*;

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>kie-assets-library-assets</artifactId>
+        <groupId>org.kie</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../kie-assets-library-assets</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <artifactId>kie-assets-library-generate</artifactId>
+    <name>KIE Assets Library :: Generate</name>
+    <description>
+        Module using all configuration inherited from parents (${parent.name},${parent.parent.name}). Invokes the actual
+        plugin execution by having kie-assets-plugin directly in build/plugins/plugin (the only place within project).
+        All previous configuration is place in plugin-management sections.
+    </description>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-assets-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-projects</id>
+                        <goals>
+                            <goal>generate-project</goal>
+                            <goal>clean-generated-resources</goal>
+                            <goal>copy-external-resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>kjar</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.kie</groupId>
+                            <artifactId>kie-assets-plugin</artifactId>
+                            <configuration combine.self="append">
+                                <active-structures combine.children="append">
+                                    <active-structure>kjar</active-structure>
+                                </active-structures>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>dmn</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.kie</groupId>
+                            <artifactId>kie-assets-plugin</artifactId>
+                            <configuration combine.self="append">
+                                <active-definitions combine.children="append">
+                                    <active-definition>dmn-generated</active-definition>
+                                </active-definitions>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>dmn2</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.kie</groupId>
+                            <artifactId>kie-assets-plugin</artifactId>
+                            <configuration combine.self="append">
+                                <active-definitions combine.children="append">
+                                    <active-definition>dmn-and-bpmn-generated</active-definition>
+                                </active-definitions>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>scesim</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.kie</groupId>
+                            <artifactId>kie-assets-plugin</artifactId>
+                            <configuration combine.self="append">
+                                <active-config-sets combine.children="append">
+                                    <active-config-set>scesim</active-config-set>
+                                </active-config-sets>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

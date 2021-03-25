@@ -12,6 +12,8 @@
   <modules>
     <module>kie-assets-plugin</module>
     <module>kie-assets-library-assets</module>
+    <module>kie-assets-library-support</module>
+    <module>kie-assets-library-generate</module>
   </modules>
 
   <name>Assets Library</name>

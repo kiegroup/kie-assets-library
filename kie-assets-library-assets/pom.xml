@@ -73,6 +73,38 @@
                                     </copy-resources>
                                 </config>
                             </project-definition>
+                            <project-definition>
+                                <id>smarthouse-02</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>smarthouse-02</artifactId>
+                                <packageName>org.kie.smarthouse</packageName>
+                                <config>
+                                    <copy-resources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/02</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copy-resources>
+                                </config>
+                            </project-definition>
+                            <project-definition>
+                                <id>smarthouse-03</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>smarthouse-03</artifactId>
+                                <packageName>org.kie.smarthouse</packageName>
+                                <config>
+                                    <copy-resources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/03</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copy-resources>
+                                </config>
+                            </project-definition>
                         </project-definitions>
                     </configuration>
                 </plugin>

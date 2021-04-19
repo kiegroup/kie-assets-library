@@ -1,0 +1,952 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_D3C049D4-8991-4881-9588-25F70C30B6DF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_090C94FF-A3B2-4E66-9ECB-AE07F529A84F" name="heating" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_D3C049D4-8991-4881-9588-25F70C30B6DF">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_3F79AD1B-C61F-4ACE-A165-952655D3941C" name="SensorInput" isCollection="false">
+    <dmn:itemComponent id="_BDD1B6F4-C335-49D7-A026-D368A65BEF40" name="placement" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+      <dmn:allowedValues kie:constraintType="enumeration" id="_375BFCB8-4608-46EA-94DB-4BA256E6E92B">
+        <dmn:text>"OUTSIDE", "INSIDE"</dmn:text>
+      </dmn:allowedValues>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_0A6E43F6-65AD-451B-879C-15A39750472E" name="current" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_5F3D6F75-BAE8-4781-89C2-EF7E1A03EC3B" name="previous" isCollection="true">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_9062155B-0CD0-4028-806D-02CD47842FF6" name="SmartHomeSetting" isCollection="false">
+    <dmn:itemComponent id="_C0B2E226-C297-4F52-BD19-D78C72CC4B63" name="threshold_low" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_DEC8D386-B121-473B-A4A7-FB29B7FAA993" name="threshold_high" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_4FC67739-2C75-4605-80FD-0D8293B7BA3C" name="SensorInputList" isCollection="true">
+    <dmn:typeRef>SensorInput</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_8334D1FF-CE51-412E-A11E-0D0FC0B36AD6" name="SmartHomeSettingList" isCollection="true">
+    <dmn:typeRef>SmartHomeSetting</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_B51605DA-A335-4097-888B-37CCD60F35DB" name="NumberList" isCollection="true">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_3B60D1A6-BB8C-42B1-9868-9B9A64794A5A" name="Should Heater Be On?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_68F8BC74-4A81-4E73-B252-7D55434A0E3B" name="Should Heater Be On?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_FFBE0858-9963-44B8-8514-99A8AD1A5696">
+      <dmn:requiredDecision href="#_8C4C0C9F-3BC1-4FB4-8EF1-CB67DC36C329"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_4F70A08E-A492-410B-8C60-5DF526921AC2">
+      <dmn:requiredDecision href="#_5E4357E3-3B19-4C8A-8787-32CB0C69C3EC"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_E3CB1EB7-8E78-4342-BFB3-577D29ECC152">
+      <dmn:text>not(Should Windows Be Opened?) and Temperature Lower?</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_5E4357E3-3B19-4C8A-8787-32CB0C69C3EC" name="Should Windows Be Opened?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A76F8C05-726C-4D9C-8EA6-2E7A859CC91E" name="Should Windows Be Opened?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_DA5CB5E8-1948-4B76-A69F-3386EAD2A8EC">
+      <dmn:requiredDecision href="#_A00F953F-4FB2-464C-A573-0B808D796986"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_CECB6437-360A-4F95-9848-92EB83717345">
+      <dmn:requiredDecision href="#_8C4C0C9F-3BC1-4FB4-8EF1-CB67DC36C329"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_D7BC2017-C33B-4569-8EA2-50F61BF83558">
+      <dmn:requiredDecision href="#_1CAAA349-2416-40B4-BD65-32EF79956E06"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_C39837C2-62BB-4D15-9324-0BDC71CCD905">
+      <dmn:requiredDecision href="#_9039CAB1-DF59-4575-965A-88EABD3792F7"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_200F0DDD-27A3-4D44-8C2D-FC69780C7975">
+      <dmn:requiredDecision href="#_8E628D7F-39EE-4D49-808F-CA2A5D5FE43F"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_4FA8C76D-CF0F-4BF6-9C69-14656CBBDEA0">
+      <dmn:requiredDecision href="#_E60A8794-CACC-44D9-BE13-71DD3C4CA449"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_EAF5A6AD-154C-49A3-BC5D-E64B7E2BC451">
+      <dmn:requiredDecision href="#_BB5CF029-A8A3-450A-80AE-B24F27008D21"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_45C6593F-BFBD-46F6-9DE8-BADC745D5117">
+      <dmn:requiredDecision href="#_1576018F-08BE-4BAB-A027-F21A689CC23F"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_1EAD3288-87DA-4A09-8995-BCEE2EC4FD79" hitPolicy="PRIORITY" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_F9A77162-261C-4344-81EB-63755A7C6BE3">
+        <dmn:inputExpression id="_2BDF5E63-97B6-4AE3-A2D7-4E4FE5DF30CB" typeRef="boolean">
+          <dmn:text>Temperature Higher?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_D2AD50ED-FE2F-4A2E-8216-390C0E503630">
+        <dmn:inputExpression id="_2467C800-F9B2-4AEE-872A-967B12B5746F" typeRef="boolean">
+          <dmn:text>Temperature Lower?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_DAFB5A1A-2965-41F9-A1AE-90CF860BC0A7">
+        <dmn:inputExpression id="_A397B74B-A076-4C8B-AA19-7F076B72D9EB" typeRef="boolean">
+          <dmn:text>Humidity higher?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_D411B3F3-5F6A-4BD0-A6D5-6A79EF7BDB82">
+        <dmn:inputExpression id="_8ECC0C0B-9C33-4259-A928-CB06F75129CD" typeRef="boolean">
+          <dmn:text>Humidity Lower?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_65739007-226B-4574-B707-DE1B7653AEA6">
+        <dmn:inputExpression id="_4E62CCBE-FBCD-4921-93AB-583BCE077B94" typeRef="boolean">
+          <dmn:text>Is significantly cooler outside?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_C9841024-3268-4FDA-89DF-13901F9D5DEE">
+        <dmn:inputExpression id="_00FE84B0-DAFF-4E13-A1AE-2158522F3B23" typeRef="boolean">
+          <dmn:text>Is significantly warmer outside?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_0F537912-29CB-447F-9942-791332D2DC6D">
+        <dmn:inputExpression id="_4CEF36BF-A053-436C-9F6E-124B6094084D" typeRef="boolean">
+          <dmn:text>Is significantly drier outside?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_46A45B73-D0DA-4F84-8330-E1885F4DEC60">
+        <dmn:inputExpression id="_AE3B7B61-6FDC-4DB4-AD88-01CD5CA0F132" typeRef="boolean">
+          <dmn:text>Is significantly more humid outside?</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_4AA1E3D0-63C6-4A40-A0BC-BC39006454D6">
+        <dmn:outputValues id="_7B5AC353-EF37-4D33-BF7C-1A3317401A8B">
+          <dmn:text>true,false</dmn:text>
+        </dmn:outputValues>
+        <dmn:defaultOutputEntry id="_0C0DF5A0-8DC9-43D3-9E34-C5A40B5B1902">
+          <dmn:text>false</dmn:text>
+        </dmn:defaultOutputEntry>
+      </dmn:output>
+      <dmn:annotation name="Description"/>
+      <dmn:rule id="_66D93DDE-B826-465B-8634-2FDFACF54EFB">
+        <dmn:inputEntry id="_C24B3D67-39DD-4809-A981-6A054BD4D1EE">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_BA020589-FC01-4635-90DF-62C12189C343">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_8FDAF837-83ED-46E9-B331-58F08356BD4E">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_69048194-69DC-4D67-89AC-ACABD612D3CC">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_E67E2E7F-2ACC-4254-8055-015795EC86F0">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_3E4D3D8D-A15B-4BF8-B216-401075218DAD">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_8FFA590C-AA66-4537-ADE6-A5C8AB5D1037">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_36F4BE27-6C74-4312-B5F3-66D1D4991199">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_5A40DBD8-CEEA-42F8-89F7-DD49F33A90F7">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>too humid inside, dry out by opening</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_3F4353AE-AD1E-438E-BAFB-F29B2A7BA376">
+        <dmn:inputEntry id="_B6D3FE12-A232-40BF-9016-DD9A56BB2D60">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F6924922-6C6F-4209-A905-36098258F0F4">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F727A1EC-946F-45A1-A1FA-9FAA0C32446F">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_020F9DA9-7CF5-4351-A83A-491CE7285EC9">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_D8EC584E-2950-408C-A9FB-524030F59E86">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_2ECC62B6-240C-4369-88DD-ED5FB5188744">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_3F05E4EE-26F2-4E95-8208-EB4061CD129D">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_7C7AFDBD-B5E3-4BB9-A5BF-5A717202BEED">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_CDC6FF50-7813-4268-B8AA-87533AFF2EBB">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>too dry inside, let humid air in by opening</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_76C975C3-3E75-473F-B67B-4947574CBD6C">
+        <dmn:inputEntry id="_1E8A5074-19A0-4CED-9820-D3644078C003">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_4D2A95E5-E1F6-4BB3-BA23-DC8623DE9F12">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_45299A0D-9A84-431E-93C4-E3853BBD99B6">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_30E8A8A3-8FED-4F12-B932-8C4B16F85C9F">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_EAEAED08-AAF1-473A-A58E-8679AFBE3980">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F1454B0D-663D-4B4B-A711-01260A01C3C5">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_E3EB808B-5DFC-42EF-B35E-A3F2D231D669">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_034A3531-604D-4F57-A0F5-102D9572E887">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_7CC0C441-88BA-422F-87BF-037D1FB7F419">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>hotter inside, cool by opening</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_58DB3FB2-05E2-4C1A-B11A-75AE374993F0">
+        <dmn:inputEntry id="_97147E8F-DD87-4471-9889-6E6ED9228D86">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_8EC8C1E6-C7EC-4D7B-BDA4-0B5AC438A4BF">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_ED305AF3-D644-44D5-9973-9620E24B2518">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_89E4AABF-36C5-49F3-AD42-7EC30E07F7C8">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_C31513C6-46C1-463B-A9CE-1636A061687C">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_1209CBEB-BC68-4279-AE26-16B2198F7730">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_1C8686A0-4963-4FF1-A8BE-4257001C161C">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_E68D4511-76BF-4F7F-9D2E-F39D8D72AACC">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_B46EE713-D34D-4DFA-8B03-F9DC21E94D4F">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>colder inside, heat by opening</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_9EF9E62D-DA12-4795-B674-ABA22007E7A2">
+        <dmn:inputEntry id="_66622C2A-6879-452A-ADEB-B25400D614CA">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_257EE793-1D3C-4734-A9D0-3107B855D3BE">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_6D6264B0-BAC2-4681-86ED-D27802C6233F">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_53CDC418-9282-41A9-B0FB-8CAE88BB12A2">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_994783CD-FF38-4940-B152-8B861E811F48">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_06E4C5A8-5F74-4099-A634-EBB4C7742877">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_20895365-7AEE-4BD8-9EF5-626DC8087422">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_0A813D1B-93E2-4E1B-A33B-88D649956940">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_72506BEA-03F2-4F0A-B6F2-E5FFFA47E498">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_2787E863-1F34-4C08-B37F-82C1F7F30BB5" name="Sensors Temperature">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A0508E9A-2A8C-4B7A-84A2-FB39385331E9" name="Sensors Temperature" typeRef="SensorInputList"/>
+  </dmn:inputData>
+  <dmn:inputData id="_C6CBB2F5-0BEC-4F20-A9F5-21F30D14AC8D" name="Settings Temperature">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D6A2A5C0-64EC-4B32-91B5-B7A8F0564FB3" name="Settings Temperature" typeRef="SmartHomeSetting"/>
+  </dmn:inputData>
+  <dmn:inputData id="_51B74AFA-C58F-4D32-94E5-BE4FD29B6BAB" name="Settings Humidity">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6927F237-66A8-438E-8033-52DC1EB81511" name="Settings Humidity" typeRef="SmartHomeSetting"/>
+  </dmn:inputData>
+  <dmn:inputData id="_B51CDF6E-7936-43C9-B1F2-04998F2F75CF" name="Sensors Humidity">
+    <dmn:extensionElements/>
+    <dmn:variable id="_F20F089F-0957-4FF4-A883-4E4B02AD2286" name="Sensors Humidity" typeRef="SensorInputList"/>
+  </dmn:inputData>
+  <dmn:decision id="_E60A8794-CACC-44D9-BE13-71DD3C4CA449" name="Is significantly drier outside?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7CB36914-A1CC-4FDA-8AD4-20AC75BF8B52" name="Is significantly drier outside?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_DCCCD712-8BCA-4468-8559-6BA8930EEE10">
+      <dmn:requiredInput href="#_B51CDF6E-7936-43C9-B1F2-04998F2F75CF"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_5B99D29E-C4E6-46F4-AAC8-9ADDD39BE96E">
+      <dmn:requiredInput href="#_51B74AFA-C58F-4D32-94E5-BE4FD29B6BAB"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_4521EF55-4012-4DEA-9357-E49C28C5E85F">
+      <dmn:contextEntry>
+        <dmn:variable id="_61046DDF-5D79-492B-A322-76A65DB3A5F0" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_1AF7B769-F2F9-4F71-A2F3-FCDDE7D6B5CE">
+          <dmn:text>Sensors Humidity[placement="OUTSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_6F06E1D4-38B2-490A-B643-C4F01B885F85" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_336FA856-9FCF-43F8-85A5-C3F2904054F7">
+          <dmn:text>Settings Humidity</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_6AA7EDD9-CAC2-4217-A007-D71E1A8EBC36">
+          <dmn:text>mean(sensors.current)+5 &lt; setting.threshold_high</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_BB5CF029-A8A3-450A-80AE-B24F27008D21" name="Is significantly more humid outside?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_F4B9C121-0030-4D2C-9608-A6A3EF1EFF76" name="Is significantly more humid outside?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_DEE368B1-EBF9-40BF-963A-730A9AF1959B">
+      <dmn:requiredInput href="#_51B74AFA-C58F-4D32-94E5-BE4FD29B6BAB"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_6FD4AB46-1CE7-4B6F-89F7-8E143C34C5E4">
+      <dmn:requiredInput href="#_B51CDF6E-7936-43C9-B1F2-04998F2F75CF"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_B9A0BA33-1B62-49CB-9CF6-E315772863B2">
+      <dmn:contextEntry>
+        <dmn:variable id="_0A3E561D-5806-4C5C-BBA2-B58745AD9928" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_203C8A6B-049A-441A-8EB7-F634AE9D8323">
+          <dmn:text>Sensors Humidity[placement="OUTSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_DF48FDC3-9742-4664-B89B-C0AC68865F4B" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_8C16FA05-9DFB-46CB-AAED-CAD504C4D8AC">
+          <dmn:text>Settings Humidity</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_0EC1F38C-5177-47DB-9371-90D76D9D9988">
+          <dmn:text>mean(sensors.current)-5 &gt; setting.threshold_low</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_8E628D7F-39EE-4D49-808F-CA2A5D5FE43F" name="Humidity Lower?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4FB822A1-6EA2-45F9-A99F-747497DFBDFF" name="Humidity Lower?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_C4C9D32E-F31E-4CA2-BAC5-D5692CB21357">
+      <dmn:requiredInput href="#_B51CDF6E-7936-43C9-B1F2-04998F2F75CF"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_48C9F7FE-8982-484A-8534-5205A0DA3BDF">
+      <dmn:requiredInput href="#_51B74AFA-C58F-4D32-94E5-BE4FD29B6BAB"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_E17763A5-2095-46CE-937E-E39F43234BC3">
+      <dmn:contextEntry>
+        <dmn:variable id="_01A5BD17-1313-40AA-A7A2-6CF6AF487A41" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_A83DABE8-F4D2-4CD1-9F69-BE725DC13F32">
+          <dmn:text>Sensors Humidity[placement="INSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_7F71FED1-7110-44DF-BEC7-514A771E1925" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_DDF7119E-6B0B-4C2A-AC62-EBA02C6AB821">
+          <dmn:text>Settings Humidity</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_E515A690-8CCA-4660-8978-0E344B8135F3">
+          <dmn:text>mean(sensors.current) &lt; setting.threshold_low</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_1576018F-08BE-4BAB-A027-F21A689CC23F" name="Humidity higher?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_AF6861DE-2B22-4B89-9311-933BC8673EEA" name="Humidity higher?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_880C9B03-F410-4731-A8A3-F2174E9F99C4">
+      <dmn:requiredInput href="#_51B74AFA-C58F-4D32-94E5-BE4FD29B6BAB"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_C1EF087B-AFED-484F-A07A-947971FDCECE">
+      <dmn:requiredInput href="#_B51CDF6E-7936-43C9-B1F2-04998F2F75CF"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_572EF1C9-09E7-4D91-BE2C-00F3C5B73173">
+      <dmn:contextEntry>
+        <dmn:variable id="_6B072EBB-7286-48CC-8BD4-EDB180F401A9" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_01FEF025-7269-4EAD-8D32-C6AF2F7BC169">
+          <dmn:text>Sensors Humidity[placement="INSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_D62183FE-2416-4DE5-8BA7-5D35475E7F32" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_3FCCEAC8-66D3-4489-9410-CAB44016F5B4">
+          <dmn:text>Settings Humidity</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_71D2B44A-2DA6-4AF2-8F7E-9209C7873094">
+          <dmn:text>mean(sensors.current) &gt; setting.threshold_high</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_566706AB-79BC-4F1E-B9AE-E932E6977C79" name="Should Cooling Be On?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_81316364-EA4B-47F3-BA7F-024B93E77993" name="Should Cooling Be On?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_B77B1F8F-7A3B-4164-AA37-17C2AC55D25F">
+      <dmn:requiredDecision href="#_1CAAA349-2416-40B4-BD65-32EF79956E06"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_4A2F2CA1-03B5-43ED-A5F4-000D36DD8315">
+      <dmn:requiredDecision href="#_1576018F-08BE-4BAB-A027-F21A689CC23F"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_14A04219-BE1F-48F0-935C-2F3C65BED27E">
+      <dmn:requiredDecision href="#_5E4357E3-3B19-4C8A-8787-32CB0C69C3EC"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_B36C9EAA-E7C0-429B-9CBF-13D241C3CD72">
+      <dmn:text>not(Should Windows Be Opened?) and (Temperature Higher? or Humidity higher?)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_A00F953F-4FB2-464C-A573-0B808D796986" name="Is significantly cooler outside?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_998E3D23-69C3-4ADC-94EF-D6E3D5A13D09" name="Is significantly cooler outside?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_69BB30BD-A34A-479A-8E39-F7FEA9C4772B">
+      <dmn:requiredInput href="#_C6CBB2F5-0BEC-4F20-A9F5-21F30D14AC8D"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_CFD19D56-E173-43F5-A5B1-A891BAEE9B89">
+      <dmn:requiredInput href="#_2787E863-1F34-4C08-B37F-82C1F7F30BB5"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_1C6F314A-BEC0-4625-86B4-F3D0FEF45126">
+      <dmn:contextEntry>
+        <dmn:variable id="_A4DE98AF-C043-4F5E-835C-20E52F838B28" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_CC4FEF6E-9130-416E-B8ED-18E45858DDAE">
+          <dmn:text>Sensors Temperature[placement="OUTSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_A6EE064B-F077-4DE5-A0F6-1169D97A3CC2" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_74F4EBC1-F494-4684-A411-4971467BE3AC">
+          <dmn:text>Settings Temperature</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_46C6DCFF-761C-4EDB-8F97-9BC49749E468">
+          <dmn:text>mean(sensors.current)+5 &lt; setting.threshold_high</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_9039CAB1-DF59-4575-965A-88EABD3792F7" name="Is significantly warmer outside?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_FFF6399A-B355-4940-AE05-A0127FB3BB58" name="Is significantly warmer outside?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_C850619F-BC62-4599-A582-F0F9A6EFEA63">
+      <dmn:requiredInput href="#_2787E863-1F34-4C08-B37F-82C1F7F30BB5"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_B88E3578-0209-4B7D-8C05-6409C814F95C">
+      <dmn:requiredInput href="#_C6CBB2F5-0BEC-4F20-A9F5-21F30D14AC8D"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_1908F8D0-A47C-47AA-AB5C-001B8742A547">
+      <dmn:contextEntry>
+        <dmn:variable id="_14749EF6-DF4E-46CB-AF92-D8E588FE58D8" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_6DA604BD-AFFA-4419-9B27-0250F5CD3561">
+          <dmn:text>Sensors Temperature[placement="OUTSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_D1BE6E4D-C2E0-4E56-828E-7CFC89C6B088" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_ED1CB01F-0D4B-445E-B832-E9819EB40CFD">
+          <dmn:text>Settings Temperature</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_7CB642B9-478A-4580-9854-6C1621C40250">
+          <dmn:text>mean(sensors.current)-5 &gt; setting.threshold_low</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_8C4C0C9F-3BC1-4FB4-8EF1-CB67DC36C329" name="Temperature Lower?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_99CECFC1-9BAB-44CF-BF68-FE7DE7C797CA" name="Temperature Lower?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_52F96682-5FD5-42F4-9A9B-27520F76D08C">
+      <dmn:requiredInput href="#_2787E863-1F34-4C08-B37F-82C1F7F30BB5"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_43E833B1-20A2-4374-9792-5F4FAECD2429">
+      <dmn:requiredInput href="#_C6CBB2F5-0BEC-4F20-A9F5-21F30D14AC8D"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_D57DC0BF-C1D7-4625-9C8B-690D3C3B8F58">
+      <dmn:contextEntry>
+        <dmn:variable id="_4EFDE820-50B0-4DAA-A05B-A1D50104292D" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_A08632A7-E7AF-4E5C-90AF-96643FBC4686">
+          <dmn:text>Sensors Temperature[placement="INSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_9812B4D8-B44D-40E9-A0EB-0E822EB67A21" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_99F58FE3-A1B4-466B-8F63-16CB473BCD88">
+          <dmn:text>Settings Temperature</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_E3B7F678-A1B0-4601-97E4-7179302376FE">
+          <dmn:text>mean(sensors.current) &lt; setting.threshold_low</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_1CAAA349-2416-40B4-BD65-32EF79956E06" name="Temperature Higher?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_15E9B8C3-177A-40B3-9370-2029164BA03F" name="Temperature Higher?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_1ECDAC81-F4F9-4006-A7E4-E613321DCA70">
+      <dmn:requiredInput href="#_2787E863-1F34-4C08-B37F-82C1F7F30BB5"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_2F2FCBCC-9877-48B3-955D-844F8FC0E4B4">
+      <dmn:requiredInput href="#_C6CBB2F5-0BEC-4F20-A9F5-21F30D14AC8D"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_8C56BF03-3B86-40EB-9A21-9B712B72A6C2">
+      <dmn:contextEntry>
+        <dmn:variable id="_437F2DE9-7A23-42DA-BA07-F75C48B65261" name="sensors" typeRef="SensorInputList"/>
+        <dmn:literalExpression id="_EBF783F1-982C-433A-A84D-4DA89F7762D9">
+          <dmn:text>Sensors Temperature[placement="INSIDE"]</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_D3515C38-CFFE-4257-9961-98C1EF458847" name="setting" typeRef="SmartHomeSetting"/>
+        <dmn:literalExpression id="_5454FAA4-FE85-4FC3-A5F6-8BF5A16A8586">
+          <dmn:text>Settings Temperature</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_729400B8-9AF6-4261-BC74-538B1C51E1C3">
+          <dmn:text>mean(sensors.current) &gt; setting.threshold_high</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:textAnnotation id="_9C9BCA7E-2913-4CD2-8F51-2A0A082042B4" textFormat="text/plain">
+    <dmn:text>We consider a difference of 5 units a significant difference between settings and sensor measurements in all decision nodes that evaluate significant difference between the two.</dmn:text>
+  </dmn:textAnnotation>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_41B81416-BDA5-4157-9E17-C0ABA3433923" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_E3CB1EB7-8E78-4342-BFB3-577D29ECC152">
+            <kie:width>475</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1EAD3288-87DA-4A09-8995-BCEE2EC4FD79">
+            <kie:width>50</kie:width>
+            <kie:width>141</kie:width>
+            <kie:width>137</kie:width>
+            <kie:width>131</kie:width>
+            <kie:width>115</kie:width>
+            <kie:width>199</kie:width>
+            <kie:width>213</kie:width>
+            <kie:width>185</kie:width>
+            <kie:width>234</kie:width>
+            <kie:width>194</kie:width>
+            <kie:width>293</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_4521EF55-4012-4DEA-9357-E49C28C5E85F">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>412</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1AF7B769-F2F9-4F71-A2F3-FCDDE7D6B5CE">
+            <kie:width>412</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_336FA856-9FCF-43F8-85A5-C3F2904054F7">
+            <kie:width>412</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_6AA7EDD9-CAC2-4217-A007-D71E1A8EBC36">
+            <kie:width>412</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_B9A0BA33-1B62-49CB-9CF6-E315772863B2">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>418</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_203C8A6B-049A-441A-8EB7-F634AE9D8323">
+            <kie:width>418</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_8C16FA05-9DFB-46CB-AAED-CAD504C4D8AC">
+            <kie:width>418</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_0EC1F38C-5177-47DB-9371-90D76D9D9988">
+            <kie:width>418</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_E17763A5-2095-46CE-937E-E39F43234BC3">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>602</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_A83DABE8-F4D2-4CD1-9F69-BE725DC13F32">
+            <kie:width>602</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_DDF7119E-6B0B-4C2A-AC62-EBA02C6AB821">
+            <kie:width>602</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_E515A690-8CCA-4660-8978-0E344B8135F3">
+            <kie:width>602</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_572EF1C9-09E7-4D91-BE2C-00F3C5B73173">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>1377</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_01FEF025-7269-4EAD-8D32-C6AF2F7BC169">
+            <kie:width>1377</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_3FCCEAC8-66D3-4489-9410-CAB44016F5B4">
+            <kie:width>1377</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_71D2B44A-2DA6-4AF2-8F7E-9209C7873094">
+            <kie:width>1377</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_B36C9EAA-E7C0-429B-9CBF-13D241C3CD72">
+            <kie:width>638</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1C6F314A-BEC0-4625-86B4-F3D0FEF45126">
+            <kie:width>50</kie:width>
+            <kie:width>165</kie:width>
+            <kie:width>595</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_CC4FEF6E-9130-416E-B8ED-18E45858DDAE">
+            <kie:width>595</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_74F4EBC1-F494-4684-A411-4971467BE3AC">
+            <kie:width>595</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_46C6DCFF-761C-4EDB-8F97-9BC49749E468">
+            <kie:width>595</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1908F8D0-A47C-47AA-AB5C-001B8742A547">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>420</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_6DA604BD-AFFA-4419-9B27-0250F5CD3561">
+            <kie:width>420</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_ED1CB01F-0D4B-445E-B832-E9819EB40CFD">
+            <kie:width>420</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_7CB642B9-478A-4580-9854-6C1621C40250">
+            <kie:width>420</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_D57DC0BF-C1D7-4625-9C8B-690D3C3B8F58">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>525</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_A08632A7-E7AF-4E5C-90AF-96643FBC4686">
+            <kie:width>525</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_99F58FE3-A1B4-466B-8F63-16CB473BCD88">
+            <kie:width>525</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_E3B7F678-A1B0-4601-97E4-7179302376FE">
+            <kie:width>525</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_8C56BF03-3B86-40EB-9A21-9B712B72A6C2">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>531</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_EBF783F1-982C-433A-A84D-4DA89F7762D9">
+            <kie:width>531</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_5454FAA4-FE85-4FC3-A5F6-8BF5A16A8586">
+            <kie:width>531</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_729400B8-9AF6-4261-BC74-538B1C51E1C3">
+            <kie:width>531</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_3B60D1A6-BB8C-42B1-9868-9B9A64794A5A" dmnElementRef="_3B60D1A6-BB8C-42B1-9868-9B9A64794A5A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="355" y="376" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_5E4357E3-3B19-4C8A-8787-32CB0C69C3EC" dmnElementRef="_5E4357E3-3B19-4C8A-8787-32CB0C69C3EC" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="569" y="376" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_2787E863-1F34-4C08-B37F-82C1F7F30BB5" dmnElementRef="_2787E863-1F34-4C08-B37F-82C1F7F30BB5" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="219.29906542056074" y="719" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_C6CBB2F5-0BEC-4F20-A9F5-21F30D14AC8D" dmnElementRef="_C6CBB2F5-0BEC-4F20-A9F5-21F30D14AC8D" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="352.29906542056074" y="719" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_51B74AFA-C58F-4D32-94E5-BE4FD29B6BAB" dmnElementRef="_51B74AFA-C58F-4D32-94E5-BE4FD29B6BAB" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="807" y="719" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_B51CDF6E-7936-43C9-B1F2-04998F2F75CF" dmnElementRef="_B51CDF6E-7936-43C9-B1F2-04998F2F75CF" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="962" y="719" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_E60A8794-CACC-44D9-BE13-71DD3C4CA449" dmnElementRef="_E60A8794-CACC-44D9-BE13-71DD3C4CA449" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="959" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_BB5CF029-A8A3-450A-80AE-B24F27008D21" dmnElementRef="_BB5CF029-A8A3-450A-80AE-B24F27008D21" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1104" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_8E628D7F-39EE-4D49-808F-CA2A5D5FE43F" dmnElementRef="_8E628D7F-39EE-4D49-808F-CA2A5D5FE43F" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="657" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_1576018F-08BE-4BAB-A027-F21A689CC23F" dmnElementRef="_1576018F-08BE-4BAB-A027-F21A689CC23F" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="805" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_566706AB-79BC-4F1E-B9AE-E932E6977C79" dmnElementRef="_566706AB-79BC-4F1E-B9AE-E932E6977C79" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="805" y="376" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_A00F953F-4FB2-464C-A573-0B808D796986" dmnElementRef="_A00F953F-4FB2-464C-A573-0B808D796986" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="219" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_9039CAB1-DF59-4575-965A-88EABD3792F7" dmnElementRef="_9039CAB1-DF59-4575-965A-88EABD3792F7" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="74" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_8C4C0C9F-3BC1-4FB4-8EF1-CB67DC36C329" dmnElementRef="_8C4C0C9F-3BC1-4FB4-8EF1-CB67DC36C329" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="354" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_1CAAA349-2416-40B4-BD65-32EF79956E06" dmnElementRef="_1CAAA349-2416-40B4-BD65-32EF79956E06" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="489" y="533" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_9C9BCA7E-2913-4CD2-8F51-2A0A082042B4" dmnElementRef="_9C9BCA7E-2913-4CD2-8F51-2A0A082042B4" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1240" y="481" width="299" height="154"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_FFBE0858-9963-44B8-8514-99A8AD1A5696-AUTO-TARGET" dmnElementRef="_FFBE0858-9963-44B8-8514-99A8AD1A5696">
+        <di:waypoint x="404" y="558"/>
+        <di:waypoint x="405" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_4F70A08E-A492-410B-8C60-5DF526921AC2-AUTO-TARGET" dmnElementRef="_4F70A08E-A492-410B-8C60-5DF526921AC2">
+        <di:waypoint x="619" y="401"/>
+        <di:waypoint x="455" y="401"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_DA5CB5E8-1948-4B76-A69F-3386EAD2A8EC-AUTO-TARGET" dmnElementRef="_DA5CB5E8-1948-4B76-A69F-3386EAD2A8EC">
+        <di:waypoint x="269" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_CECB6437-360A-4F95-9848-92EB83717345-AUTO-TARGET" dmnElementRef="_CECB6437-360A-4F95-9848-92EB83717345">
+        <di:waypoint x="404" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_D7BC2017-C33B-4569-8EA2-50F61BF83558-AUTO-TARGET" dmnElementRef="_D7BC2017-C33B-4569-8EA2-50F61BF83558">
+        <di:waypoint x="539" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_C39837C2-62BB-4D15-9324-0BDC71CCD905" dmnElementRef="_C39837C2-62BB-4D15-9324-0BDC71CCD905">
+        <di:waypoint x="124" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_200F0DDD-27A3-4D44-8C2D-FC69780C7975-AUTO-TARGET" dmnElementRef="_200F0DDD-27A3-4D44-8C2D-FC69780C7975">
+        <di:waypoint x="707" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_4FA8C76D-CF0F-4BF6-9C69-14656CBBDEA0-AUTO-TARGET" dmnElementRef="_4FA8C76D-CF0F-4BF6-9C69-14656CBBDEA0">
+        <di:waypoint x="1009" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_EAF5A6AD-154C-49A3-BC5D-E64B7E2BC451-AUTO-TARGET" dmnElementRef="_EAF5A6AD-154C-49A3-BC5D-E64B7E2BC451">
+        <di:waypoint x="1154" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_45C6593F-BFBD-46F6-9DE8-BADC745D5117-AUTO-TARGET" dmnElementRef="_45C6593F-BFBD-46F6-9DE8-BADC745D5117">
+        <di:waypoint x="855" y="558"/>
+        <di:waypoint x="619" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_DCCCD712-8BCA-4468-8559-6BA8930EEE10" dmnElementRef="_DCCCD712-8BCA-4468-8559-6BA8930EEE10">
+        <di:waypoint x="1012" y="744"/>
+        <di:waypoint x="1009" y="558"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_5B99D29E-C4E6-46F4-AAC8-9ADDD39BE96E-AUTO-TARGET" dmnElementRef="_5B99D29E-C4E6-46F4-AAC8-9ADDD39BE96E">
+        <di:waypoint x="857" y="744"/>
+        <di:waypoint x="1009" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_DEE368B1-EBF9-40BF-963A-730A9AF1959B-AUTO-TARGET" dmnElementRef="_DEE368B1-EBF9-40BF-963A-730A9AF1959B">
+        <di:waypoint x="857" y="744"/>
+        <di:waypoint x="1154" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_6FD4AB46-1CE7-4B6F-89F7-8E143C34C5E4-AUTO-TARGET" dmnElementRef="_6FD4AB46-1CE7-4B6F-89F7-8E143C34C5E4">
+        <di:waypoint x="1012" y="744"/>
+        <di:waypoint x="1154" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_C4C9D32E-F31E-4CA2-BAC5-D5692CB21357-AUTO-TARGET" dmnElementRef="_C4C9D32E-F31E-4CA2-BAC5-D5692CB21357">
+        <di:waypoint x="1012" y="744"/>
+        <di:waypoint x="707" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_48C9F7FE-8982-484A-8534-5205A0DA3BDF" dmnElementRef="_48C9F7FE-8982-484A-8534-5205A0DA3BDF">
+        <di:waypoint x="857" y="744"/>
+        <di:waypoint x="707" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_880C9B03-F410-4731-A8A3-F2174E9F99C4-AUTO-TARGET" dmnElementRef="_880C9B03-F410-4731-A8A3-F2174E9F99C4">
+        <di:waypoint x="857" y="744"/>
+        <di:waypoint x="855" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_C1EF087B-AFED-484F-A07A-947971FDCECE-AUTO-TARGET" dmnElementRef="_C1EF087B-AFED-484F-A07A-947971FDCECE">
+        <di:waypoint x="1012" y="744"/>
+        <di:waypoint x="855" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_B77B1F8F-7A3B-4164-AA37-17C2AC55D25F-AUTO-TARGET" dmnElementRef="_B77B1F8F-7A3B-4164-AA37-17C2AC55D25F">
+        <di:waypoint x="539" y="558"/>
+        <di:waypoint x="855" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_4A2F2CA1-03B5-43ED-A5F4-000D36DD8315-AUTO-TARGET" dmnElementRef="_4A2F2CA1-03B5-43ED-A5F4-000D36DD8315">
+        <di:waypoint x="855" y="558"/>
+        <di:waypoint x="855" y="426"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_14A04219-BE1F-48F0-935C-2F3C65BED27E-AUTO-TARGET" dmnElementRef="_14A04219-BE1F-48F0-935C-2F3C65BED27E">
+        <di:waypoint x="619" y="401"/>
+        <di:waypoint x="805" y="401"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_69BB30BD-A34A-479A-8E39-F7FEA9C4772B-AUTO-TARGET" dmnElementRef="_69BB30BD-A34A-479A-8E39-F7FEA9C4772B">
+        <di:waypoint x="402.29906542056074" y="744"/>
+        <di:waypoint x="269" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_CFD19D56-E173-43F5-A5B1-A891BAEE9B89" dmnElementRef="_CFD19D56-E173-43F5-A5B1-A891BAEE9B89">
+        <di:waypoint x="269.29906542056074" y="744"/>
+        <di:waypoint x="269" y="558"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_C850619F-BC62-4599-A582-F0F9A6EFEA63-AUTO-TARGET" dmnElementRef="_C850619F-BC62-4599-A582-F0F9A6EFEA63">
+        <di:waypoint x="269.29906542056074" y="744"/>
+        <di:waypoint x="124" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_B88E3578-0209-4B7D-8C05-6409C814F95C-AUTO-TARGET" dmnElementRef="_B88E3578-0209-4B7D-8C05-6409C814F95C">
+        <di:waypoint x="402.29906542056074" y="744"/>
+        <di:waypoint x="124" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_52F96682-5FD5-42F4-9A9B-27520F76D08C-AUTO-TARGET" dmnElementRef="_52F96682-5FD5-42F4-9A9B-27520F76D08C">
+        <di:waypoint x="269.29906542056074" y="744"/>
+        <di:waypoint x="404" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_43E833B1-20A2-4374-9792-5F4FAECD2429-AUTO-TARGET" dmnElementRef="_43E833B1-20A2-4374-9792-5F4FAECD2429">
+        <di:waypoint x="402.29906542056074" y="744"/>
+        <di:waypoint x="404" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_1ECDAC81-F4F9-4006-A7E4-E613321DCA70-AUTO-TARGET" dmnElementRef="_1ECDAC81-F4F9-4006-A7E4-E613321DCA70">
+        <di:waypoint x="269.29906542056074" y="744"/>
+        <di:waypoint x="539" y="583"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_2F2FCBCC-9877-48B3-955D-844F8FC0E4B4-AUTO-TARGET" dmnElementRef="_2F2FCBCC-9877-48B3-955D-844F8FC0E4B4">
+        <di:waypoint x="402.29906542056074" y="744"/>
+        <di:waypoint x="539" y="583"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

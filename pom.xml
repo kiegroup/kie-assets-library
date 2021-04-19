@@ -17,7 +17,7 @@
   </modules>
 
   <properties>
-    <main.basedir>.</main.basedir>
+    <main.basedir>${maven.multiModuleProjectDirectory}</main.basedir>
     <version.kie>7.52.0.Final</version.kie>
     <version.kogito>1.5.0.Final</version.kogito>
     <version.junit>4.12</version.junit>

@@ -101,7 +101,7 @@ public class GenerateProjectMojo
         invoker.setWorkingDirectory(outputDirectory);
         InvocationResult result = invoker.execute(request);
         if (result.getExitCode() != 0) {
-            throw new MojoExecutionException("Error during archetype generation.", result.getExecutionException());
+            throw new MojoExecutionException("Error during archetype generation. See previous errors in log.", result.getExecutionException());
         }
     }
 

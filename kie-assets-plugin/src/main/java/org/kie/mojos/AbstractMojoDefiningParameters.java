@@ -51,7 +51,7 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      *  &lt;/project-definitions&gt;
      * </pre>
      */
-    @Parameter(readonly = true, alias = "project-definitions", required = true)
+    @Parameter(alias = "project-definitions", required = true)
     protected List<ProjectDefinition> projectDefinitions;
 
     /**
@@ -112,7 +112,7 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      * &lt;/project-structures&gt;
      * </pre>
      */
-    @Parameter(readonly = true, alias = "project-structures", required = true)
+    @Parameter(alias = "project-structures", required = true)
     protected List<ProjectStructure> projectStructures;
 
     /**
@@ -128,7 +128,7 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      * &lt;/active-structures&gt;
      * </pre>
      */
-    @Parameter(readonly = true, alias = "active-structures", property = "active.structures")
+    @Parameter(alias = "active-structures", property = "active.structures")
     protected Set<String> activeStructureIds = new HashSet<>();
 
     /**
@@ -144,7 +144,7 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      * &lt;/active-definition&gt;
      * </pre>
      */
-    @Parameter(readonly = true, alias = "active-definitions", property = "active.definitions")
+    @Parameter(alias = "active-definitions", property = "active.definitions")
     protected Set<String> activeDefinitionIds = new HashSet<>();
 
     /**
@@ -160,7 +160,7 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      * &lt;/active-config-sets&gt;
      * </pre>
      */
-    @Parameter(readonly = true, alias = "active-config-sets", property = "active.config.sets")
+    @Parameter(alias = "active-config-sets", property = "active.config.sets")
     protected Set<String> activeConfigSets = new HashSet();
 
     /**

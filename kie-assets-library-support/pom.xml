@@ -99,10 +99,104 @@
                                 </config-sets>
                             </project-structure>
                             <project-structure>
+                                <id>dm-quarkus</id>
+                                <archetype>
+                                    <groupId>org.kie.kogito</groupId>
+                                    <artifactId>kogito-quarkus-dm-archetype</artifactId>
+                                    <version>${version.kogito}</version>
+                                </archetype>
+                                <delete-resources>
+                                    <resource>
+                                        <directory>src/main/resources</directory>
+                                        <includes>
+                                            <include>*</include>
+                                            <include>**/*</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>application.properties</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>./</directory>
+                                        <includes>
+                                            <include>README.md</include>
+                                        </includes>
+                                    </resource>
+                                </delete-resources>
+                                <config-sets>
+                                    <config-set>
+                                        <id>scesim</id>
+                                        <dependencies>
+                                            <dependency>
+                                                <groupId>org.kie.kogito</groupId>
+                                                <artifactId>kogito-scenario-simulation</artifactId>
+                                                <version>${version.kogito}</version>
+                                                <scope>test</scope>
+                                            </dependency>
+                                        </dependencies>
+                                        <copy-sources>
+                                            <package>
+                                                <name>scesim.kogito</name>
+                                                <type>test</type>
+                                                <language>java</language>
+                                                <filesystem-root>${support.basedir}</filesystem-root>
+                                            </package>
+                                        </copy-sources>
+                                    </config-set>
+                                </config-sets>
+                            </project-structure>
+                            <project-structure>
                                 <id>springboot</id>
                                 <archetype>
                                     <groupId>org.kie.kogito</groupId>
                                     <artifactId>kogito-springboot-archetype</artifactId>
+                                    <version>${version.kogito}</version>
+                                </archetype>
+                                <delete-resources>
+                                    <resource>
+                                        <directory>src/main/resources</directory>
+                                        <includes>
+                                            <include>*</include>
+                                            <include>**/*</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>application.properties</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>./</directory>
+                                        <includes>
+                                            <include>README.md</include>
+                                        </includes>
+                                    </resource>
+                                </delete-resources>
+                                <config-sets>
+                                    <config-set>
+                                        <id>scesim</id>
+                                        <dependencies>
+                                            <dependency>
+                                                <groupId>org.kie.kogito</groupId>
+                                                <artifactId>kogito-scenario-simulation</artifactId>
+                                                <version>${version.kogito}</version>
+                                                <scope>test</scope>
+                                            </dependency>
+                                        </dependencies>
+                                        <copy-sources>
+                                            <package>
+                                                <name>scesim.kogito</name>
+                                                <type>test</type>
+                                                <language>java</language>
+                                                <filesystem-root>${support.basedir}</filesystem-root>
+                                            </package>
+                                        </copy-sources>
+                                    </config-set>
+                                </config-sets>
+                            </project-structure>
+                            <project-structure>
+                                <id>dm-springboot</id>
+                                <archetype>
+                                    <groupId>org.kie.kogito</groupId>
+                                    <artifactId>kogito-springboot-dm-archetype</artifactId>
                                     <version>${version.kogito}</version>
                                 </archetype>
                                 <delete-resources>

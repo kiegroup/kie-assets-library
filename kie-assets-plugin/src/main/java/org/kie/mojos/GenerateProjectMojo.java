@@ -88,6 +88,8 @@ public class GenerateProjectMojo
         getLog().info("Inside invoker "+definition.getId()+", strucutre:"+projectStructure.getId());
         InvocationRequest request = new DefaultInvocationRequest();
         request.setGoals(Collections.singletonList("archetype:generate"));
+        request.setUserSettingsFile(mavenSession.getRequest().getUserSettingsFile());
+        request.setLocalRepositoryDirectory(mavenSession.getRequest().getLocalRepositoryPath());
         Properties properties = new Properties();
         properties.setProperty("interactiveMode", "false");
         properties.setProperty("groupId", definition.getGroupId());

@@ -74,6 +74,7 @@ public class GenerateProjectMojo
             generateFromArchetype(definition, structure);
             addPomDependencies(definition, structure);
             setFinalNameInPom(definition, structure);
+            addPomProperties(definition, structure);
         };
     }
 
@@ -132,6 +133,30 @@ public class GenerateProjectMojo
                             .flatMap(it -> it.getDependencies().stream())
                             .collect(Collectors.toList())
             );
+        });
+    }
+
+    /**
+     * Manipulate the POM files of generated project. Add properties defined by {@linkplain ConfigSet#getProperties()} in:
+     * <ul>
+     *     <li>{@linkplain ProjectDefinition#getConfig()}</li>
+     *     <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
+     *     <li>{@linkplain ProjectStructure#getConfigSets()}
+     *     with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
+     * </ul>
+     * @param definition project definition to get references from
+     * @param structure  project structure to get config-set with matching ids from
+     * @throws MojoExecutionException on error during file manipulation
+     */
+    private void addPomProperties(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
+        Path pomFile = getPathToPom(definition, structure);
+        manipulatePom(pomFile, project -> {
+            project.getProperties().putAll(definition.getConfig().getProperties());
+            project.getProperties().putAll(structure.getCommonConfig().getProperties());
+            structure.getConfigSets().stream()
+                    .filter(it -> activeConfigSets.contains(it.getId()))
+                    .flatMap(it -> it.getProperties().entrySet().stream())
+                    .forEach(it -> project.getProperties().put(it.getKey(), it.getValue()));
         });
     }
 

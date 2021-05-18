@@ -6,6 +6,7 @@ import org.apache.maven.model.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 /**
  * Artifact to hold configuration of dependencies and source packages to be copied.
@@ -15,6 +16,7 @@ public class ConfigSet {
     private List<Dependency> dependencies = new ArrayList<>();
     private List<Package> copySources = new ArrayList<>();
     private List<Resource> copyResources = new ArrayList<>();
+    private Properties properties = new Properties();
 
     public String getId() {
         return id;
@@ -48,6 +50,15 @@ public class ConfigSet {
         this.copyResources = copyResources;
     }
 
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public ConfigSet setProperties(Properties properties) {
+        this.properties = properties;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,6 +79,7 @@ public class ConfigSet {
                 ", dependencies=" + dependencies +
                 ", copySources=" + copySources +
                 ", copyResources=" + copyResources +
+                ", properties=" + properties +
                 '}';
     }
 }

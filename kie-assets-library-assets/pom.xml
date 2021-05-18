@@ -78,6 +78,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>smarthouse-02</artifactId>
                                 <packageName>org.kie.smarthouse</packageName>
+                                <finalName>smarthouse</finalName>
                                 <config>
                                     <copy-resources>
                                         <resource>
@@ -94,6 +95,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>smarthouse-03</artifactId>
                                 <packageName>org.kie.smarthouse</packageName>
+                                <finalName>smarthouse</finalName>
                                 <config>
                                     <copy-resources>
                                         <resource>

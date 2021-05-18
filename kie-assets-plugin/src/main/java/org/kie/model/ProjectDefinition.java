@@ -1,9 +1,5 @@
 package org.kie.model;
 
-import org.apache.maven.model.Resource;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,6 +10,7 @@ public class ProjectDefinition {
     private String groupId;
     private String artifactId;
     private String packageName;
+    private String finalName;
     private ConfigSet config = new ConfigSet();
 
     public String getId() {
@@ -56,6 +53,15 @@ public class ProjectDefinition {
         this.config = config;
     }
 
+    public String getFinalName() {
+        return finalName;
+    }
+
+    public ProjectDefinition setFinalName(String finalName) {
+        this.finalName = finalName;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,6 +82,7 @@ public class ProjectDefinition {
                 ", groupId='" + groupId + '\'' +
                 ", artifactId='" + artifactId + '\'' +
                 ", packageName='" + packageName + '\'' +
+                ", finalName='" + finalName + '\'' +
                 ", config=" + config +
                 '}';
     }

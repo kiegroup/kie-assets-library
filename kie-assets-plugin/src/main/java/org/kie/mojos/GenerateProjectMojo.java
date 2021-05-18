@@ -21,6 +21,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -72,6 +73,7 @@ public class GenerateProjectMojo
             getLog().info("Invoked with "+definition.getId()+", strucutre:"+structure.getId());
             generateFromArchetype(definition, structure);
             addPomDependencies(definition, structure);
+            setFinalNameInPom(definition, structure);
         };
     }
 
@@ -120,8 +122,53 @@ public class GenerateProjectMojo
      * @throws MojoExecutionException on error during file manipulation
      */
     private void addPomDependencies(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
+        Path pomFile = getPathToPom(definition, structure);
+        manipulatePom(pomFile, project -> {
+            project.getDependencies().addAll(definition.getConfig().getDependencies());
+            project.getDependencies().addAll(structure.getCommonConfig().getDependencies());
+            project.getDependencies().addAll(
+                    structure.getConfigSets().stream()
+                            .filter(it -> activeConfigSets.contains(it.getId()))
+                            .flatMap(it -> it.getDependencies().stream())
+                            .collect(Collectors.toList())
+            );
+        });
+    }
+
+    /**
+     * Allow setting finalName from ProjectDefinition to pom build configuration.
+     * @param definition project definition to take finalName from
+     * @param structure project structure to use for pom location resolution
+     * @throws MojoExecutionException
+     */
+    private void setFinalNameInPom(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
+        if (definition.getFinalName()==null || definition.getFinalName().isEmpty()) {
+            getLog().debug("No finalName specified, not changing build configuration.");
+            return;
+        }
+        Path pathToPom = getPathToPom(definition, structure);
+        manipulatePom(pathToPom, project -> project.getBuild().setFinalName(definition.getFinalName()));
+    }
+
+    /**
+     * Get path to pom file for given definition : structure pair.
+     * @param definition definition to use for path resolution
+     * @param structure structure to use for path resolution
+     * @return path to pom.xml
+     */
+    private Path getPathToPom(ProjectDefinition definition, ProjectStructure structure) {
         Path projectDir = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure);
         Path pomFile = projectDir.resolve("pom.xml");
+        return pomFile;
+    }
+
+    /**
+     * Get Maven Model from given pomFile.
+     * @param pomFile path to pom.xml
+     * @return
+     * @throws MojoExecutionException
+     */
+    private Model getPomModel(Path pomFile) throws MojoExecutionException {
         Model model = null;
         try (
                 FileInputStream fileReader = new FileInputStream(pomFile.toFile());
@@ -132,22 +179,27 @@ public class GenerateProjectMojo
         } catch (IOException | XmlPullParserException e) {
             throw new MojoExecutionException("Error while opening generated pom: " + pomFile, e);
         }
+        return model;
+    }
+
+    /**
+     * Method that accepts path to pom file and operation to be applied on the MavenProject
+     * instance coming from loading it.
+     * @param pathToPom Path to the pom to load and save to after changes.
+     * @param manipulator consumer that receives {@linkplain MavenProject} instance.
+     * @throws MojoExecutionException when error during manipulation occurs.
+     */
+    private void manipulatePom(Path pathToPom, Consumer<MavenProject> manipulator) throws MojoExecutionException {
+        Model model = getPomModel(pathToPom);
         try (
-                FileOutputStream fileWriter = new FileOutputStream(pomFile.toFile());
+                FileOutputStream fileWriter = new FileOutputStream(pathToPom.toFile());
         ) {
             MavenProject project = new MavenProject(model);
-            project.getDependencies().addAll(definition.getConfig().getDependencies());
-            project.getDependencies().addAll(structure.getCommonConfig().getDependencies());
-            project.getDependencies().addAll(
-                    structure.getConfigSets().stream()
-                            .filter(it -> activeConfigSets.contains(it.getId()))
-                            .flatMap(it -> it.getDependencies().stream())
-                            .collect(Collectors.toList())
-            );
+            manipulator.accept(project);
             MavenXpp3Writer mavenWriter = new MavenXpp3Writer();
             mavenWriter.write(fileWriter, model);
         } catch (IOException e) {
-            throw new MojoExecutionException("Error while saving manipulated pom: " + pomFile, e);
+            throw new MojoExecutionException("Error while saving manipulated pom: " + pathToPom, e);
         }
     }
 }

@@ -87,6 +87,13 @@
                                                 <include>*</include>
                                             </includes>
                                         </resource>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/</directory>
+                                            <targetPath>./</targetPath>
+                                            <includes>
+                                                <include>README.md</include>
+                                            </includes>
+                                        </resource>
                                     </copy-resources>
                                 </config>
                             </project-definition>
@@ -102,6 +109,13 @@
                                             <directory>${assets.basedir}/src/main/resources/smarthouse/03</directory>
                                             <includes>
                                                 <include>*</include>
+                                            </includes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/</directory>
+                                            <targetPath>./</targetPath>
+                                            <includes>
+                                                <include>README.md</include>
                                             </includes>
                                         </resource>
                                     </copy-resources>

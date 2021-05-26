@@ -51,6 +51,7 @@
                 <plugin>
                     <groupId>org.kie</groupId>
                     <artifactId>kie-assets-plugin</artifactId>
+                    <version>${project.version}</version>
                     <configuration>
                         <project-structures>
                             <project-structure>

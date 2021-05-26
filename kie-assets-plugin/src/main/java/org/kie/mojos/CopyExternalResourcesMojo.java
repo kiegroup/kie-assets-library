@@ -5,6 +5,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.codehaus.plexus.util.StringUtils;
 import org.kie.utils.MaskedMavenMojoException;
 import org.kie.utils.ThrowingBiConsumer;
 import org.kie.utils.FileFilteringUtils;
@@ -75,16 +76,16 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
                             .collect(Collectors.toList())
             );
 
-            List<Path> files = new ArrayList<>();
             for (Resource resource : resources) {
+                List<Path> files = new ArrayList<>();
                 files.addAll(FileFilteringUtils.filterFilesStartingAtPath(Paths.get(resource.getDirectory()), resource));
-            }
-            for (Path f : files) {
-                Path dest = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure)
-                        .resolve(structure.getResourcesFolder())
-                        .resolve(f.getFileName());
-                getLog().debug(String.format("Copying %s to %s", f, dest));
-                Files.copy(f, dest);
+                for (Path f : files) {
+                    Path dest = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure)
+                            .resolve(StringUtils.isBlank(resource.getTargetPath()) ? structure.getResourcesFolder() : resource.getTargetPath())
+                            .resolve(f.getFileName());
+                    getLog().debug(String.format("Copying %s to %s", f, dest));
+                    Files.copy(f, dest);
+                }
             }
         };
     }

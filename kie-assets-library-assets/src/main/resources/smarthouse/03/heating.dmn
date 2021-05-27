@@ -698,12 +698,6 @@
         </dmn:literalExpression>
       </dmn:contextEntry>
       <dmn:contextEntry>
-        <dmn:variable id="_01EA7D2D-6622-433A-A823-531C715D83A8" name="no_change_in_temperature_trend" typeRef="boolean"/>
-        <dmn:literalExpression id="_1D170738-EF71-4410-A035-7F7F836A43C7">
-          <dmn:text>Inside Temperature Trend = 0</dmn:text>
-        </dmn:literalExpression>
-      </dmn:contextEntry>
-      <dmn:contextEntry>
         <dmn:variable id="_F095D9BD-E036-4818-B4E4-D5FE116B2520" name="cold_but_increasing" typeRef="boolean"/>
         <dmn:literalExpression id="_E7E636B1-512D-4ECF-AD24-919B4A812025">
           <dmn:text>Temperature Lower? and (Inside Temperature Trend &gt; 0)</dmn:text>
@@ -729,7 +723,7 @@
       </dmn:contextEntry>
       <dmn:contextEntry>
         <dmn:literalExpression id="_ACABCD67-E43F-4498-8119-1C8A03236E48">
-          <dmn:text>no_change_in_temperature_trend or almost_warm or almost_cool</dmn:text>
+          <dmn:text>almost_warm or almost_cool</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -991,9 +985,6 @@
             <kie:width>769</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_3E2608F1-B7CF-489E-9058-B8BA6E5D29AC">
-            <kie:width>769</kie:width>
-          </kie:ComponentWidths>
-          <kie:ComponentWidths dmnElementRef="_1D170738-EF71-4410-A035-7F7F836A43C7">
             <kie:width>769</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_E7E636B1-512D-4ECF-AD24-919B4A812025">

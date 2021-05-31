@@ -131,6 +131,11 @@
     <profiles>
         <profile>
             <id>run-its</id>
+            <activation>
+                <property>
+                    <name>!skipITs</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>

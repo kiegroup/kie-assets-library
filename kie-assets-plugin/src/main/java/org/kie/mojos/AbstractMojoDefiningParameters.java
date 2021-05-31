@@ -19,6 +19,8 @@ import java.util.function.BiConsumer;
  */
 public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
 
+    protected static final String NEGATE_ACTIVE_SELECTION = "!";
+
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession mavenSession;
 
@@ -181,7 +183,7 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      * @return true on match
      */
     protected static boolean isDefinitionActive(Set<String> definitionIds, ProjectDefinition toCheck) {
-        return definitionIds == null || definitionIds.isEmpty() || definitionIds.contains(toCheck.getId());
+        return isActive(definitionIds, toCheck.getId());
     }
 
     /**
@@ -194,7 +196,29 @@ public abstract class AbstractMojoDefiningParameters extends AbstractMojo {
      * @return true on match
      */
     protected static boolean isStructureActive(Set<String> structureIds, ProjectStructure toCheck) {
-        return structureIds == null || structureIds.isEmpty() || structureIds.contains(toCheck.getId());
+        return isActive(structureIds, toCheck.getId());
+    }
+
+    /**
+     * Helper method to check if given id does match the given id expressions (can be negations).
+     * @param ids id expressions to drive activation, can be negation (prefixed by !)
+     * @param idToCheck id string value, exact match
+     * @return true when given id does pass the filters posed by id expressions
+     */
+    private static boolean isActive(Set<String> ids, String idToCheck) {
+        if (ids == null || ids.isEmpty()) {
+            // no filters, include all
+            return true;
+        }
+        if (ids.stream().anyMatch(it -> it.startsWith(NEGATE_ACTIVE_SELECTION))) {
+            // negation used for some of the selections, check this one if it's part of the negated ones.
+            if (ids.contains(NEGATE_ACTIVE_SELECTION + idToCheck)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return (ids.contains(idToCheck));
     }
 
     /**

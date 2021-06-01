@@ -1,10 +1,27 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.mojos.config;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 import org.apache.maven.plugin.testing.MojoRule;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.Rule;
@@ -13,11 +30,7 @@ import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
 import org.kie.mojos.AbstractMojoDefiningParameters;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.BiConsumer;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMojoDefiningParameters> {
 
@@ -35,7 +48,7 @@ public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMoj
     };
 
     public AbstractMojoActiveConfigurationsTest(String goal) {
-        this.goal=goal;
+        this.goal = goal;
     }
 
     @Test
@@ -53,31 +66,22 @@ public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMoj
 
         assertThat(activeSetup.getProjectDefinitions(), Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.not(Matchers.empty())
-        ));
+                Matchers.not(Matchers.empty())));
         assertThat(activeSetup.getProjectDefinitions(), Matchers.hasItems(
                 Matchers.hasProperty("id",
-                        Matchers.in(Arrays.asList("first", "second", "third"))
-                ))
-        );
+                        Matchers.in(Arrays.asList("first", "second", "third")))));
         assertThat(activeSetup.getProjectStructures(), Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.not(Matchers.empty())
-                )
-        );
+                Matchers.not(Matchers.empty())));
         assertThat(activeSetup.getProjectStructures(), Matchers.hasItems(
                 Matchers.hasProperty("id",
-                        Matchers.in(Arrays.asList("A", "B", "C"))
-                ))
-        );
+                        Matchers.in(Arrays.asList("A", "B", "C")))));
         ActiveConfigurationCheck check = new ActiveConfigurationCheck();
         activeSetup.apply(check.checkActiveConfigurationAction());
         assertThat(check.definitionIds, Matchers.hasItems(
-                Matchers.in(Arrays.asList("first", "second"))
-        ));
+                Matchers.in(Arrays.asList("first", "second"))));
         assertThat(check.structureIds, Matchers.hasItems(
-                Matchers.in(Arrays.asList("A", "B"))
-        ));
+                Matchers.in(Arrays.asList("A", "B"))));
     }
 
     @Test
@@ -95,31 +99,22 @@ public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMoj
 
         assertThat(activeSetup.getProjectDefinitions(), Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.not(Matchers.empty())
-        ));
+                Matchers.not(Matchers.empty())));
         assertThat(activeSetup.getProjectDefinitions(), Matchers.hasItems(
                 Matchers.hasProperty("id",
-                        Matchers.in(Arrays.asList("first", "second", "third"))
-                ))
-        );
+                        Matchers.in(Arrays.asList("first", "second", "third")))));
         assertThat(activeSetup.getProjectStructures(), Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.not(Matchers.empty())
-                )
-        );
+                Matchers.not(Matchers.empty())));
         assertThat(activeSetup.getProjectStructures(), Matchers.hasItems(
                 Matchers.hasProperty("id",
-                        Matchers.in(Arrays.asList("A", "B", "C"))
-                ))
-        );
+                        Matchers.in(Arrays.asList("A", "B", "C")))));
         ActiveConfigurationCheck check = new ActiveConfigurationCheck();
         activeSetup.apply(check.checkActiveConfigurationAction());
         assertThat(check.definitionIds, Matchers.hasItems(
-                Matchers.in(Arrays.asList("first", "second"))
-        ));
+                Matchers.in(Arrays.asList("first", "second"))));
         assertThat(check.structureIds, Matchers.hasItems(
-                Matchers.in(Arrays.asList("A", "B", "C"))
-        ));
+                Matchers.in(Arrays.asList("A", "B", "C"))));
     }
 
     @Test
@@ -137,31 +132,22 @@ public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMoj
 
         assertThat(activeSetup.getProjectDefinitions(), Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.not(Matchers.empty())
-        ));
+                Matchers.not(Matchers.empty())));
         assertThat(activeSetup.getProjectDefinitions(), Matchers.hasItems(
                 Matchers.hasProperty("id",
-                        Matchers.in(Arrays.asList("first", "second", "third"))
-                ))
-        );
+                        Matchers.in(Arrays.asList("first", "second", "third")))));
         assertThat(activeSetup.getProjectStructures(), Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.not(Matchers.empty())
-                )
-        );
+                Matchers.not(Matchers.empty())));
         assertThat(activeSetup.getProjectStructures(), Matchers.hasItems(
                 Matchers.hasProperty("id",
-                        Matchers.in(Arrays.asList("A", "B", "C"))
-                ))
-        );
+                        Matchers.in(Arrays.asList("A", "B", "C")))));
         ActiveConfigurationCheck check = new ActiveConfigurationCheck();
         activeSetup.apply(check.checkActiveConfigurationAction());
         assertThat(check.definitionIds, Matchers.hasItems(
-                Matchers.in(Arrays.asList("first", "second"))
-        ));
+                Matchers.in(Arrays.asList("first", "second"))));
         assertThat(check.structureIds, Matchers.hasItems(
-                Matchers.in(Arrays.asList("A", "B"))
-        ));
+                Matchers.in(Arrays.asList("A", "B"))));
     }
 
     private static class ActiveConfigurationCheck {
@@ -177,4 +163,3 @@ public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMoj
     }
 
 }
-

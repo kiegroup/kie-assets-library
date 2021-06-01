@@ -1,19 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.mojos;
-
-import org.apache.maven.model.Resource;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.codehaus.plexus.util.StringUtils;
-import org.kie.utils.MaskedMavenMojoException;
-import org.kie.utils.ThrowingBiConsumer;
-import org.kie.utils.FileFilteringUtils;
-import org.kie.utils.GeneratedProjectUtils;
-import org.kie.model.ConfigSet;
-import org.kie.model.Package;
-import org.kie.model.ProjectDefinition;
-import org.kie.model.ProjectStructure;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +23,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.codehaus.plexus.util.StringUtils;
+import org.kie.model.ConfigSet;
+import org.kie.model.Package;
+import org.kie.model.ProjectDefinition;
+import org.kie.model.ProjectStructure;
+import org.kie.utils.FileFilteringUtils;
+import org.kie.utils.GeneratedProjectUtils;
+import org.kie.utils.MaskedMavenMojoException;
+import org.kie.utils.ThrowingBiConsumer;
 
 /**
  * Goal which copies specified resources into the newly generated project structure.<br />
@@ -44,10 +59,10 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
     /**
      * Copy resources specified as {@linkplain ConfigSet#getCopyResources()} by one of:
      * <ul>
-     *     <li>{@linkplain ProjectDefinition#getConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getConfigSets()}
-     *     with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
+     * <li>{@linkplain ProjectDefinition#getConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getConfigSets()}
+     * with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
      * </ul>
      * The target location is denoted by {@linkplain GeneratedProjectUtils#getOutputDirectoryForArchetype(Path, ProjectDefinition, ProjectStructure)}.
      */
@@ -71,10 +86,9 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
             resources.addAll(structure.getCommonConfig().getCopyResources());
             resources.addAll(
                     structure.getConfigSets().stream()
-                            .filter(it->activeConfigSets.contains(it.getId()))
-                            .flatMap(it->it.getCopyResources().stream())
-                            .collect(Collectors.toList())
-            );
+                            .filter(it -> activeConfigSets.contains(it.getId()))
+                            .flatMap(it -> it.getCopyResources().stream())
+                            .collect(Collectors.toList()));
 
             for (Resource resource : resources) {
                 List<Path> files = new ArrayList<>();
@@ -93,10 +107,10 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
     /**
      * Copy source packages {@linkplain ConfigSet#getCopySources()} specified by one of:
      * <ul>
-     *     <li>{@linkplain ProjectDefinition#getConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getConfigSets()}
-     *     with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
+     * <li>{@linkplain ProjectDefinition#getConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getConfigSets()}
+     * with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
      * </ul>
      */
     private void copyExternalSources() {
@@ -120,8 +134,7 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
                     structure.getConfigSets().stream()
                             .filter(it -> activeConfigSets.contains(it.getId()))
                             .flatMap(it -> it.getCopySources().stream())
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
             for (Package pack : filteredPackages) {
                 List<Path> files = new ArrayList<>();
                 Resource resource = new Resource();
@@ -143,6 +156,7 @@ public class CopyExternalResourcesMojo extends AbstractMojoDefiningParameters {
 
     /**
      * Translate package name to folder structure.
+     * 
      * @param pack package name separated by dots
      * @return folder structure
      */

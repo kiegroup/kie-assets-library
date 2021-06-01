@@ -1,22 +1,37 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.mojos;
-
-import org.apache.maven.model.Resource;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.kie.utils.MaskedMavenMojoException;
-import org.kie.utils.ThrowingBiConsumer;
-import org.kie.utils.FileFilteringUtils;
-import org.kie.utils.GeneratedProjectUtils;
-import org.kie.model.ProjectDefinition;
-import org.kie.model.ProjectStructure;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.kie.model.ProjectDefinition;
+import org.kie.model.ProjectStructure;
+import org.kie.utils.FileFilteringUtils;
+import org.kie.utils.GeneratedProjectUtils;
+import org.kie.utils.MaskedMavenMojoException;
+import org.kie.utils.ThrowingBiConsumer;
 
 /**
  * Goal which cleans requested artifacts from generated project. Follows after {@linkplain GenerateProjectMojo}.
@@ -60,10 +75,10 @@ public class CleanGeneratedResourcesMojo extends AbstractMojoDefiningParameters 
     /**
      * Process the cleanup based on the configuration.
      * <ul>
-     *     <li>generated project directory denoted by {@linkplain GeneratedProjectUtils#getOutputDirectoryForArchetype(Path, ProjectDefinition, ProjectStructure)}</li>
-     *     <li>&lt;delete-resources&gt; {@linkplain Resource} specifications within {@linkplain AbstractMojoDefiningParameters#projectStructures}.</li>
-     *     <li>considers {@linkplain #wipeSrcMain} and {@linkplain #wipeSrcMainResources}</li>
-     *     <li>considers {@linkplain #wipeSrcTest} and {@linkplain #wipeSrcTestResources}</li>
+     * <li>generated project directory denoted by {@linkplain GeneratedProjectUtils#getOutputDirectoryForArchetype(Path, ProjectDefinition, ProjectStructure)}</li>
+     * <li>&lt;delete-resources&gt; {@linkplain Resource} specifications within {@linkplain AbstractMojoDefiningParameters#projectStructures}.</li>
+     * <li>considers {@linkplain #wipeSrcMain} and {@linkplain #wipeSrcMainResources}</li>
+     * <li>considers {@linkplain #wipeSrcTest} and {@linkplain #wipeSrcTestResources}</li>
      * </ul>
      */
     private void cleanupGeneratedResources() {

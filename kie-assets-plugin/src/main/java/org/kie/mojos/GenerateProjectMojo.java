@@ -1,21 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.mojos;
-
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
-import org.apache.maven.plugin.MojoExecutionException;
-
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.invoker.*;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.kie.utils.MaskedMavenMojoException;
-import org.kie.utils.ThrowingBiConsumer;
-import org.kie.utils.GeneratedProjectUtils;
-import org.kie.model.ConfigSet;
-import org.kie.model.ProjectDefinition;
-import org.kie.model.ProjectStructure;
 
 import java.io.*;
 import java.nio.file.*;
@@ -23,6 +21,22 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.invoker.*;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.kie.model.ConfigSet;
+import org.kie.model.ProjectDefinition;
+import org.kie.model.ProjectStructure;
+import org.kie.utils.GeneratedProjectUtils;
+import org.kie.utils.MaskedMavenMojoException;
+import org.kie.utils.ThrowingBiConsumer;
 
 /**
  * Goal which generates project structure using provided archetype.
@@ -112,13 +126,14 @@ public class GenerateProjectMojo
     /**
      * Manipulate the POM files of generated project. Add dependencies defined by {@linkplain ConfigSet#getDependencies()} in:
      * <ul>
-     *     <li>{@linkplain ProjectDefinition#getConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getConfigSets()}
-     *     with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
+     * <li>{@linkplain ProjectDefinition#getConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getConfigSets()}
+     * with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
      * </ul>
+     * 
      * @param definition project definition to get references from
-     * @param structure  project structure to get config-set with matching ids from
+     * @param structure project structure to get config-set with matching ids from
      * @throws MojoExecutionException on error during file manipulation
      */
     private void addPomDependencies(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
@@ -130,21 +145,21 @@ public class GenerateProjectMojo
                     structure.getConfigSets().stream()
                             .filter(it -> activeConfigSets.contains(it.getId()))
                             .flatMap(it -> it.getDependencies().stream())
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
         });
     }
 
     /**
      * Manipulate the POM files of generated project. Add properties defined by {@linkplain ConfigSet#getProperties()} in:
      * <ul>
-     *     <li>{@linkplain ProjectDefinition#getConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
-     *     <li>{@linkplain ProjectStructure#getConfigSets()}
-     *     with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
+     * <li>{@linkplain ProjectDefinition#getConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getCommonConfig()}</li>
+     * <li>{@linkplain ProjectStructure#getConfigSets()}
+     * with {@linkplain ConfigSet#getId()} matching one of {@linkplain #activeConfigSets}</li>
      * </ul>
+     * 
      * @param definition project definition to get references from
-     * @param structure  project structure to get config-set with matching ids from
+     * @param structure project structure to get config-set with matching ids from
      * @throws MojoExecutionException on error during file manipulation
      */
     private void addPomProperties(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
@@ -161,12 +176,13 @@ public class GenerateProjectMojo
 
     /**
      * Allow setting finalName from ProjectDefinition to pom build configuration.
+     * 
      * @param definition project definition to take finalName from
      * @param structure project structure to use for pom location resolution
      * @throws MojoExecutionException
      */
     private void setFinalNameInPom(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
-        if (definition.getFinalName()==null || definition.getFinalName().isEmpty()) {
+        if (definition.getFinalName() == null || definition.getFinalName().isEmpty()) {
             getLog().debug("No finalName specified, not changing build configuration.");
             return;
         }
@@ -176,6 +192,7 @@ public class GenerateProjectMojo
 
     /**
      * Get path to pom file for given definition : structure pair.
+     * 
      * @param definition definition to use for path resolution
      * @param structure structure to use for path resolution
      * @return path to pom.xml
@@ -188,6 +205,7 @@ public class GenerateProjectMojo
 
     /**
      * Get Maven Model from given pomFile.
+     * 
      * @param pomFile path to pom.xml
      * @return
      * @throws MojoExecutionException
@@ -195,8 +213,7 @@ public class GenerateProjectMojo
     private Model getPomModel(Path pomFile) throws MojoExecutionException {
         Model model = null;
         try (
-                FileInputStream fileReader = new FileInputStream(pomFile.toFile());
-        ) {
+                FileInputStream fileReader = new FileInputStream(pomFile.toFile());) {
             MavenXpp3Reader mavenReader = new MavenXpp3Reader();
             model = mavenReader.read(fileReader);
             model.setPomFile(pomFile.toFile());
@@ -209,6 +226,7 @@ public class GenerateProjectMojo
     /**
      * Method that accepts path to pom file and operation to be applied on the MavenProject
      * instance coming from loading it.
+     * 
      * @param pathToPom Path to the pom to load and save to after changes.
      * @param manipulator consumer that receives {@linkplain MavenProject} instance.
      * @throws MojoExecutionException when error during manipulation occurs.
@@ -216,8 +234,7 @@ public class GenerateProjectMojo
     private void manipulatePom(Path pathToPom, Consumer<MavenProject> manipulator) throws MojoExecutionException {
         Model model = getPomModel(pathToPom);
         try (
-                FileOutputStream fileWriter = new FileOutputStream(pathToPom.toFile());
-        ) {
+                FileOutputStream fileWriter = new FileOutputStream(pathToPom.toFile());) {
             MavenProject project = new MavenProject(model);
             manipulator.accept(project);
             MavenXpp3Writer mavenWriter = new MavenXpp3Writer();

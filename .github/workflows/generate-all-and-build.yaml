@@ -20,4 +20,4 @@ jobs:
       - name: Generate all defined projects
         run: mvn clean --batch-mode --update-snapshots verify # use verify to run integration tests of maven plugin
       - name: Build generated projects
-        run: for project in ./kie-assets-library-generate/target/*; do mvn clean package -f $project; done
+        run: for project in ./kie-assets-library-generate/target/*/pom.xml; do mvn clean package -f $project; done

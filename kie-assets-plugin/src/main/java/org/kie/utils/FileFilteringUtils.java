@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.utils;
 
 import java.io.IOException;
@@ -17,6 +32,7 @@ public class FileFilteringUtils {
 
     /**
      * Get a glob matching string with prefix "glob:", formatted from local path prefix and appended glob expression.
+     * 
      * @param location path to where start the filtering
      * @param glob glob expression to match
      * @return String glob expression with absolute path context
@@ -28,6 +44,7 @@ public class FileFilteringUtils {
     /**
      * Traverses directory structure starting at given location and retrieves all the Path instances
      * matching the provided includes and excludes glob expressions.
+     * 
      * @param includes glob expressions to include
      * @param excludes glob expressions to exclude
      * @param location path where to start the search
@@ -46,10 +63,9 @@ public class FileFilteringUtils {
 
             @Override
             public FileVisitResult visitFile(Path path,
-                                             BasicFileAttributes attrs) {
-                if (
-                        matchers.stream().anyMatch(pathMatcher -> pathMatcher.matches(path))
-                                && excludeMatchers.stream().noneMatch(pathMatcher -> pathMatcher.matches(path))) {
+                    BasicFileAttributes attrs) {
+                if (matchers.stream().anyMatch(pathMatcher -> pathMatcher.matches(path))
+                        && excludeMatchers.stream().noneMatch(pathMatcher -> pathMatcher.matches(path))) {
                     matched.add(path);
                 }
                 return FileVisitResult.CONTINUE;
@@ -66,6 +82,7 @@ public class FileFilteringUtils {
     /**
      * Filter files located under the provided location by applying filters defined in given {@linkplain Resource} instance.
      * e.g.
+     * 
      * <pre>
      *     &lt;resource&gt;
      *         &lt;includes&gt;
@@ -77,6 +94,7 @@ public class FileFilteringUtils {
      *         &lt;/excludes&gt;
      *     &lt;/resource&gt;
      * </pre>
+     * 
      * @param parent path where to start filtering
      * @param resource resource specifying includes and excludes
      * @return files matching the filters

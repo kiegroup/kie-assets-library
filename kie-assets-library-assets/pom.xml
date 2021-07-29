@@ -121,6 +121,23 @@
                                     </copy-resources>
                                 </config>
                             </project-definition>
+                            <project-definition>
+                                <id>pmml-kie-benchmarks</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>pmml-kie-benchmarks</artifactId>
+                                <packageName>org.kie.pmml.benchmarks</packageName>
+                                <finalName>pmml-kie-benchmarks</finalName>
+                                <config>
+                                    <copy-resources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/pmml</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copy-resources>
+                                </config>
+                            </project-definition>
                         </project-definitions>
                     </configuration>
                 </plugin>

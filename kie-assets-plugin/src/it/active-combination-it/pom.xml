@@ -61,7 +61,7 @@
                             <archetype>
                                 <groupId>org.kie.kogito</groupId>
                                 <artifactId>kogito-quarkus-archetype</artifactId>
-                                <version>1.5.0.Final</version>
+                                <version>@version.kogito.quarkus@</version>
                             </archetype>
                             <delete-resources>
                                 <resource>
@@ -106,8 +106,8 @@
                             <id>springboot</id>
                             <archetype>
                                 <groupId>org.kie.kogito</groupId>
-                                <artifactId>kogito-springboot-archetype</artifactId>
-                                <version>1.5.0.Final</version>
+                                <artifactId>kogito-spring-boot-archetype</artifactId>
+                                <version>@version.kogito@</version>
                             </archetype>
                             <delete-resources>
                                 <resource>
@@ -146,7 +146,7 @@
                             <archetype>
                                 <groupId>org.kie</groupId>
                                 <artifactId>kie-kjar-archetype</artifactId>
-                                <version>7.52.0.Final</version>
+                                <version>@version.kie@</version>
                             </archetype>
                             <delete-resources>
                                 <resource>

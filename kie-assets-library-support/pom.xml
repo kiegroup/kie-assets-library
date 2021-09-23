@@ -21,7 +21,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <support.basedir>${main.basedir}/kie-assets-library-support</support.basedir>
         <quarkus.archetype.artifactId>kogito-quarkus-archetype</quarkus.archetype.artifactId>
-        <springboot.archetype.artifactId>kogito-springboot-archetype</springboot.archetype.artifactId>
+        <springboot.archetype.artifactId>kogito-spring-boot-archetype</springboot.archetype.artifactId>
     </properties>
 
     <dependencies>
@@ -59,7 +59,7 @@
                                 <archetype>
                                     <groupId>org.kie.kogito</groupId>
                                     <artifactId>${quarkus.archetype.artifactId}</artifactId>
-                                    <version>${version.kogito}</version>
+                                    <version>${version.kogito.quarkus}</version>
                                 </archetype>
                                 <delete-resources>
                                     <resource>
@@ -86,7 +86,7 @@
                                             <dependency>
                                                 <groupId>org.kie.kogito</groupId>
                                                 <artifactId>kogito-scenario-simulation</artifactId>
-                                                <version>${version.kogito}</version>
+                                                <version>${version.kogito.quarkus}</version>
                                                 <scope>test</scope>
                                             </dependency>
                                         </dependencies>
@@ -199,9 +199,8 @@
                     <name>productized</name>
                 </property>
             </activation>
-            <properties>
+            <properties> <!-- Spring Boot now uses the same archetype -->
                 <quarkus.archetype.artifactId>kogito-quarkus-dm-archetype</quarkus.archetype.artifactId>
-                <springboot.archetype.artifactId>kogito-springboot-dm-archetype</springboot.archetype.artifactId>
             </properties>
         </profile>
     </profiles>

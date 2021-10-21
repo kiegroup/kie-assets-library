@@ -22,6 +22,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <generate.basedir>${main.basedir}/kie-assets-library-generate</generate.basedir>
+        <jbang.executable>jbang</jbang.executable>
     </properties>
 
     <build>
@@ -52,9 +53,9 @@
                             <groupId>org.kie</groupId>
                             <artifactId>kie-assets-plugin</artifactId>
                             <configuration combine.self="append">
-                                <active-structures combine.children="append">
-                                    <active-structure>kjar</active-structure>
-                                </active-structures>
+                                <activeStructures combine.children="append">
+                                    <activeStructure>kjar</activeStructure>
+                                </activeStructures>
                             </configuration>
                         </plugin>
                     </plugins>
@@ -70,9 +71,9 @@
                             <groupId>org.kie</groupId>
                             <artifactId>kie-assets-plugin</artifactId>
                             <configuration combine.self="append">
-                                <active-definitions combine.children="append">
-                                    <active-definition>dmn-generated</active-definition>
-                                </active-definitions>
+                                <activeDefinitions combine.children="append">
+                                    <activeDefinition>dmn-generated</activeDefinition>
+                                </activeDefinitions>
                             </configuration>
                         </plugin>
                     </plugins>
@@ -88,9 +89,9 @@
                             <groupId>org.kie</groupId>
                             <artifactId>kie-assets-plugin</artifactId>
                             <configuration combine.self="append">
-                                <active-definitions combine.children="append">
-                                    <active-definition>dmn-and-bpmn-generated</active-definition>
-                                </active-definitions>
+                                <activeDefinitions combine.children="append">
+                                    <activeDefinition>dmn-and-bpmn-generated</activeDefinition>
+                                </activeDefinitions>
                             </configuration>
                         </plugin>
                     </plugins>
@@ -106,13 +107,68 @@
                             <groupId>org.kie</groupId>
                             <artifactId>kie-assets-plugin</artifactId>
                             <configuration combine.self="append">
-                                <active-config-sets combine.children="append">
-                                    <active-config-set>scesim</active-config-set>
-                                </active-config-sets>
+                                <activeConfigSets combine.children="append">
+                                    <activeConfigSet>scesim</activeConfigSet>
+                                </activeConfigSets>
                             </configuration>
                         </plugin>
                     </plugins>
                 </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>install-quarkus-cli</id>
+            <activation>
+                <property>
+                    <name>!skip.install.quarkus.cli</name>
+                </property>
+            </activation>
+            <properties>
+                <jbang.install.dir>${project.build.directory}</jbang.install.dir>
+                <jbang.home.dir>${jbang.install.dir}/.jbang/jbang/bin/</jbang.home.dir>
+                <jbang.executable>${jbang.home.dir}/jbang</jbang.executable>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>dev.jbang</groupId>
+                        <artifactId>jbang-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <script>${support.basedir}/JBangDownload.java</script>
+                                    <jbangInstallDir>${jbang.install.dir}</jbangInstallDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>${jbang.executable}</executable>
+                            <arguments>
+                                <argument>app</argument>
+                                <argument>install</argument>
+                                <argument>--fresh</argument>
+                                <argument>--force</argument>
+                                <argument>quarkus@quarkusio</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>

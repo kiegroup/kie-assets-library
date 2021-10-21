@@ -19,26 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.maven.model.Resource;
-
 /**
  * Holds information defining resulting project structure, mainly the archetype.
  * Provides way to configure cleanup of certain branches within the generated project (to get rid of unnecessary clutter).
  */
 public class ProjectStructure {
     private String id;
-    private Artifact archetype;
+    private ProjectGeneration generate;
     private String resourcesFolder = "src/main/resources";
-    private List<Resource> deleteResources = new ArrayList<>();
     private ConfigSet commonConfig = new ConfigSet();
     private List<ConfigSet> configSets = new ArrayList<>();
 
-    public Artifact getArchetype() {
-        return archetype;
+    public ProjectGeneration getGenerate() {
+        return generate;
     }
 
-    public void setArchetype(Artifact archetype) {
-        this.archetype = archetype;
+    public void setGenerate(ProjectGeneration generate) {
+        this.generate = generate;
     }
 
     public String getId() {
@@ -55,14 +52,6 @@ public class ProjectStructure {
 
     public void setResourcesFolder(String resourcesFolder) {
         this.resourcesFolder = resourcesFolder;
-    }
-
-    public List<Resource> getDeleteResources() {
-        return deleteResources;
-    }
-
-    public void setDeleteResources(List<Resource> deleteResources) {
-        this.deleteResources = deleteResources;
     }
 
     public ConfigSet getCommonConfig() {
@@ -100,9 +89,8 @@ public class ProjectStructure {
     public String toString() {
         return "ProjectStructure{" +
                 "id='" + id + '\'' +
-                ", archetype=" + archetype +
+                ", generate=" + generate +
                 ", resourcesFolder='" + resourcesFolder + '\'' +
-                ", deleteResources=" + deleteResources +
                 ", commonConfig=" + commonConfig +
                 ", configSets=" + configSets +
                 '}';

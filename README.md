@@ -13,165 +13,217 @@ plugin allows to easily build various projects using a single asset group.
 ## Usage
 ### kie-assets-library-assets
 #### Basics
-* Two kind of elements `project-definition` and `project-structure`.
-* **project-definition** describes the resulting project, its name, assets included and additional (re)sources needed.
+* Two kind of elements `projectDefinition` and `projectStructure`.
+* **projectDefinition** describes the resulting project, its name, assets included and additional (re)sources needed.
   ```xml
-  <project-definition>
+  <projectDefinition>
     <id>dmn1</id>
     <groupId>org.kie</groupId>
     <artifactId>dmn-and-bpmn-generated</artifactId>
     <packageName>org.kie.generated.dmn</packageName>
     <config>
-      <copy-resources></copy-resources>
-      <copy-sources></copy-sources>
+      <deleteResources></deleteResources>
+      <copyResources></copyResources>
+      <copySources></copySources>
       <dependencies></dependencies>
     </config>
-  </project-definition>
+  </projectDefinition>
   ```
-* **project-structure** defines the project structure to be generated. It allows specification of archetype, dependencies
+* **projectStructure** defines the project structure to be generated. It allows specification of archetype, dependencies
   and sources to prepare the project.
   ```xml
-  <project-structure>
+  <projectStructure>
     <id>quarkus</id>
-    <archetype>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-archetype</artifactId>
-      <version>${version.archetype.kogito.quarkus}</version>
-    </archetype>
-    <delete-resources></delete-resources>
-    <common-config></common-config>
-    <config-sets></config-sets>
-  </project-structure>
+    <generate>
+      <type>ARCHETYPE</type>
+      <archetype>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-archetype</artifactId>
+        <version>${version.archetype.kogito.quarkus}</version>
+      </archetype>
+    </generate>
+    <commonConfig></commonConfig>
+    <configSets></configSets>
+  </projectStructure>
   ```
-* Each `project-definition` instance is resulting in a new set of generated projects (multiplied by number of `project-structure` elements.).
+* Each `projectDefinition` instance is resulting in a new set of generated projects (multiplied by number of `projectStructure` elements.).
 #### Generating projects
-* **Archetypes** are configured in kie-assets-library-assets/pom.xml as `project-structures->project-structure->archetype`,
-the arguments passed to archetype:generate goal are taken from `project-definitions->project-definition` properties `groupId`,
-`artifactId`, `packageName`.
-  ```xml
-  <project-structure>
-    <id>quarkus</id>
-    <archetype>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-archetype</artifactId>
-      <version>1.3.0.Final</version>
-    </archetype>
-  </project-structure>
-  ```
-* Each project defined as `project-definition` is generated in `kie-assets-library-assets/target`. Project name is composed
-    from `project-definition->artifactId` and `project-structure->id`, to allow Cartesian product project generation out of the box.
+* **Generating options** are configured in kie-assets-library-assets/pom.xml as `projectStructures->projectStructure->generate`. Supported
+  generating methods are:
+  * **Archetypes** - specified as:
+    ```xml
+    <generate>
+      <type>ARCHETYPE</type>
+      <archetype>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>${springboot.archetype.artifactId}</artifactId>
+        <version>${version.kogito}</version>
+      </archetype>
+      <properties>...</properties>
+    </generate>
+    ```
+  * **Maven Plugin** - specified as:
+    ```xml
+    <generate>
+      <type>MAVEN_PLUGIN</type>
+      <mavenPluginConfig>
+        <groupId>${quarkus.platform.groupId}</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${version.quarkus.platform}</version>
+        <goal>create</goal>
+      </mavenPluginConfig>
+      <quarkusPlatformGav>
+        <groupId>${quarkus.platform.groupId}</groupId>
+        <artifactId>${quarkus.platform.artifactId}</artifactId>
+        <version>${version.quarkus.platform}</version>
+      </quarkusPlatformGav>
+      <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+      <properties>...</properties>
+    </generate>
+    ```
+  * **Quarkus CLI** -specified as:
+    ```xml
+    <generate>
+      <type>QUARKUS_CLI</type>
+      <quarkusPlatformGav>
+        <groupId>${quarkus.platform.groupId}</groupId>
+        <artifactId>${quarkus.platform.artifactId}</artifactId>
+        <version>${version.quarkus.platform}</version>
+      </quarkusPlatformGav>
+      <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+      <properties>...</properties>
+    </generate>
+    ```
+    * NOTE: Requires Jbang installed. By default the install is enabled, disable using `-Dskip.install.quarkus.cli`.
+      Make sure `jbang` is then on path.
+
+* Each project defined as `projectDefinition` is generated in `kie-assets-library-assets/target`. Project name is composed
+    from `projectDefinition->artifactId` and `projectStructure->id`, to allow Cartesian product project generation out of the box.
 
 #### Adapting archetype project stub
-* **delete-resources** convenient support for cleaning up projects right after they were generated. Useful to remove any example
-  content that can typically be provided implicitly.
-  ```xml
-  <project-structure>
-    <delete-resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>*</include>
-          <include>**/*</include>
-        </includes>
-        <excludes>
-          <exclude>application.properties</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <directory>./</directory>
-        <includes>
-          <include>README.md</include>
-        </includes>
-      </resource>
-    </delete-resources>
-  </project-structure>
-  ```
 * **Config-sets** provide convenient way to define additional dependencies or source packages to be added to generated projects.
-  These named sets are useful to implement common functionality across all project-structures covering implementing details
+  These named sets are useful to implement common functionality across all projectStructures covering implementing details
   (like adding scenario simulation to your project).
-  * Defined in project-structure in config-sets (needs to be activated explicitly, see below):
-  ```xml
-  <project-structures>
-    <project-structure>
-      <id>quarkus</id>
-      <config-sets>
-        <config-set>
-          <id>scesim</id>
-          <dependencies>
-            <dependency>
-              <groupId>org.kie.kogito</groupId>
-              <artifactId>kogito-scenario-simulation</artifactId>
-              <scope>test</scope>
-            </dependency>
-          </dependencies>
-          <copy-resources>
-            <directory></directory>
-            <includes></includes>
-            <excludes></excludes>
-          </copy-resources>
-          <copy-sources>
-            <package>
-              <name>scesim.kogito</name>
-              <type>test</type>
-              <language>java</language>
-            </package>
-          </copy-sources>
-        </config-set>
-      </config-sets>
-    </project-structure>
-  </project-structures>
-  ```
-  * Or as common-config:
-  ```xml
-  <project-structure>
-    <common-config>
-      <copy-resources></copy-resources>
-      <copy-sources></copy-sources>
-      <dependencies></dependencies>
-    </common-config>
-  </project-structure>
-  ```
-  * Or even in project-definition:
-  ```xml
-  <project-definition>
-    <config>
-      <copy-resources>
-        <resource>
-          <directory>${project.basedir}/src/main/resources/dmn</directory>
-          <includes>
-            <include>call centre drd.dmn</include>
-            <include>invoke call centre drd model.bpmn</include>
-          </includes>
-        </resource>
-      </copy-resources>
-      <copy-sources>
-        <package>
-          <name>org.kie.my.package</name>
-          <language>java</language>
-          <type>main</type>
-        </package>
-      </copy-sources>
-      <dependencies>
-        <dependency>
-          <groupId>org.kie.dataobjects</groupId>
-          <artifactId>some-project</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </config>
-  </project-definition>
-  ```
-* See project-structures `quarkus`, `springboot`, `kjar` in [kie-assets-library-support](./kie-assets-library-support).
-* See project-definitions in [kie-assets-library-assets](./kie-assets-library-assets).
+  * Defined in `projectStructure` in `configSets` (needs to be activated explicitly, see below):
+    ```xml
+    <projectStructures>
+      <projectStructure>
+        <id>quarkus</id>
+        <configSets>
+          <configSet>
+            <id>scesim</id>
+            <dependencies>
+              <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>kogito-scenario-simulation</artifactId>
+                <scope>test</scope>
+              </dependency>
+            </dependencies>
+            <copyResources>
+              <directory></directory>
+              <includes></includes>
+              <excludes></excludes>
+            </copyResources>
+            <copySources>
+              <package>
+                <name>scesim.kogito</name>
+                <type>test</type>
+                <language>java</language>
+              </package>
+            </copySources>
+          </configSet>
+        </configSets>
+      </projectStructure>
+    </projectStructures>
+    ```
+  * Or as `commonConfig`:
+    ```xml
+    <projectStructure>
+      <commonConfig>
+        <deleteResources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+              <include>*</include>
+              <include>**/*</include>
+            </includes>
+            <excludes>
+              <exclude>application.properties</exclude>
+            </excludes>
+          </resource>
+          <resource>
+            <directory>./</directory>
+            <includes>
+              <include>README.md</include>
+            </includes>
+          </resource>
+        </deleteResources>
+        <copyResources></copyResources>
+        <copySources></copySources>
+        <dependencies></dependencies>
+      </commonConfig>
+    </projectStructure>
+    ```
+  * Or even in projectDefinition:
+    ```xml
+    <projectDefinition>
+      <config>
+        <copyResources>
+          <resource>
+            <directory>${project.basedir}/src/main/resources/dmn</directory>
+            <includes>
+              <include>call centre drd.dmn</include>
+              <include>invoke call centre drd model.bpmn</include>
+            </includes>
+          </resource>
+        </copyResources>
+        <copySources>
+          <package>
+            <name>org.kie.my.package</name>
+            <language>java</language>
+            <type>main</type>
+          </package>
+        </copySources>
+        <dependencies>
+          <dependency>
+            <groupId>org.kie.dataobjects</groupId>
+            <artifactId>some-project</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+      </config>
+    </projectDefinition>
+    ```
+  * As a reusable configuration:
+    ```xml
+    <configuration>
+      <reusableConfigSets>
+        <configSet>
+          <id>someId</id>
+        </configSet>
+      </reusableConfigSets>
+    </configuration>
+    ```
+    and later referenced from an arbitrary ConfigSet (see options above, applicable for
+    all configSet, config and commonConfig variants), as:
+    ```xml
+    <configSet>
+      <id>someDifferentId</id> <!-- this will be used for activation using activeConfigSets --> 
+      <reusableConfig>someId</reusableConfig> <!-- this points just to reusableConfigSets element -->
+      <!-- rest of config is ignored if reusableConfig is specified, no merging done. -->
+    </configSet>
+    ```
+* See projectStructures in [kie-assets-library-support](./kie-assets-library-support).
+* See projectDefinitions in [kie-assets-library-assets](./kie-assets-library-assets).
 
 #### Assets
 * Assets are placed under `src/main/resources`. Those are then in pom.xml in kie-assets-plugin configuration
   specified.
-* **copy-resources** enables copying specific Assets from src/main/resources into projects generated above.
+* **copyResources** enables copying specific Assets from src/main/resources into projects generated above.
   ```xml
-  <project-definition>
+  <projectDefinition>
     <config>
-      <copy-resources>
+      <copyResources>
         <resource>
           <directory>${project.basedir}/src/main/resources/dmn</directory>
           <includes>
@@ -179,50 +231,50 @@ the arguments passed to archetype:generate goal are taken from `project-definiti
             <include>invoke call centre drd model.bpmn</include>
           </includes>
         </resource>
-      </copy-resources>
+      </copyResources>
     </config>
-  </project-definition>
+  </projectDefinition>
   ```
-* **copy-sources** allows to attach any source code package to the resulting project. The target package is created
+* **copySources** allows to attach any source code package to the resulting project. The target package is created
   in the same subtree as is in the library.
   ```xml
-  <project-definition>
+  <projectDefinition>
     <config>
-      <copy-sources>
+      <copySources>
         <package>
           <name>org.kie.traffic</name>
           <type>main</type>
           <language>java</language>
         </package>
-      </copy-sources>
+      </copySources>
     </config>
-  </project-definition>
+  </projectDefinition>
   ```
 * See profile `dmn`.
 
 #### Filtering what is generated
-By default Cartesian product of configured `project-definition` : `projec-structure` pairs is generated.
+By default Cartesian product of configured `projectDefinition` : `projecStructure` pairs is generated.
 This behavior can be altered using additional configuration.
-* **active-definition-ids** contains a list of `project-definition` ids. These are then the only included.
+* **activeDefinitions** contains a list of `projectDefinition` ids. These are then the only included.
   ```xml
-  <active-definition-ids>
-    <active-definition-id>first</active-definition-id>
-  </active-definition-ids>
+  <activeDefinitions>
+    <activeDefinition>first</activeDefinition>
+  </activeDefinitions>
   ```
   * Exposed property `-Dactive.definitions=first,second`
-* **active-structure-ids** contains a list of `project-structure` ids. These are then the only included.
+* **activeStructures** contains a list of `projectStructure` ids. These are then the only included.
   ```xml
-  <active-structure-ids>
-    <active-structure-id>quarkus</active-structure-id>
-  </active-structure-ids>
+  <activeStructures>
+    <activeStructure>quarkus</activeStructure>
+  </activeStructures>
   ```
   * Exposed property `-Dactive.structures=kjar,quarkus`
-* **active-config-sets** contains a list of `config-set` ids. These are then added to execution together with
+* **activeConfigSets** contains a list of `configSet` ids. These are then added to execution together with
   other configuration.
   ```xml
-  <active-config-sets>
-    <active-config-set>scesim</active-config-set>
-  </active-config-sets>
+  <activeConfigSets>
+    <activeConfigSet>scesim</activeConfigSet>
+  </activeConfigSets>
   ```
   * Exposed property `-Dactive.config.sets=scesim,sthelse`
 

@@ -28,9 +28,11 @@ import org.apache.maven.model.Resource;
  */
 public class ConfigSet {
     private String id;
+    private String reusableConfig; // used to make this a reference to another ConfigSet, in that case other fields are ignored.
     private List<Dependency> dependencies = new ArrayList<>();
     private List<Package> copySources = new ArrayList<>();
     private List<Resource> copyResources = new ArrayList<>();
+    private List<Resource> deleteResources = new ArrayList<>();
     private Properties properties = new Properties();
 
     public String getId() {
@@ -39,6 +41,14 @@ public class ConfigSet {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getReusableConfig() {
+        return reusableConfig;
+    }
+
+    public void setReusableConfig(String reusableConfig) {
+        this.reusableConfig = reusableConfig;
     }
 
     public List<Dependency> getDependencies() {
@@ -63,6 +73,14 @@ public class ConfigSet {
 
     public void setCopyResources(List<Resource> copyResources) {
         this.copyResources = copyResources;
+    }
+
+    public List<Resource> getDeleteResources() {
+        return deleteResources;
+    }
+
+    public void setDeleteResources(List<Resource> deleteResources) {
+        this.deleteResources = deleteResources;
     }
 
     public Properties getProperties() {
@@ -93,9 +111,11 @@ public class ConfigSet {
     public String toString() {
         return "ConfigSet{" +
                 "id='" + id + '\'' +
+                ", reusableConfig='" + reusableConfig + '\'' +
                 ", dependencies=" + dependencies +
                 ", copySources=" + copySources +
                 ", copyResources=" + copyResources +
+                ", deleteResources=" + deleteResources +
                 ", properties=" + properties +
                 '}';
     }

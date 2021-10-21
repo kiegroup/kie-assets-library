@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -75,7 +76,7 @@ public class CleanGeneratedResourcesMojo extends AbstractMojoDefiningParameters 
     /**
      * Process the cleanup based on the configuration.
      * <ul>
-     * <li>generated project directory denoted by {@linkplain GeneratedProjectUtils#getOutputDirectoryForArchetype(Path, ProjectDefinition, ProjectStructure)}</li>
+     * <li>generated project directory denoted by {@linkplain GeneratedProjectUtils#getOutputDirectoryForGeneratedProject(Path, ProjectDefinition, ProjectStructure)}</li>
      * <li>&lt;delete-resources&gt; {@linkplain Resource} specifications within {@linkplain AbstractMojoDefiningParameters#projectStructures}.</li>
      * <li>considers {@linkplain #wipeSrcMain} and {@linkplain #wipeSrcMainResources}</li>
      * <li>considers {@linkplain #wipeSrcTest} and {@linkplain #wipeSrcTestResources}</li>
@@ -83,20 +84,20 @@ public class CleanGeneratedResourcesMojo extends AbstractMojoDefiningParameters 
      */
     private void cleanupGeneratedResources() {
         getLog().info("Deleting resources");
-        getActiveSetup().apply(cleanupAction());
+        getActiveMojoSetup().apply(cleanupAction());
     }
 
     /**
      * Method that for given definition and structure processes the cleanup for all the active configurations.
      * <p>
-     * A BiConsumer implementation to be used together with {@linkplain AbstractMojoDefiningParameters#getActiveSetup()},
-     * passed through method {@linkplain AbstractMojoDefiningParameters.ActiveSetup#apply(BiConsumer)}.
+     * A BiConsumer implementation to be used together with {@linkplain AbstractMojoDefiningParameters#getActiveMojoSetup()},
+     * passed through method {@linkplain ActiveMojoSetup#apply(BiConsumer)}.
      *
      * @return BiConsumer action over {@linkplain ProjectDefinition} and {@linkplain ProjectStructure}.
      */
     private ThrowingBiConsumer cleanupAction() {
         return (definition, structure) -> {
-            Path outputDirectoryForArchetype = GeneratedProjectUtils.getOutputDirectoryForArchetype(outputDirectory.toPath(), definition, structure);
+            Path outputDirectoryForArchetype = GeneratedProjectUtils.getOutputDirectoryForGeneratedProject(outputDirectory.toPath(), definition, structure);
             List<Path> files = new ArrayList<>();
             if (wipeSrcMain) {
                 getLog().debug("Cleaning src/main directory in " + outputDirectoryForArchetype);
@@ -121,7 +122,8 @@ public class CleanGeneratedResourcesMojo extends AbstractMojoDefiningParameters 
                 }
                 files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(srcTestJavaResource.getDirectory()), srcTestJavaResource));
             }
-            for (Resource resource : structure.getDeleteResources()) {
+            for (Resource resource : getActiveMojoSetup().getActiveConfigSetResolver().apply(definition, structure).stream().flatMap(it -> it.getDeleteResources().stream())
+                    .collect(Collectors.toList())) {
                 files.addAll(FileFilteringUtils.filterFilesStartingAtPath(outputDirectoryForArchetype.resolve(resource.getDirectory()), resource));
             }
             for (Path f : files) {

@@ -21,29 +21,51 @@
           <projectDefinitions>
             <projectDefinition>
               <id>first</id>
-            </projectDefinition>
-            <projectDefinition>
-              <id>second</id>
-            </projectDefinition>
-            <projectDefinition>
-              <id>third</id>
+              <groupId>org.acme</groupId>
+              <artifactId>first-project</artifactId>
+              <packageName>org.acme</packageName>
             </projectDefinition>
           </projectDefinitions>
           <projectStructures>
             <projectStructure>
               <id>A</id>
+              <generate>
+                <type>ARCHETYPE</type>
+                <archetype>
+                  <groupId>org.acme</groupId>
+                  <artifactId>an-archetype</artifactId>
+                  <version>0.0.1-SNAPSHOT</version>
+                </archetype>
+                <properties>
+                  <one>value1</one>
+                </properties>
+              </generate>
             </projectStructure>
             <projectStructure>
               <id>B</id>
+              <generate>
+                <type>MAVEN_PLUGIN</type>
+                <mavenPluginConfig>
+                  <groupId>org.acme</groupId>
+                  <artifactId>an-archetype</artifactId>
+                  <version>0.0.1-SNAPSHOT</version>
+                  <goal>some-goal</goal>
+                </mavenPluginConfig>
+                <properties>
+                  <two>value2</two>
+                </properties>
+              </generate>
             </projectStructure>
             <projectStructure>
               <id>C</id>
+              <generate>
+                <type>QUARKUS_CLI</type>
+                <properties>
+                  <three>value3</three>
+                </properties>
+              </generate>
             </projectStructure>
           </projectStructures>
-          <activeStructures>
-            <activeStructure>A</activeStructure>
-            <activeStructure>B</activeStructure>
-          </activeStructures>
         </configuration>
       </plugin>
     </plugins>

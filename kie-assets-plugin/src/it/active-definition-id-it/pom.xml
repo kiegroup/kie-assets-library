@@ -21,14 +21,14 @@
                 <artifactId>@project.artifactId@</artifactId>
                 <version>@project.version@</version>
                 <configuration>
-                    <project-definitions>
-                        <project-definition>
+                    <projectDefinitions>
+                        <projectDefinition>
                             <id>first</id>
                             <groupId>org.kie</groupId>
                             <artifactId>test-generated</artifactId>
                             <packageName>org.kie.test.generated</packageName>
                             <config>
-                                <copy-resources combine.children="append">
+                                <copyResources combine.children="append">
                                     <resource>
                                         <directory>${project.basedir}/assets</directory>
                                         <includes>
@@ -36,129 +36,89 @@
                                             <include>**/*.dmn</include>
                                         </includes>
                                     </resource>
-                                </copy-resources>
+                                </copyResources>
                             </config>
-                        </project-definition>
-                        <project-definition>
+                        </projectDefinition>
+                        <projectDefinition>
                             <id>second</id>
                             <groupId>org.kie</groupId>
                             <artifactId>test-generated2</artifactId>
                             <packageName>org.kie.test.generated2</packageName>
                             <config>
-                                <copy-resources combine.children="append">
+                                <copyResources combine.children="append">
                                     <resource>
                                         <directory>${project.basedir}/assets</directory>
                                         <includes>
                                             <include>*.dmn</include>
                                         </includes>
                                     </resource>
-                                </copy-resources>
+                                </copyResources>
                             </config>
-                        </project-definition>
-                    </project-definitions>
-                    <project-structures>
-                        <project-structure>
+                        </projectDefinition>
+                    </projectDefinitions>
+                    <projectStructures>
+                        <projectStructure>
                             <id>quarkus</id>
-                            <archetype>
-                                <groupId>org.kie.kogito</groupId>
-                                <artifactId>kogito-quarkus-archetype</artifactId>
-                                <version>@version.kogito.quarkus@</version>
-                            </archetype>
-                            <delete-resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                    <includes>
-                                        <include>*</include>
-                                        <include>**/*</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>application.properties</exclude>
-                                    </excludes>
-                                </resource>
-                                <resource>
-                                    <directory>./</directory>
-                                    <includes>
-                                        <include>README.md</include>
-                                    </includes>
-                                </resource>
-                            </delete-resources>
-                            <config-sets>
-                                <config-set>
+                            <generate>
+                                <type>MAVEN_PLUGIN</type>
+                                <mavenPluginConfig>
+                                    <groupId>@quarkus.platform.groupId@</groupId>
+                                    <artifactId>quarkus-maven-plugin</artifactId>
+                                    <version>@version.quarkus.platform@</version>
+                                    <goal>create</goal>
+                                </mavenPluginConfig>
+                                <quarkusPlatformGav>
+                                    <groupId>@quarkus.platform.groupId@</groupId>
+                                    <artifactId>@quarkus.platform.artifactId@</artifactId>
+                                    <version>@version.quarkus.platform@</version>
+                                </quarkusPlatformGav>
+                                <quarkusExtensions>kogito-quarkus-decisions,kogito-quarkus-rules,kogito-quarkus-predictions,kogito-quarkus-processes</quarkusExtensions>
+                            </generate>
+                            <commonConfig>
+                                <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                            </commonConfig>
+                            <configSets>
+                                <configSet>
                                     <id>scesim</id>
-                                    <dependencies>
-                                        <dependency>
-                                            <groupId>org.kie</groupId>
-                                            <artifactId>some-artifact-for-quarkus</artifactId>
-                                            <version>1.0.0.Final</version>
-                                            <scope>test</scope>
-                                        </dependency>
-                                    </dependencies>
-                                    <copy-sources>
-                                        <package>
-                                            <name>org.testscenario</name>
-                                            <type>test</type>
-                                            <language>java</language>
-                                        </package>
-                                    </copy-sources>
-                                </config-set>
-                            </config-sets>
-                        </project-structure>
-                        <project-structure>
+                                    <reusableConfig>kogito-scesim</reusableConfig>
+                                </configSet>
+                            </configSets>
+                        </projectStructure>
+                        <projectStructure>
                             <id>springboot</id>
-                            <archetype>
-                                <groupId>org.kie.kogito</groupId>
-                                <artifactId>kogito-spring-boot-archetype</artifactId>
-                                <version>@version.kogito@</version>
-                            </archetype>
-                            <delete-resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                    <includes>
-                                        <include>*</include>
-                                        <include>**/*</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>application.properties</exclude>
-                                    </excludes>
-                                </resource>
-                                <resource>
-                                    <directory>./</directory>
-                                    <includes>
-                                        <include>README.md</include>
-                                    </includes>
-                                </resource>
-                            </delete-resources>
-                            <config-sets>
-                                <config-set>
+                            <generate>
+                                <type>ARCHETYPE</type>
+                                <archetype>
+                                    <groupId>org.kie.kogito</groupId>
+                                    <artifactId>kogito-spring-boot-archetype</artifactId>
+                                    <version>@version.kogito@</version>
+                                </archetype>
+                            </generate>
+                            <commonConfig>
+                                <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                            </commonConfig>
+                            <configSets>
+                                <configSet>
                                     <id>scesim</id>
-                                    <dependencies>
-                                        <dependency>
-                                            <groupId>org.kie</groupId>
-                                            <artifactId>some-artifact-for-springboot</artifactId>
-                                            <version>1.0.0.Final</version>
-                                            <scope>test</scope>
-                                        </dependency>
-                                    </dependencies>
-                                </config-set>
-                            </config-sets>
-                        </project-structure>
-                        <project-structure>
+                                    <reusableConfig>kogito-scesim</reusableConfig>
+                                </configSet>
+                            </configSets>
+                        </projectStructure>
+                        <projectStructure>
                             <id>kjar</id>
-                            <archetype>
-                                <groupId>org.kie</groupId>
-                                <artifactId>kie-kjar-archetype</artifactId>
-                                <version>@version.kie@</version>
-                            </archetype>
-                            <delete-resources>
-                                <resource>
-                                    <directory>./</directory>
-                                    <includes>
-                                        <include>readme.md</include>
-                                    </includes>
-                                </resource>
-                            </delete-resources>
-                            <config-sets>
-                                <config-set>
+                            <generate>
+                                <type>ARCHETYPE</type>
+                                <archetype>
+                                    <groupId>org.kie</groupId>
+                                    <artifactId>kie-kjar-archetype</artifactId>
+                                    <version>@version.kie@</version>
+                                </archetype>
+                            </generate>
+                            <commonConfig>
+                                <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                            </commonConfig>
+                            <configSets>
+                                <configSet>
                                     <id>scesim</id>
                                     <dependencies>
                                         <dependency>
@@ -168,10 +128,51 @@
                                             <scope>test</scope>
                                         </dependency>
                                     </dependencies>
-                                </config-set>
-                            </config-sets>
-                        </project-structure>
-                    </project-structures>
+                                </configSet>
+                            </configSets>
+                        </projectStructure>
+                    </projectStructures>
+                    <reusableConfigSets>
+                        <configSet>
+                            <id>clean-main-resources-and-readme</id>
+                            <deleteResources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>*</include>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>application.properties</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>./</directory>
+                                    <includes>
+                                        <include>README.md</include>
+                                    </includes>
+                                </resource>
+                            </deleteResources>
+                        </configSet>
+                        <configSet>
+                            <id>kogito-scesim</id>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.kie</groupId>
+                                    <artifactId>kogito-specific-dependency</artifactId>
+                                    <version>1.0.0.Final</version>
+                                    <scope>test</scope>
+                                </dependency>
+                            </dependencies>
+                            <copySources>
+                                <package>
+                                    <name>org.testscenario</name>
+                                    <type>test</type>
+                                    <language>java</language>
+                                </package>
+                            </copySources>
+                        </configSet>
+                    </reusableConfigSets>
                 </configuration>
                 <executions>
                     <execution>
@@ -182,9 +183,9 @@
                             <goal>copy-external-resources</goal>
                         </goals>
                         <configuration>
-                            <active-definitions>
-                                <active-definition>second</active-definition>
-                            </active-definitions>
+                            <activeDefinitions>
+                                <activeDefinition>second</activeDefinition>
+                            </activeDefinitions>
                         </configuration>
                     </execution>
                 </executions>

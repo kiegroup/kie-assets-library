@@ -31,14 +31,14 @@
                     <groupId>org.kie</groupId>
                     <artifactId>kie-assets-plugin</artifactId>
                     <configuration>
-                        <project-definitions combine.children="append">
-                            <project-definition>
+                        <projectDefinitions combine.children="append">
+                            <projectDefinition>
                                 <id>dmn-and-bpmn-generated</id>
                                 <groupId>org.kie</groupId>
                                 <artifactId>dmn-and-bpmn-generated</artifactId>
                                 <packageName>org.kie.generated.dmn</packageName>
                                 <config>
-                                    <copy-resources>
+                                    <copyResources>
                                         <resource>
                                             <directory>${assets.basedir}/src/main/resources/dmn</directory>
                                             <includes>
@@ -46,41 +46,41 @@
                                                 <include>invoke call centre drd model.bpmn</include>
                                             </includes>
                                         </resource>
-                                    </copy-resources>
-                                    <copy-sources>
+                                    </copyResources>
+                                    <copySources>
                                         <package>
                                             <name>org.kie.traffic</name>
                                             <type>main</type>
                                             <language>java</language>
                                             <filesystem-root>${assets.basedir}</filesystem-root>
                                         </package>
-                                    </copy-sources>
+                                    </copySources>
                                 </config>
-                            </project-definition>
-                            <project-definition>
+                            </projectDefinition>
+                            <projectDefinition>
                                 <id>dmn-generated</id>
                                 <groupId>org.kie</groupId>
                                 <artifactId>dmn-generated</artifactId>
                                 <packageName>org.kie.generated.dmn</packageName>
                                 <config>
-                                    <copy-resources>
+                                    <copyResources>
                                         <resource>
                                             <directory>${assets.basedir}/src/main/resources/dmn</directory>
                                             <includes>
                                                 <include>call centre drd.dmn</include>
                                             </includes>
                                         </resource>
-                                    </copy-resources>
+                                    </copyResources>
                                 </config>
-                            </project-definition>
-                            <project-definition>
+                            </projectDefinition>
+                            <projectDefinition>
                                 <id>smarthouse-02</id>
                                 <groupId>org.kie</groupId>
                                 <artifactId>smarthouse-02</artifactId>
                                 <packageName>org.kie.smarthouse</packageName>
                                 <finalName>smarthouse</finalName>
                                 <config>
-                                    <copy-resources>
+                                    <copyResources>
                                         <resource>
                                             <directory>${assets.basedir}/src/main/resources/smarthouse/02</directory>
                                             <includes>
@@ -94,17 +94,17 @@
                                                 <include>README.md</include>
                                             </includes>
                                         </resource>
-                                    </copy-resources>
+                                    </copyResources>
                                 </config>
-                            </project-definition>
-                            <project-definition>
+                            </projectDefinition>
+                            <projectDefinition>
                                 <id>smarthouse-03</id>
                                 <groupId>org.kie</groupId>
                                 <artifactId>smarthouse-03</artifactId>
                                 <packageName>org.kie.smarthouse</packageName>
                                 <finalName>smarthouse</finalName>
                                 <config>
-                                    <copy-resources>
+                                    <copyResources>
                                         <resource>
                                             <directory>${assets.basedir}/src/main/resources/smarthouse/03</directory>
                                             <includes>
@@ -118,27 +118,27 @@
                                                 <include>README.md</include>
                                             </includes>
                                         </resource>
-                                    </copy-resources>
+                                    </copyResources>
                                 </config>
-                            </project-definition>
-                            <project-definition>
+                            </projectDefinition>
+                            <projectDefinition>
                                 <id>pmml-kie-benchmarks</id>
                                 <groupId>org.kie</groupId>
                                 <artifactId>pmml-kie-benchmarks</artifactId>
                                 <packageName>org.kie.pmml.benchmarks</packageName>
                                 <finalName>pmml-kie-benchmarks</finalName>
                                 <config>
-                                    <copy-resources>
+                                    <copyResources>
                                         <resource>
                                             <directory>${assets.basedir}/src/main/resources/pmml</directory>
                                             <includes>
                                                 <include>*</include>
                                             </includes>
                                         </resource>
-                                    </copy-resources>
+                                    </copyResources>
                                 </config>
-                            </project-definition>
-                        </project-definitions>
+                            </projectDefinition>
+                        </projectDefinitions>
                     </configuration>
                 </plugin>
             </plugins>

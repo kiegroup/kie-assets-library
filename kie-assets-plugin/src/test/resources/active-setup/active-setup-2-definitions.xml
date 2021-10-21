@@ -18,32 +18,32 @@
           <goal>generate-project</goal>
         </goals>
         <configuration>
-          <project-definitions>
-            <project-definition>
+          <projectDefinitions>
+            <projectDefinition>
               <id>first</id>
-            </project-definition>
-            <project-definition>
+            </projectDefinition>
+            <projectDefinition>
               <id>second</id>
-            </project-definition>
-            <project-definition>
+            </projectDefinition>
+            <projectDefinition>
               <id>third</id>
-            </project-definition>
-          </project-definitions>
-          <project-structures>
-            <project-structure>
+            </projectDefinition>
+          </projectDefinitions>
+          <projectStructures>
+            <projectStructure>
               <id>A</id>
-            </project-structure>
-            <project-structure>
+            </projectStructure>
+            <projectStructure>
               <id>B</id>
-            </project-structure>
-            <project-structure>
+            </projectStructure>
+            <projectStructure>
               <id>C</id>
-            </project-structure>
-          </project-structures>
-          <active-definition-ids>
-            <active-definition-id>first</active-definition-id>
-            <active-definition-id>second</active-definition-id>
-          </active-definition-ids>
+            </projectStructure>
+          </projectStructures>
+          <activeDefinitions>
+            <activeDefinition>first</activeDefinition>
+            <activeDefinition>second</activeDefinition>
+          </activeDefinitions>
         </configuration>
       </plugin>
     </plugins>

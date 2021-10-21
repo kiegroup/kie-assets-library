@@ -51,9 +51,15 @@ public class GeneratedProjectUtils {
      *
      * @param targetProject {@linkplain ProjectDefinition} denoting target projects details
      * @param projectStructure {@linkplain ProjectStructure} denoting generation type used
+     * @throws IllegalArgumentException when one of arguments is null, or one of
+     *         {@linkplain ProjectDefinition#getArtifactId()}
+     *         and/or {@linkplain ProjectStructure#getId()} returns null or an empty String
      * @return
      */
     public static String getTargetProjectName(ProjectDefinition targetProject, ProjectStructure projectStructure) {
+        if (targetProject == null || targetProject.getArtifactId() == null || targetProject.getArtifactId().isEmpty()) {
+            throw new IllegalArgumentException("ProjectDefinition instance has to have non-empty artifactId.");
+        }
         return targetProject.getArtifactId() + getSuffixForProject(projectStructure);
     }
 
@@ -61,9 +67,14 @@ public class GeneratedProjectUtils {
      * Extracts suffix from provided {@linkplain ProjectStructure}
      *
      * @param projectStructure {@linkplain ProjectStructure} instance
+     * @throws IllegalArgumentException when {@linkplain ProjectStructure} is null or {@linkplain ProjectStructure#getId()}
+     *         returns null or empty string.
      * @return string in form "-id", where id is {@linkplain ProjectStructure#getId()}
      */
     public static String getSuffixForProject(ProjectStructure projectStructure) {
+        if (projectStructure == null || projectStructure.getId() == null || projectStructure.getId().isEmpty()) {
+            throw new IllegalArgumentException("ProjectStructure instance has to have non-empty id.");
+        }
         String suffix = projectStructure.getId();
         return "-" + suffix;
     }
@@ -77,7 +88,7 @@ public class GeneratedProjectUtils {
      * @param projectStructure properties with the project structure
      * @return Path denoting the newly created project.
      */
-    public static Path getOutputDirectoryForArchetype(Path outputDirectory, ProjectDefinition targetProject, ProjectStructure projectStructure) {
+    public static Path getOutputDirectoryForGeneratedProject(Path outputDirectory, ProjectDefinition targetProject, ProjectStructure projectStructure) {
         return outputDirectory.resolve(GeneratedProjectUtils.getTargetProjectName(targetProject, projectStructure));
     }
 }

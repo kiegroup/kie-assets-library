@@ -15,69 +15,49 @@
  */
 package org.kie.mojos.config;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import org.apache.maven.plugin.testing.MojoRule;
 import org.hamcrest.Matchers;
-import org.hamcrest.io.FileMatchers;
-import org.junit.Rule;
 import org.junit.Test;
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
 import org.kie.mojos.AbstractMojoDefiningParameters;
+import org.kie.mojos.AbstractMojoTest;
+import org.kie.mojos.ActiveMojoSetup;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMojoDefiningParameters> {
-
-    private String goal;
-
-    @Rule
-    public MojoRule rule = new MojoRule() {
-        @Override
-        protected void before() throws Throwable {
-        }
-
-        @Override
-        protected void after() {
-        }
-    };
+public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMojoDefiningParameters> extends AbstractMojoTest<T> {
 
     public AbstractMojoActiveConfigurationsTest(String goal) {
-        this.goal = goal;
+        super(goal);
     }
 
     @Test
     public void testActiveSetup2And2Combination() throws Exception {
-        File projectDir = new File("target/test-classes/active-setup/");
-        assertThat("Project directory does not exist", projectDir, FileMatchers.anExistingDirectory());
-        File pomFile = new File(projectDir, "active-setup-2-2-combination.xml");
-        assertThat("Tested xml file does not exist", pomFile, FileMatchers.anExistingFile());
+        T myMojo = getMojo("target/test-classes/active-setup/", "active-setup-2-2-combination.xml");
 
-        T myMojo = (T) rule.lookupMojo(goal, pomFile);
+        ActiveMojoSetup activeMojoSetup = myMojo.getActiveMojoSetup();
+        assertThat("Wrongly parsed active-definition-ids", activeMojoSetup.getActiveDefinitions(), Matchers.containsInAnyOrder("first", "second"));
+        assertThat("Wrongly parsed active-structure-ids", activeMojoSetup.getActiveStructures(), Matchers.containsInAnyOrder("A", "B"));
 
-        AbstractMojoDefiningParameters.ActiveSetup activeSetup = myMojo.getActiveSetup();
-        assertThat("Wrongly parsed active-definition-ids", activeSetup.getActiveDefinitions(), Matchers.containsInAnyOrder("first", "second"));
-        assertThat("Wrongly parsed active-structure-ids", activeSetup.getActiveStructures(), Matchers.containsInAnyOrder("A", "B"));
-
-        assertThat(activeSetup.getProjectDefinitions(), Matchers.allOf(
+        assertThat(activeMojoSetup.getProjectDefinitions(), Matchers.allOf(
                 Matchers.notNullValue(),
                 Matchers.not(Matchers.empty())));
-        assertThat(activeSetup.getProjectDefinitions(), Matchers.hasItems(
+        assertThat(activeMojoSetup.getProjectDefinitions(), Matchers.hasItems(
                 Matchers.hasProperty("id",
                         Matchers.in(Arrays.asList("first", "second", "third")))));
-        assertThat(activeSetup.getProjectStructures(), Matchers.allOf(
+        assertThat(activeMojoSetup.getProjectStructures(), Matchers.allOf(
                 Matchers.notNullValue(),
                 Matchers.not(Matchers.empty())));
-        assertThat(activeSetup.getProjectStructures(), Matchers.hasItems(
+        assertThat(activeMojoSetup.getProjectStructures(), Matchers.hasItems(
                 Matchers.hasProperty("id",
                         Matchers.in(Arrays.asList("A", "B", "C")))));
         ActiveConfigurationCheck check = new ActiveConfigurationCheck();
-        activeSetup.apply(check.checkActiveConfigurationAction());
+        activeMojoSetup.apply(check.checkActiveConfigurationAction());
         assertThat(check.definitionIds, Matchers.hasItems(
                 Matchers.in(Arrays.asList("first", "second"))));
         assertThat(check.structureIds, Matchers.hasItems(
@@ -86,31 +66,26 @@ public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMoj
 
     @Test
     public void testActiveSetup2DefinitionsOnly() throws Exception {
-        File projectDir = new File("target/test-classes/active-setup/");
-        assertThat("Project directory does not exist", projectDir, FileMatchers.anExistingDirectory());
-        File pomFile = new File(projectDir, "active-setup-2-definitions.xml");
-        assertThat("Tested xml file does not exist", pomFile, FileMatchers.anExistingFile());
+        T myMojo = getMojo("target/test-classes/active-setup/", "active-setup-2-definitions.xml");
 
-        T myMojo = (T) rule.lookupMojo(goal, pomFile);
+        ActiveMojoSetup activeMojoSetup = myMojo.getActiveMojoSetup();
+        assertThat("Wrongly parsed active-definition-ids", activeMojoSetup.getActiveDefinitions(), Matchers.containsInAnyOrder("first", "second"));
+        assertThat("Wrongly parsed active-structure-ids", activeMojoSetup.getActiveStructures(), Matchers.empty());
 
-        AbstractMojoDefiningParameters.ActiveSetup activeSetup = myMojo.getActiveSetup();
-        assertThat("Wrongly parsed active-definition-ids", activeSetup.getActiveDefinitions(), Matchers.containsInAnyOrder("first", "second"));
-        assertThat("Wrongly parsed active-structure-ids", activeSetup.getActiveStructures(), Matchers.empty());
-
-        assertThat(activeSetup.getProjectDefinitions(), Matchers.allOf(
+        assertThat(activeMojoSetup.getProjectDefinitions(), Matchers.allOf(
                 Matchers.notNullValue(),
                 Matchers.not(Matchers.empty())));
-        assertThat(activeSetup.getProjectDefinitions(), Matchers.hasItems(
+        assertThat(activeMojoSetup.getProjectDefinitions(), Matchers.hasItems(
                 Matchers.hasProperty("id",
                         Matchers.in(Arrays.asList("first", "second", "third")))));
-        assertThat(activeSetup.getProjectStructures(), Matchers.allOf(
+        assertThat(activeMojoSetup.getProjectStructures(), Matchers.allOf(
                 Matchers.notNullValue(),
                 Matchers.not(Matchers.empty())));
-        assertThat(activeSetup.getProjectStructures(), Matchers.hasItems(
+        assertThat(activeMojoSetup.getProjectStructures(), Matchers.hasItems(
                 Matchers.hasProperty("id",
                         Matchers.in(Arrays.asList("A", "B", "C")))));
         ActiveConfigurationCheck check = new ActiveConfigurationCheck();
-        activeSetup.apply(check.checkActiveConfigurationAction());
+        activeMojoSetup.apply(check.checkActiveConfigurationAction());
         assertThat(check.definitionIds, Matchers.hasItems(
                 Matchers.in(Arrays.asList("first", "second"))));
         assertThat(check.structureIds, Matchers.hasItems(
@@ -119,31 +94,26 @@ public abstract class AbstractMojoActiveConfigurationsTest<T extends AbstractMoj
 
     @Test
     public void testActiveSetup2StructuresOnly() throws Exception {
-        File projectDir = new File("target/test-classes/active-setup/");
-        assertThat("Project directory does not exist", projectDir, FileMatchers.anExistingDirectory());
-        File pomFile = new File(projectDir, "active-setup-2-structures.xml");
-        assertThat("Tested xml file does not exist", pomFile, FileMatchers.anExistingFile());
+        T myMojo = getMojo("target/test-classes/active-setup/", "active-setup-2-structures.xml");
 
-        T myMojo = (T) rule.lookupMojo(goal, pomFile);
+        ActiveMojoSetup activeMojoSetup = myMojo.getActiveMojoSetup();
+        assertThat("Wrongly parsed activeDefinitions", activeMojoSetup.getActiveDefinitions(), Matchers.empty());
+        assertThat("Wrongly parsed activeStructures", activeMojoSetup.getActiveStructures(), Matchers.containsInAnyOrder("A", "B"));
 
-        AbstractMojoDefiningParameters.ActiveSetup activeSetup = myMojo.getActiveSetup();
-        assertThat("Wrongly parsed active-definition-ids", activeSetup.getActiveDefinitions(), Matchers.empty());
-        assertThat("Wrongly parsed active-structure-ids", activeSetup.getActiveStructures(), Matchers.containsInAnyOrder("A", "B"));
-
-        assertThat(activeSetup.getProjectDefinitions(), Matchers.allOf(
+        assertThat(activeMojoSetup.getProjectDefinitions(), Matchers.allOf(
                 Matchers.notNullValue(),
                 Matchers.not(Matchers.empty())));
-        assertThat(activeSetup.getProjectDefinitions(), Matchers.hasItems(
+        assertThat(activeMojoSetup.getProjectDefinitions(), Matchers.hasItems(
                 Matchers.hasProperty("id",
                         Matchers.in(Arrays.asList("first", "second", "third")))));
-        assertThat(activeSetup.getProjectStructures(), Matchers.allOf(
+        assertThat(activeMojoSetup.getProjectStructures(), Matchers.allOf(
                 Matchers.notNullValue(),
                 Matchers.not(Matchers.empty())));
-        assertThat(activeSetup.getProjectStructures(), Matchers.hasItems(
+        assertThat(activeMojoSetup.getProjectStructures(), Matchers.hasItems(
                 Matchers.hasProperty("id",
                         Matchers.in(Arrays.asList("A", "B", "C")))));
         ActiveConfigurationCheck check = new ActiveConfigurationCheck();
-        activeSetup.apply(check.checkActiveConfigurationAction());
+        activeMojoSetup.apply(check.checkActiveConfigurationAction());
         assertThat(check.definitionIds, Matchers.hasItems(
                 Matchers.in(Arrays.asList("first", "second"))));
         assertThat(check.structureIds, Matchers.hasItems(

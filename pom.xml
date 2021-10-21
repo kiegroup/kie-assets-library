@@ -24,15 +24,20 @@
     <main.basedir>${maven.multiModuleProjectDirectory}</main.basedir>
 
     <version.kie>7.59.0.Final</version.kie>
-    <version.kogito.quarkus>1.5.0.Final</version.kogito.quarkus>
     <version.kogito>1.11.1.Final</version.kogito>
+    <version.quarkus.platform>2.2.3.Final</version.quarkus.platform>
     <version.junit>4.12</version.junit>
     <!-- plugin versions -->
     <version.checkstyle.plugin>3.0.0</version.checkstyle.plugin>
     <version.formatter.plugin>2.13.0</version.formatter.plugin>
     <version.impsort.plugin>1.5.0</version.impsort.plugin>
     <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
+    <version.jbang.plugin>0.0.7</version.jbang.plugin>
     <version.license.plugin>4.0.rc2</version.license.plugin>
+
+    <!-- This is an extra config for Quarkus platform GAV to allow running with productized BOMs -->
+    <quarkus.platform.groupId>io.quarkus.platform</quarkus.platform.groupId>
+    <quarkus.platform.artifactId>quarkus-bom</quarkus.platform.artifactId>
 
     <!-- style, formatting and licenses config -->
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
@@ -218,6 +223,11 @@ limitations under the License.
       <plugin>
         <groupId>net.revelc.code</groupId>
         <artifactId>impsort-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>dev.jbang</groupId>
+        <artifactId>jbang-maven-plugin</artifactId>
+        <version>${version.jbang.plugin}</version>
       </plugin>
     </plugins>
   </build>

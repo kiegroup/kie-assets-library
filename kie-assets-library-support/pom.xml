@@ -22,6 +22,9 @@
         <support.basedir>${main.basedir}/kie-assets-library-support</support.basedir>
         <quarkus.archetype.artifactId>kogito-quarkus-archetype</quarkus.archetype.artifactId>
         <springboot.archetype.artifactId>kogito-spring-boot-archetype</springboot.archetype.artifactId>
+        <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-rules,kogito-quarkus-predictions,kogito-quarkus-processes</quarkus.extensions>
+        <springboot.starters>decisions,rules,predictions,processes</springboot.starters>
+        <springboot.addons></springboot.addons>
     </properties>
 
     <dependencies>
@@ -53,118 +56,94 @@
                     <artifactId>kie-assets-plugin</artifactId>
                     <version>${project.version}</version>
                     <configuration>
-                        <project-structures>
-                            <project-structure>
-                                <id>quarkus</id>
-                                <archetype>
-                                    <groupId>org.kie.kogito</groupId>
-                                    <artifactId>${quarkus.archetype.artifactId}</artifactId>
-                                    <version>${version.kogito.quarkus}</version>
-                                </archetype>
-                                <delete-resources>
-                                    <resource>
-                                        <directory>src/main/resources</directory>
-                                        <includes>
-                                            <include>*</include>
-                                            <include>**/*</include>
-                                        </includes>
-                                        <excludes>
-                                            <exclude>application.properties</exclude>
-                                        </excludes>
-                                    </resource>
-                                    <resource>
-                                        <directory>./</directory>
-                                        <includes>
-                                            <include>README.md</include>
-                                        </includes>
-                                    </resource>
-                                </delete-resources>
-                                <config-sets>
-                                    <config-set>
+                        <projectStructures>
+                            <projectStructure>
+                                <id>quarkus-mvn</id>
+                                <generate>
+                                    <type>MAVEN_PLUGIN</type>
+                                    <mavenPluginConfig>
+                                        <groupId>${quarkus.platform.groupId}</groupId>
+                                        <artifactId>quarkus-maven-plugin</artifactId>
+                                        <version>${version.quarkus.platform}</version>
+                                        <goal>create</goal>
+                                    </mavenPluginConfig>
+                                    <quarkusPlatformGav>
+                                        <groupId>${quarkus.platform.groupId}</groupId>
+                                        <artifactId>${quarkus.platform.artifactId}</artifactId>
+                                        <version>${version.quarkus.platform}</version>
+                                    </quarkusPlatformGav>
+                                    <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+                                </generate>
+                                <commonConfig>
+                                    <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                                </commonConfig>
+                                <configSets>
+                                    <configSet>
                                         <id>scesim</id>
-                                        <dependencies>
-                                            <dependency>
-                                                <groupId>org.kie.kogito</groupId>
-                                                <artifactId>kogito-scenario-simulation</artifactId>
-                                                <version>${version.kogito.quarkus}</version>
-                                                <scope>test</scope>
-                                            </dependency>
-                                        </dependencies>
-                                        <copy-sources>
-                                            <package>
-                                                <name>scesim.kogito</name>
-                                                <type>test</type>
-                                                <language>java</language>
-                                                <filesystem-root>${support.basedir}</filesystem-root>
-                                            </package>
-                                        </copy-sources>
-                                    </config-set>
-                                </config-sets>
-                            </project-structure>
-                            <project-structure>
+                                        <reusableConfig>kogito-scesim</reusableConfig>
+                                    </configSet>
+                                </configSets>
+                            </projectStructure>
+                            <projectStructure>
+                                <id>quarkus-cli</id>
+                                <generate>
+                                    <type>QUARKUS_CLI</type>
+                                    <quarkusPlatformGav>
+                                        <groupId>${quarkus.platform.groupId}</groupId>
+                                        <artifactId>${quarkus.platform.artifactId}</artifactId>
+                                        <version>${version.quarkus.platform}</version>
+                                    </quarkusPlatformGav>
+                                    <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+                                </generate>
+                                <commonConfig>
+                                    <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                                </commonConfig>
+                                <configSets>
+                                    <configSet>
+                                        <id>scesim</id>
+                                        <reusableConfig>kogito-scesim</reusableConfig>
+                                    </configSet>
+                                </configSets>
+                            </projectStructure>
+                            <projectStructure>
                                 <id>springboot</id>
-                                <archetype>
-                                    <groupId>org.kie.kogito</groupId>
-                                    <artifactId>${springboot.archetype.artifactId}</artifactId>
-                                    <version>${version.kogito}</version>
-                                </archetype>
-                                <delete-resources>
-                                    <resource>
-                                        <directory>src/main/resources</directory>
-                                        <includes>
-                                            <include>*</include>
-                                            <include>**/*</include>
-                                        </includes>
-                                        <excludes>
-                                            <exclude>application.properties</exclude>
-                                        </excludes>
-                                    </resource>
-                                    <resource>
-                                        <directory>./</directory>
-                                        <includes>
-                                            <include>README.md</include>
-                                        </includes>
-                                    </resource>
-                                </delete-resources>
-                                <config-sets>
-                                    <config-set>
+                                <generate>
+                                    <type>ARCHETYPE</type>
+                                    <archetype>
+                                        <groupId>org.kie.kogito</groupId>
+                                        <artifactId>${springboot.archetype.artifactId}</artifactId>
+                                        <version>${version.kogito}</version>
+                                    </archetype>
+                                    <properties>
+                                        <starters>${springboot.starters}</starters>
+                                        <addons>${springboot.addons}</addons>
+                                    </properties>
+                                </generate>
+                                <commonConfig>
+                                    <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                                </commonConfig>
+                                <configSets>
+                                    <configSet>
                                         <id>scesim</id>
-                                        <dependencies>
-                                            <dependency>
-                                                <groupId>org.kie.kogito</groupId>
-                                                <artifactId>kogito-scenario-simulation</artifactId>
-                                                <version>${version.kogito}</version>
-                                                <scope>test</scope>
-                                            </dependency>
-                                        </dependencies>
-                                        <copy-sources>
-                                            <package>
-                                                <name>scesim.kogito</name>
-                                                <type>test</type>
-                                                <language>java</language>
-                                                <filesystem-root>${support.basedir}</filesystem-root>
-                                            </package>
-                                        </copy-sources>
-                                    </config-set>
-                                </config-sets>
-                            </project-structure>
-                            <project-structure>
+                                        <reusableConfig>kogito-scesim</reusableConfig>
+                                    </configSet>
+                                </configSets>
+                            </projectStructure>
+                            <projectStructure>
                                 <id>kjar</id>
-                                <archetype>
-                                    <groupId>org.kie</groupId>
-                                    <artifactId>kie-kjar-archetype</artifactId>
-                                    <version>${version.kie}</version>
-                                </archetype>
-                                <delete-resources>
-                                    <resource>
-                                        <directory>./</directory>
-                                        <includes>
-                                            <include>readme.md</include>
-                                        </includes>
-                                    </resource>
-                                </delete-resources>
-                                <config-sets>
-                                    <config-set>
+                                <generate>
+                                    <type>ARCHETYPE</type>
+                                    <archetype>
+                                        <groupId>org.kie</groupId>
+                                        <artifactId>kie-kjar-archetype</artifactId>
+                                        <version>${version.kie}</version>
+                                    </archetype>
+                                </generate>
+                                <commonConfig>
+                                    <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                                </commonConfig>
+                                <configSets>
+                                    <configSet>
                                         <id>scesim</id>
                                         <dependencies>
                                             <dependency>
@@ -174,34 +153,63 @@
                                                 <scope>test</scope>
                                             </dependency>
                                         </dependencies>
-                                        <copy-sources>
+                                        <copySources>
                                             <package>
                                                 <name>scesim.drools</name>
                                                 <type>test</type>
                                                 <language>java</language>
-                                                <filesystem-root>${support.basedir}</filesystem-root>
+                                                <filesystemRoot>${support.basedir}</filesystemRoot>
                                             </package>
-                                        </copy-sources>
-                                    </config-set>
-                                </config-sets>
-                            </project-structure>
-                        </project-structures>
+                                        </copySources>
+                                    </configSet>
+                                </configSets>
+                            </projectStructure>
+                        </projectStructures>
+                        <reusableConfigSets>
+                            <configSet>
+                                <id>kogito-scesim</id>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>org.kie.kogito</groupId>
+                                        <artifactId>kogito-scenario-simulation</artifactId>
+                                        <version>${version.kogito}</version>
+                                        <scope>test</scope>
+                                    </dependency>
+                                </dependencies>
+                                <copySources>
+                                    <package>
+                                        <name>scesim.kogito</name>
+                                        <type>test</type>
+                                        <language>java</language>
+                                        <filesystemRoot>${support.basedir}</filesystemRoot>
+                                    </package>
+                                </copySources>
+                            </configSet>
+                            <configSet>
+                                <id>clean-main-resources-and-readme</id>
+                                <deleteResources>
+                                    <resource>
+                                        <directory>src/main/resources</directory>
+                                        <includes>
+                                            <include>*</include>
+                                            <include>**/*</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>application.properties</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>./</directory>
+                                        <includes>
+                                            <include>README.md</include>
+                                        </includes>
+                                    </resource>
+                                </deleteResources>
+                            </configSet>
+                        </reusableConfigSets>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
-    <profiles>
-        <profile>
-            <id>productized</id>
-            <activation>
-                <property>
-                    <name>productized</name>
-                </property>
-            </activation>
-            <properties> <!-- Spring Boot now uses the same archetype -->
-                <quarkus.archetype.artifactId>kogito-quarkus-dm-archetype</quarkus.archetype.artifactId>
-            </properties>
-        </profile>
-    </profiles>
 </project>

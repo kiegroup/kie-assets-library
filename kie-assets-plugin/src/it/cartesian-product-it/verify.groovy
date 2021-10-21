@@ -19,20 +19,24 @@ import java.nio.file.Path
 def justTwo = ["test.dmn", "test3.dmn"]
 def allThree = ["test.dmn", "test2.dmn", "test3.dmn"]
 def applicationProperties = ["application.properties"]
+def extensions = ["kogito-quarkus-decisions", "kogito-quarkus-rules", "kogito-quarkus-predictions", "kogito-quarkus-processes"]
+def starters = ["kogito-decisions", "kogito-rules", "kogito-predictions", "kogito-processes"]
 assert Files.list(basedir.toPath().resolve("target")).filter({Files.isDirectory(it)}).count()==6
-checkProjectAndResources("test-generated-quarkus", allThree + applicationProperties)
-checkProjectAndResources("test-generated-springboot", allThree + applicationProperties)
-checkProjectAndResources("test-generated-kjar", allThree)
-checkProjectAndResources("test-generated2-quarkus", justTwo + applicationProperties)
-checkProjectAndResources("test-generated2-springboot", justTwo + applicationProperties)
-checkProjectAndResources("test-generated2-kjar", justTwo)
+checkProjectAndResources("test-generated-quarkus", allThree + applicationProperties, extensions)
+checkProjectAndResources("test-generated-springboot", allThree + applicationProperties, starters)
+checkProjectAndResources("test-generated-kjar", allThree, [])
+checkProjectAndResources("test-generated2-quarkus", justTwo + applicationProperties, extensions)
+checkProjectAndResources("test-generated2-springboot", justTwo + applicationProperties, starters)
+checkProjectAndResources("test-generated2-kjar", justTwo, [])
 
 
-def checkProjectAndResources(String projectName, List<String> resources){
+def checkProjectAndResources(String projectName, List<String> resources, List<String> extensionsToCheck){
     Path projectRoot = basedir.toPath().resolve("target/$projectName");
     assert Files.isDirectory(projectRoot) : "project root does not exist $projectRoot"
     assert Files.isRegularFile(projectRoot.resolve("pom.xml")) : "pom does not exist in $projectRoot"
     def srcMainResources = projectRoot.resolve("src/main/resources")
     assert Files.isDirectory(srcMainResources) : "direcory not exists $srcMainResources"
     resources.forEach {resource -> assert Files.isRegularFile(srcMainResources.resolve(resource)):"file does not exist $resource"}
+    def pomContent = Files.readString(projectRoot.resolve("pom.xml"))
+    extensionsToCheck.forEach { assert pomContent.contains(it) : "$projectName/pom.xml file does not contain extension/starter '$it'" }
 }

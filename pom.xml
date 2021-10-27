@@ -23,9 +23,9 @@
 
     <main.basedir>${maven.multiModuleProjectDirectory}</main.basedir>
 
-    <version.kie>7.59.0.Final</version.kie>
-    <version.kogito>1.11.1.Final</version.kogito>
-    <version.quarkus.platform>2.2.3.Final</version.quarkus.platform>
+    <version.kie>7.60.0.Final</version.kie>
+    <version.kogito>1.12.0.Final</version.kogito>
+    <version.quarkus.platform>2.4.0.Final</version.quarkus.platform>
     <version.junit>4.12</version.junit>
     <!-- plugin versions -->
     <version.checkstyle.plugin>3.0.0</version.checkstyle.plugin>

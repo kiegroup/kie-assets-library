@@ -171,6 +171,20 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>decisions-capability</id>
+            <properties>
+                <quarkus.extensions>kogito-quarkus-decisions</quarkus.extensions>
+                <springboot.starters>decisions</springboot.starters>
+            </properties>
+        </profile>
+        <profile>
+            <id>decisions-processes-capability</id>
+            <properties>
+                <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-processes</quarkus.extensions>
+                <springboot.starters>decisions,processes</springboot.starters>
+            </properties>
+        </profile>
     </profiles>
 
 </project>

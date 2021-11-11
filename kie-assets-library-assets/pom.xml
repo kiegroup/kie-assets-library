@@ -82,13 +82,13 @@
                                 <config>
                                     <copyResources>
                                         <resource>
-                                            <directory>${assets.basedir}/src/main/resources/smarthouse/02</directory>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/decisions/02</directory>
                                             <includes>
                                                 <include>*</include>
                                             </includes>
                                         </resource>
                                         <resource>
-                                            <directory>${assets.basedir}/src/main/resources/smarthouse/</directory>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/decisions</directory>
                                             <targetPath>./</targetPath>
                                             <includes>
                                                 <include>README.md</include>
@@ -106,13 +106,51 @@
                                 <config>
                                     <copyResources>
                                         <resource>
-                                            <directory>${assets.basedir}/src/main/resources/smarthouse/03</directory>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/decisions/03</directory>
                                             <includes>
                                                 <include>*</include>
                                             </includes>
                                         </resource>
                                         <resource>
-                                            <directory>${assets.basedir}/src/main/resources/smarthouse/</directory>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/decisions/</directory>
+                                            <targetPath>./</targetPath>
+                                            <includes>
+                                                <include>README.md</include>
+                                            </includes>
+                                        </resource>
+                                    </copyResources>
+                                </config>
+                            </projectDefinition>
+                            <projectDefinition>
+                                <id>stp-smarthouse-03</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>stp-smarthouse-03</artifactId>
+                                <packageName>org.kie.smarthouse</packageName>
+                                <finalName>smarthouse</finalName>
+                                <config>
+                                    <copySources>
+                                        <package>
+                                            <name>org.kie.smarthouse</name>
+                                            <type>main</type>
+                                            <language>java</language>
+                                            <filesystem-root>${assets.basedir}</filesystem-root>
+                                        </package>
+                                    </copySources>
+                                    <copyResources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/decisions/03</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/stp</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/smarthouse/decisions/</directory>
                                             <targetPath>./</targetPath>
                                             <includes>
                                                 <include>README.md</include>

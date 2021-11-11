@@ -662,7 +662,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>kie-assets-library-assets/src/main/resources/smarthouse/02/heating.dmn</dmnFilePath>
+    <dmnFilePath>kie-assets-library-assets/src/main/resources/smarthouse/decisions/02/heating.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_D3C049D4-8991-4881-9588-25F70C30B6DF</dmnNamespace>
     <dmnName>heating</dmnName>

@@ -75,7 +75,7 @@
                                     <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
                                 </generate>
                                 <commonConfig>
-                                    <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                                    <reusableConfig>clean-main-sources-resources-and-readme</reusableConfig>
                                 </commonConfig>
                                 <configSets>
                                     <configSet>
@@ -96,7 +96,7 @@
                                     <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
                                 </generate>
                                 <commonConfig>
-                                    <reusableConfig>clean-main-resources-and-readme</reusableConfig>
+                                    <reusableConfig>clean-main-sources-resources-and-readme</reusableConfig>
                                 </commonConfig>
                                 <configSets>
                                     <configSet>
@@ -188,6 +188,34 @@
                             <configSet>
                                 <id>clean-main-resources-and-readme</id>
                                 <deleteResources>
+                                    <resource>
+                                        <directory>src/main/resources</directory>
+                                        <includes>
+                                            <include>*</include>
+                                            <include>**/*</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>application.properties</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>./</directory>
+                                        <includes>
+                                            <include>README.md</include>
+                                        </includes>
+                                    </resource>
+                                </deleteResources>
+                            </configSet>
+                            <configSet>
+                                <id>clean-main-sources-resources-and-readme</id>
+                                <deleteResources>
+                                    <resource>
+                                        <directory>src/main/java</directory>
+                                        <includes>
+                                            <include>*</include>
+                                            <include>**/*</include>
+                                        </includes>
+                                    </resource>
                                     <resource>
                                         <directory>src/main/resources</directory>
                                         <includes>

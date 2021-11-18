@@ -160,15 +160,83 @@
                                 </config>
                             </projectDefinition>
                             <projectDefinition>
-                                <id>pmml-kie-benchmarks</id>
+                                <id>pmml-kie-benchmarks-clustering</id>
                                 <groupId>org.kie</groupId>
-                                <artifactId>pmml-kie-benchmarks</artifactId>
-                                <packageName>org.kie.pmml.benchmarks</packageName>
-                                <finalName>pmml-kie-benchmarks</finalName>
+                                <artifactId>pmml-kie-benchmarks-clustering</artifactId>
+                                <packageName>org.kie.pmml.benchmarks.clustering</packageName>
+                                <finalName>pmml-kie-benchmarks-clustering</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
-                                            <directory>${assets.basedir}/src/main/resources/pmml</directory>
+                                            <directory>${assets.basedir}/src/main/resources/pmml/clustering</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copyResources>
+                                </config>
+                            </projectDefinition>
+                            <projectDefinition>
+                                <id>pmml-kie-benchmarks-forest</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>pmml-kie-benchmarks-forest</artifactId>
+                                <packageName>org.kie.pmml.benchmarks.forest</packageName>
+                                <finalName>pmml-kie-benchmarks-forest</finalName>
+                                <config>
+                                    <copyResources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/pmml/forest</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copyResources>
+                                </config>
+                            </projectDefinition>
+                            <projectDefinition>
+                                <id>pmml-kie-benchmarks-mine</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>pmml-kie-benchmarks-mine</artifactId>
+                                <packageName>org.kie.pmml.benchmarks.mine</packageName>
+                                <finalName>pmml-kie-benchmarks-mine</finalName>
+                                <config>
+                                    <copyResources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/pmml/mine</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copyResources>
+                                </config>
+                            </projectDefinition>
+                            <projectDefinition>
+                                <id>pmml-kie-benchmarks-regression</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>pmml-kie-benchmarks-regression</artifactId>
+                                <packageName>org.kie.pmml.benchmarks.regression</packageName>
+                                <finalName>pmml-kie-benchmarks-regression</finalName>
+                                <config>
+                                    <copyResources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/pmml/regression</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copyResources>
+                                </config>
+                            </projectDefinition>
+                            <projectDefinition>
+                                <id>pmml-kie-benchmarks-scorecard</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>pmml-kie-benchmarks-scorecard</artifactId>
+                                <packageName>org.kie.pmml.benchmarks.scorecard</packageName>
+                                <finalName>pmml-kie-benchmarks-scorecard</finalName>
+                                <config>
+                                    <copyResources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/pmml/scorecard</directory>
                                             <includes>
                                                 <include>*</include>
                                             </includes>

@@ -37,6 +37,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>dmn-and-bpmn-generated</artifactId>
                                 <packageName>org.kie.generated.dmn</packageName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -62,6 +63,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>dmn-generated</artifactId>
                                 <packageName>org.kie.generated.dmn</packageName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -78,7 +80,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>smarthouse-02</artifactId>
                                 <packageName>org.kie.smarthouse</packageName>
-                                <finalName>smarthouse</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -102,7 +104,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>smarthouse-03</artifactId>
                                 <packageName>org.kie.smarthouse</packageName>
-                                <finalName>smarthouse</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -126,7 +128,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>stp-smarthouse-03</artifactId>
                                 <packageName>org.kie.smarthouse</packageName>
-                                <finalName>smarthouse</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copySources>
                                         <package>
@@ -164,7 +166,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>pmml-kie-benchmarks-clustering</artifactId>
                                 <packageName>org.kie.pmml.benchmarks.clustering</packageName>
-                                <finalName>pmml-kie-benchmarks-clustering</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -181,7 +183,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>pmml-kie-benchmarks-forest</artifactId>
                                 <packageName>org.kie.pmml.benchmarks.forest</packageName>
-                                <finalName>pmml-kie-benchmarks-forest</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -198,7 +200,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>pmml-kie-benchmarks-mine</artifactId>
                                 <packageName>org.kie.pmml.benchmarks.mine</packageName>
-                                <finalName>pmml-kie-benchmarks-mine</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -215,7 +217,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>pmml-kie-benchmarks-regression</artifactId>
                                 <packageName>org.kie.pmml.benchmarks.regression</packageName>
-                                <finalName>pmml-kie-benchmarks-regression</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>
@@ -232,7 +234,7 @@
                                 <groupId>org.kie</groupId>
                                 <artifactId>pmml-kie-benchmarks-scorecard</artifactId>
                                 <packageName>org.kie.pmml.benchmarks.scorecard</packageName>
-                                <finalName>pmml-kie-benchmarks-scorecard</finalName>
+                                <finalName>runner</finalName>
                                 <config>
                                     <copyResources>
                                         <resource>

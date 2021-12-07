@@ -22,7 +22,7 @@
         <support.basedir>${main.basedir}/kie-assets-library-support</support.basedir>
         <quarkus.archetype.artifactId>kogito-quarkus-archetype</quarkus.archetype.artifactId>
         <springboot.archetype.artifactId>kogito-spring-boot-archetype</springboot.archetype.artifactId>
-        <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-rules,kogito-quarkus-predictions,kogito-quarkus-processes</quarkus.extensions>
+        <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-rules,kogito-quarkus-predictions,kogito-quarkus-processes,quarkus-smallrye-health</quarkus.extensions>
         <springboot.starters>decisions,rules,predictions,processes</springboot.starters>
         <springboot.addons></springboot.addons>
     </properties>

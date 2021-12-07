@@ -179,6 +179,13 @@
             </properties>
         </profile>
         <profile>
+            <id>prediction-capability</id>
+            <properties>
+                <quarkus.extensions>kogito-quarkus-predictions,quarkus-smallrye-health</quarkus.extensions>
+                <springboot.starters>predictions</springboot.starters>
+            </properties>
+        </profile>
+        <profile>
             <id>decisions-processes-capability</id>
             <properties>
                 <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-processes</quarkus.extensions>

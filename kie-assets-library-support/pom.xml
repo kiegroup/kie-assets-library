@@ -25,6 +25,10 @@
         <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-rules,kogito-quarkus-predictions,kogito-quarkus-processes,quarkus-smallrye-health</quarkus.extensions>
         <springboot.starters>decisions,rules,predictions,processes</springboot.starters>
         <springboot.addons></springboot.addons>
+        <!-- By default use the settings.xml and local maven repo from the main build -->
+        <quarkus.settings/>
+        <springboot.settings/>
+        <separateRepository>false</separateRepository>
     </properties>
 
     <dependencies>
@@ -73,6 +77,8 @@
                                         <version>${version.quarkus.platform}</version>
                                     </quarkusPlatformGav>
                                     <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+                                    <settingsFile>${quarkus.settings}</settingsFile>
+                                    <useSeparateRepository>${separateRepository}</useSeparateRepository>
                                 </generate>
                                 <commonConfig>
                                     <reusableConfig>clean-main-sources-resources-and-readme</reusableConfig>
@@ -118,6 +124,8 @@
                                         <starters>${springboot.starters}</starters>
                                         <addons>${springboot.addons}</addons>
                                     </properties>
+                                    <settingsFile>${springboot.settings}</settingsFile>
+                                    <useSeparateRepository>${separateRepository}</useSeparateRepository>
                                 </generate>
                                 <commonConfig>
                                     <reusableConfig>clean-main-resources-and-readme</reusableConfig>

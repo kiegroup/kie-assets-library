@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.kie</groupId>
+  <artifactId>kie-assets-plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Test Active Configurations of GenerateProjectMojo</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>kie-assets-plugin</artifactId>
+        <goals>
+          <goal>generate-project</goal>
+        </goals>
+        <configuration>
+          <projectDefinitions>
+            <projectDefinition>
+              <id>first</id>
+              <groupId>org.acme</groupId>
+              <artifactId>first-project</artifactId>
+              <packageName>org.acme</packageName>
+            </projectDefinition>
+          </projectDefinitions>
+          <projectStructures>
+            <projectStructure>
+              <id>A</id>
+              <generate>
+                <type>ARCHETYPE</type>
+                <archetype>
+                  <groupId>org.acme</groupId>
+                  <artifactId>an-archetype</artifactId>
+                  <version>0.0.1-SNAPSHOT</version>
+                </archetype>
+                <settingsFile>/custom/settings/path</settingsFile>
+                <useSeparateRepository>true</useSeparateRepository>
+              </generate>
+            </projectStructure>
+            <projectStructure>
+              <id>B</id>
+              <generate>
+                <type>MAVEN_PLUGIN</type>
+                <mavenPluginConfig>
+                  <groupId>org.acme</groupId>
+                  <artifactId>an-archetype</artifactId>
+                  <version>0.0.1-SNAPSHOT</version>
+                  <goal>some-goal</goal>
+                </mavenPluginConfig>
+                <settingsFile>/custom/settings/path</settingsFile>
+                <useSeparateRepository>true</useSeparateRepository>
+              </generate>
+            </projectStructure>
+            <projectStructure>
+              <id>C-settingsFile</id>
+              <generate>
+                <type>QUARKUS_CLI</type>
+                <settingsFile>/custom/settings/path</settingsFile>
+              </generate>
+            </projectStructure>
+            <projectStructure>
+              <id>D-separate-repositories</id>
+              <generate>
+                <type>QUARKUS_CLI</type>
+                <useSeparateRepository>true</useSeparateRepository>
+              </generate>
+            </projectStructure>
+          </projectStructures>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

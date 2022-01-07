@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kie.it</groupId>
+    <artifactId>active-structure-id-it</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <description>Use active-structure-ids configuration to limit definition-structure pairs to be generated.
+    </description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>@project.groupId@</groupId>
+                <artifactId>@project.artifactId@</artifactId>
+                <version>@project.version@</version>
+                <configuration>
+                    <projectDefinitions>
+                        <projectDefinition>
+                            <id>first</id>
+                            <groupId>org.kie</groupId>
+                            <artifactId>test-generated</artifactId>
+                            <packageName>org.kie.test.generated</packageName>
+                        </projectDefinition>
+                    </projectDefinitions>
+                    <projectStructures>
+                        <projectStructure>
+                            <id>quarkus</id>
+                            <generate>
+                                <type>MAVEN_PLUGIN</type>
+                                <mavenPluginConfig>
+                                    <groupId>@quarkus.platform.groupId@</groupId>
+                                    <artifactId>quarkus-maven-plugin</artifactId>
+                                    <version>@version.quarkus.platform@</version>
+                                    <goal>create</goal>
+                                </mavenPluginConfig>
+                                <quarkusPlatformGav>
+                                    <groupId>@quarkus.platform.groupId@</groupId>
+                                    <artifactId>@quarkus.platform.artifactId@</artifactId>
+                                    <version>@version.quarkus.platform@</version>
+                                </quarkusPlatformGav>
+                                <quarkusExtensions>kogito-quarkus-decisions,kogito-quarkus-rules,kogito-quarkus-predictions,kogito-quarkus-processes</quarkusExtensions>
+                            </generate>
+                        </projectStructure>
+                        <projectStructure>
+                            <id>springboot</id>
+                            <generate>
+                                <type>ARCHETYPE</type>
+                                <archetype>
+                                    <groupId>org.kie.kogito</groupId>
+                                    <artifactId>kogito-spring-boot-archetype</artifactId>
+                                    <version>@version.kogito@</version>
+                                </archetype>
+                            </generate>
+                        </projectStructure>
+                        <projectStructure>
+                            <id>quarkus-custom</id>
+                            <generate>
+                                <type>MAVEN_PLUGIN</type>
+                                <mavenPluginConfig>
+                                    <groupId>@quarkus.platform.groupId@</groupId>
+                                    <artifactId>quarkus-maven-plugin</artifactId>
+                                    <version>@version.quarkus.platform@</version>
+                                    <goal>create</goal>
+                                </mavenPluginConfig>
+                                <quarkusPlatformGav>
+                                    <groupId>@quarkus.platform.groupId@</groupId>
+                                    <artifactId>@quarkus.platform.artifactId@</artifactId>
+                                    <version>@version.quarkus.platform@</version>
+                                </quarkusPlatformGav>
+                                <quarkusExtensions>kogito-quarkus-decisions,kogito-quarkus-rules,kogito-quarkus-predictions,kogito-quarkus-processes</quarkusExtensions>
+                                <!-- Use settings.xml from this project. For the generating command, the plugin will use just Maven Central
+                                     as a remote repo and a separate repository under maven-config-it/target as a local repo -->
+                                <settingsFile>${project.basedir}/settings.xml</settingsFile>
+                                <useSeparateRepository>true</useSeparateRepository>
+                            </generate>
+                        </projectStructure>
+                        <projectStructure>
+                            <id>springboot-custom</id>
+                            <generate>
+                                <type>ARCHETYPE</type>
+                                <archetype>
+                                    <groupId>org.kie.kogito</groupId>
+                                    <artifactId>kogito-spring-boot-archetype</artifactId>
+                                    <version>@version.kogito@</version>
+                                </archetype>
+                                <!-- Use settings.xml from this project. For the generating command, the plugin will use just Maven Central
+                                     as a remote repo and a separate repository under maven-config-it/target as a local repo -->
+                                <settingsFile>${project.basedir}/settings.xml</settingsFile>
+                                <useSeparateRepository>true</useSeparateRepository>
+                            </generate>
+                        </projectStructure>
+                    </projectStructures>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>run-it</id>
+                        <goals>
+                            <goal>generate-project</goal>
+                            <goal>clean-generated-resources</goal>
+                            <goal>copy-external-resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

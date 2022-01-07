@@ -15,6 +15,9 @@
  */
 package org.kie.mojos;
 
+import java.util.Collections;
+
+import org.apache.maven.shared.invoker.InvocationRequest;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -24,6 +27,7 @@ import org.kie.model.Artifact;
 import org.kie.model.MavenPluginConfig;
 import org.kie.model.ProjectDefinition;
 import org.kie.model.ProjectStructure;
+import org.kie.utils.GeneratedProjectUtils;
 
 public class GenerateProjectCommandTest extends AbstractMojoTest<GenerateProjectMojo> {
 
@@ -45,6 +49,9 @@ public class GenerateProjectCommandTest extends AbstractMojoTest<GenerateProject
                     break;
                 case QUARKUS_CLI:
                     assertQuarkusCliCommand(myMojo.getQuarkusCliCreateAppCommand(definition, structure), definition, structure);
+                    break;
+                case ARCHETYPE:
+                    assertArchetypeCommand(myMojo.getInvocationRequestForArchetypeGeneration(definition, structure), definition, structure);
                     break;
             }
         }));
@@ -70,11 +77,25 @@ public class GenerateProjectCommandTest extends AbstractMojoTest<GenerateProject
                         "mvn",
                         String.format(" %s:%s:%s:%s", mavenPluginConfig.getGroupId(), mavenPluginConfig.getArtifactId(), mavenPluginConfig.getVersion(), mavenPluginConfig.getGoal()),
                         String.format(" -DprojectGroupId=%s", definition.getGroupId()),
-                        String.format(" -DprojectArtifactId=%s", definition.getArtifactId(),
-                                String.format(" -DpackageName=%s", definition.getPackageName()),
-                                String.format(" -Dextensions=%s", structure.getGenerate().getQuarkusExtensions()),
-                                String.format(" -DplatformGroupId=%s", quarkusPlatformGav.getGroupId()),
-                                String.format(" -DplatformArtifactId=%s", quarkusPlatformGav.getArtifactId()),
-                                String.format(" -DplatformVersion=%s", quarkusPlatformGav.getVersion()))));
+                        String.format(" -DprojectArtifactId=%s", definition.getArtifactId()),
+                        String.format(" -DpackageName=%s", definition.getPackageName()),
+                        String.format(" -Dextensions=%s", structure.getGenerate().getQuarkusExtensions()),
+                        String.format(" -DplatformGroupId=%s", quarkusPlatformGav.getGroupId()),
+                        String.format(" -DplatformArtifactId=%s", quarkusPlatformGav.getArtifactId()),
+                        String.format(" -DplatformVersion=%s", quarkusPlatformGav.getVersion())));
+    }
+
+    private void assertArchetypeCommand(InvocationRequest request, ProjectDefinition definition, ProjectStructure structure) {
+        Assert.assertThat(request.getGoals(), Matchers.equalTo(Collections.singletonList("archetype:generate")));
+        Assert.assertThat(request.getUserSettingsFile(), Matchers.equalTo(null));
+        Assert.assertThat(request.getLocalRepositoryDirectory(null), Matchers.equalTo(null));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("interactiveMode", "false"));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("groupId", definition.getGroupId()));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("artifactId", GeneratedProjectUtils.getTargetProjectName(definition, structure)));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("package", definition.getPackageName()));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("archetypeVersion", structure.getGenerate().getArchetype().getVersion()));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("archetypeGroupId", structure.getGenerate().getArchetype().getGroupId()));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("archetypeArtifactId", structure.getGenerate().getArchetype().getArtifactId()));
+        Assert.assertThat(request.getProperties(), Matchers.hasEntry("interactiveMode", "false"));
     }
 }

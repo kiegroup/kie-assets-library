@@ -15,6 +15,7 @@
  */
 package org.kie.model;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -27,6 +28,8 @@ public class ProjectGeneration {
     private MavenPluginConfig mavenPluginConfig;
     private String quarkusExtensions;
     private Artifact quarkusPlatformGav;
+    private File settingsFile;
+    private boolean useSeparateRepository;
 
     public Type getType() {
         return type;
@@ -74,6 +77,22 @@ public class ProjectGeneration {
 
     public void setQuarkusPlatformGav(Artifact quarkusPlatformGav) {
         this.quarkusPlatformGav = quarkusPlatformGav;
+    }
+
+    public File getSettingsFile() {
+        return settingsFile;
+    }
+
+    public void setSettingsFile(File settingsFile) {
+        this.settingsFile = settingsFile;
+    }
+
+    public boolean useSeparateRepository() {
+        return useSeparateRepository;
+    }
+
+    public void setUseSeparateRepository(boolean useSeparateRepository) {
+        this.useSeparateRepository = useSeparateRepository;
     }
 
     public enum Type {

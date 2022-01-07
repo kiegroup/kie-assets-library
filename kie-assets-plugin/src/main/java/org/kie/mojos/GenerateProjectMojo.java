@@ -15,12 +15,16 @@
  */
 package org.kie.mojos;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -36,6 +40,7 @@ import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.kie.model.ConfigSet;
 import org.kie.model.ProjectDefinition;
+import org.kie.model.ProjectGeneration;
 import org.kie.model.ProjectStructure;
 import org.kie.utils.CliUtils;
 import org.kie.utils.GeneratedProjectUtils;
@@ -95,6 +100,7 @@ public class GenerateProjectMojo
             addPomDependencies(definition, structure);
             setFinalNameInPom(definition, structure);
             addPomProperties(definition, structure);
+            addMavenConfigFile(definition, structure);
         };
     }
 
@@ -106,7 +112,7 @@ public class GenerateProjectMojo
      * @throws MavenInvocationException
      * @throws MojoExecutionException
      */
-    private void generateProjectBasedOnConfiguration(ProjectDefinition definition, ProjectStructure structure) throws MavenInvocationException, MojoExecutionException {
+    private void generateProjectBasedOnConfiguration(ProjectDefinition definition, ProjectStructure structure) throws MavenInvocationException, MojoExecutionException, IOException {
         switch (structure.getGenerate().getType()) {
             case ARCHETYPE:
                 generateFromArchetype(definition, structure);
@@ -128,13 +134,27 @@ public class GenerateProjectMojo
      * @param projectStructure
      * @throws MavenInvocationException upon maven archetype:generate run failure
      */
-    private void generateFromArchetype(ProjectDefinition definition, ProjectStructure projectStructure) throws MavenInvocationException, MojoExecutionException {
+    private void generateFromArchetype(ProjectDefinition definition, ProjectStructure projectStructure) throws MavenInvocationException, MojoExecutionException, IOException {
         InvocationRequest request = getInvocationRequestForArchetypeGeneration(definition, projectStructure);
+        ensureLocalRepoExists(request);
         Invoker invoker = new DefaultInvoker();
         invoker.setWorkingDirectory(outputDirectory);
         InvocationResult result = invoker.execute(request);
         if (result.getExitCode() != 0) {
             throw new MojoExecutionException("Error during archetype generation. See previous errors in log.", result.getExecutionException());
+        }
+    }
+
+    /**
+     * Ensures that a local repository passed to Maven Invoker exists. Otherwise Maven Invoker throws an exception.
+     *
+     * @param request
+     * @throws IOException if an I/O error occurs during creation of directories
+     */
+    private void ensureLocalRepoExists(InvocationRequest request) throws IOException {
+        File localRepo = request.getLocalRepositoryDirectory(null);
+        if (localRepo != null) {
+            Files.createDirectories(localRepo.toPath()); // Invoker doesn't handle this automatically
         }
     }
 
@@ -148,10 +168,8 @@ public class GenerateProjectMojo
     InvocationRequest getInvocationRequestForArchetypeGeneration(ProjectDefinition definition, ProjectStructure projectStructure) {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setGoals(Collections.singletonList("archetype:generate"));
-        if (mavenSession != null && mavenSession.getRequest() != null) { // for tests
-            request.setUserSettingsFile(mavenSession.getRequest().getUserSettingsFile());
-            request.setLocalRepositoryDirectory(mavenSession.getRequest().getLocalRepositoryPath());
-        }
+        determineUserSettings(projectStructure).ifPresent(request::setUserSettingsFile);
+        determineLocalRepo(projectStructure).ifPresent(request::setLocalRepositoryDirectory);
         Properties properties = new Properties();
         properties.setProperty("interactiveMode", "false");
         properties.setProperty("groupId", definition.getGroupId());
@@ -214,6 +232,12 @@ public class GenerateProjectMojo
         if (structure.getGenerate().getProperties() != null && !structure.getGenerate().getProperties().isEmpty()) {
             throw new RuntimeException("Quarkus CLI does not support additional custom properties.");
         }
+        if (structure.getGenerate().getSettingsFile() != null) {
+            throw new RuntimeException("Quarkus CLI does not support custom settingsFile.");
+        }
+        if (structure.getGenerate().useSeparateRepository()) {
+            throw new RuntimeException("Quarkus CLI does not support separate repositories.");
+        }
         return formatter.toString();
     }
 
@@ -251,6 +275,8 @@ public class GenerateProjectMojo
                 .format(" -DprojectGroupId=%s", definition.getGroupId())
                 .format(" -DprojectArtifactId=%s", GeneratedProjectUtils.getTargetProjectName(definition, structure))
                 .format(" -DpackageName=%s", definition.getPackageName());
+        determineUserSettings(structure).ifPresent(file -> formatter.format(" -s %s", file.getAbsolutePath()));
+        determineLocalRepo(structure).ifPresent(file -> formatter.format(" -Dmaven.repo.local=%s", file.getAbsolutePath()));
         if (structure.getGenerate().getQuarkusExtensions() != null && !structure.getGenerate().getQuarkusExtensions().isEmpty()) {
             formatter.format(" -Dextensions=%s", structure.getGenerate().getQuarkusExtensions());
         }
@@ -323,5 +349,63 @@ public class GenerateProjectMojo
         Path projectDir = GeneratedProjectUtils.getOutputDirectoryForGeneratedProject(outputDirectory.toPath(), definition, structure);
         Path pomFile = projectDir.resolve("pom.xml");
         return pomFile;
+    }
+
+    /**
+     * Adds .mvn/maven.config file in under the generated project root directory.
+     *
+     * @param definition project definition to use for path resolution
+     * @param structure project structure to determine user settings, local repository and for path resolution
+     * @throws IOException if an I/O error occurs when creating the file
+     */
+    private void addMavenConfigFile(ProjectDefinition definition, ProjectStructure structure) throws IOException {
+        Formatter content = new Formatter();
+        determineUserSettings(structure).ifPresent(file -> content.format("-s %s%n", file.getAbsolutePath()));
+        determineLocalRepo(structure).ifPresent(file -> content.format("-Dmaven.repo.local=%s%n", file.getAbsolutePath()));
+        Path projectDir = GeneratedProjectUtils.getOutputDirectoryForGeneratedProject(outputDirectory.toPath(), definition, structure);
+        Path mvnDir = projectDir.resolve(".mvn");
+        Files.createDirectories(mvnDir);
+        Path mavenConfigFile = mvnDir.resolve("maven.config");
+        Files.writeString(mavenConfigFile, content.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+    }
+
+    /**
+     * Determines user settings to use for project generation. By default, it will use the same user settings the main build (the one running
+     * kie-assets-library plugin) is using. If a custom {@linkplain ProjectGeneration#settingsFile} is provided
+     * in the {@linkplain ProjectStructure}, it will override the settings from the main build. localRepository fragment is ignored as this
+     * is controlled by {@linkplain ProjectGeneration#useSeparateRepository()}.
+     *
+     * @param structure project structure to determine user settings
+     * @return user settings file to use for the project generation
+     */
+    private Optional<File> determineUserSettings(ProjectStructure structure) {
+        File settingsXml = null;
+        if (mavenSession != null && mavenSession.getRequest() != null) { // for tests
+            settingsXml = mavenSession.getRequest().getUserSettingsFile();
+        }
+        File customSettingsXml = structure.getGenerate().getSettingsFile();
+        if (customSettingsXml != null) {
+            settingsXml = customSettingsXml;
+        }
+        return Optional.ofNullable(settingsXml);
+    }
+
+    /**
+     * Determines local repository to use for project generation. By default, it will use the same local repository the main build (the one running
+     * kie-assets-library plugin) is using. If a {@linkplain ProjectGeneration#useSeparateRepository()} is set to 'true'
+     * in the {@linkplain ProjectStructure}, it will override the local repository from the main build.
+     *
+     * @param structure project structure to determine local repository
+     * @return local repository to use for the project generation
+     */
+    private Optional<File> determineLocalRepo(ProjectStructure structure) {
+        File localRepo = null;
+        if (mavenSession != null && mavenSession.getRequest() != null) { // for tests
+            localRepo = mavenSession.getRequest().getLocalRepositoryPath();
+        }
+        if (structure.getGenerate().useSeparateRepository()) {
+            localRepo = new File(outputDirectory, structure.getId() + "-local-repo");
+        }
+        return Optional.ofNullable(localRepo);
     }
 }

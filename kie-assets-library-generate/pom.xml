@@ -142,6 +142,9 @@
                                 <configuration>
                                     <script>${support.basedir}/JBangDownload.java</script>
                                     <jbangInstallDir>${jbang.install.dir}</jbangInstallDir>
+                                    <trusts>
+                                        <trust>https://*.maven.org/maven2/io/quarkus/quarkus-cli/</trust>
+                                    </trusts>
                                 </configuration>
                             </execution>
                         </executions>

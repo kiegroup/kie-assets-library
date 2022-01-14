@@ -36,6 +36,7 @@ public class GenerateProjectMojoCustomSettingsAndSeparateRepoTest extends Abstra
     @Test
     public void testGenerateCommandsWithCustomSettingsSeparateRepo() throws Exception {
         GenerateProjectMojo myMojo = getMojo("target/test-classes/generate-project/", "project-structure-generate-custom-settings-separate-repo.xml");
+        myMojo.outputDirectory = new File("testOutputDir");
 
         myMojo.getActiveMojoSetup().apply(((definition, structure) -> {
             switch (structure.getGenerate().getType()) {

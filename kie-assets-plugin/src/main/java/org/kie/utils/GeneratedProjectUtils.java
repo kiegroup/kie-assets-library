@@ -18,6 +18,7 @@ package org.kie.utils;
 import java.nio.file.Path;
 
 import org.kie.model.ProjectDefinition;
+import org.kie.model.ProjectGeneration;
 import org.kie.model.ProjectStructure;
 
 /**
@@ -72,9 +73,7 @@ public class GeneratedProjectUtils {
      * @return string in form "-id", where id is {@linkplain ProjectStructure#getId()}
      */
     public static String getSuffixForProject(ProjectStructure projectStructure) {
-        if (projectStructure == null || projectStructure.getId() == null || projectStructure.getId().isEmpty()) {
-            throw new IllegalArgumentException("ProjectStructure instance has to have non-empty id.");
-        }
+        checkProjectStructureId(projectStructure);
         String suffix = projectStructure.getId();
         return "-" + suffix;
     }
@@ -90,5 +89,31 @@ public class GeneratedProjectUtils {
      */
     public static Path getOutputDirectoryForGeneratedProject(Path outputDirectory, ProjectDefinition targetProject, ProjectStructure projectStructure) {
         return outputDirectory.resolve(GeneratedProjectUtils.getTargetProjectName(targetProject, projectStructure));
+    }
+
+    /**
+     * Denote the local Maven repository directory for the project structure. Used when {@linkplain ProjectGeneration#useSeparateRepository()}
+     * is turned on.
+     *
+     * @param outputDirectory directory which serves as parent to the local Maven repository directory.
+     * @param projectStructure {@linkplain ProjectStructure} instance
+     * @return Path in the form of '${outputDirectory}/${id}-local-repo', where '${id}' is {@linkplain ProjectStructure#getId()}
+     */
+    public static Path getLocalMavenRepoForProject(Path outputDirectory, ProjectStructure projectStructure) {
+        checkProjectStructureId(projectStructure);
+        return outputDirectory.resolve(projectStructure.getId() + "-local-repo");
+    }
+
+    /**
+     * Check that the {@linkplain ProjectStructure} has an ID
+     *
+     * @param projectStructure {@linkplain ProjectStructure} to check
+     * @throws IllegalArgumentException when {@linkplain ProjectStructure} is null or {@linkplain ProjectStructure#getId()}
+     *         returns null or empty string.
+     */
+    private static void checkProjectStructureId(ProjectStructure projectStructure) {
+        if (projectStructure == null || projectStructure.getId() == null || projectStructure.getId().isEmpty()) {
+            throw new IllegalArgumentException("ProjectStructure instance has to have non-empty id.");
+        }
     }
 }

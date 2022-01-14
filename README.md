@@ -99,6 +99,17 @@ plugin allows to easily build various projects using a single asset group.
 
 * Each project defined as `projectDefinition` is generated in `kie-assets-library-assets/target`. Project name is composed
     from `projectDefinition->artifactId` and `projectStructure->id`, to allow Cartesian product project generation out of the box.
+* By default, **Archetype** and **Maven Plugin** project structures use the same Maven settings and local Maven repository location as the main build.
+  This can be changed using the following configuration:
+  ```xml
+  <generate>
+    <type>ARCHETYPE</type>
+    <settingsFile>/custom/settings.xml</settingsFile>
+    <useSeparateRepository>true</useSeparateRepository>
+  </generate>
+  ```
+  This will make all projects generated with this project structure use the provided settings.xml file and this project structure
+  will have a separate local Maven repository under the directory where the projects are generated.
 
 #### Adapting archetype project stub
 * **Config-sets** provide convenient way to define additional dependencies or source packages to be added to generated projects.

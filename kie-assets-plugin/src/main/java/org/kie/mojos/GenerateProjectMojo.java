@@ -404,7 +404,7 @@ public class GenerateProjectMojo
             localRepo = mavenSession.getRequest().getLocalRepositoryPath();
         }
         if (structure.getGenerate().useSeparateRepository()) {
-            localRepo = new File(outputDirectory, structure.getId() + "-local-repo");
+            localRepo = GeneratedProjectUtils.getLocalMavenRepoForProject(outputDirectory.toPath(), structure).toFile();
         }
         return Optional.ofNullable(localRepo);
     }

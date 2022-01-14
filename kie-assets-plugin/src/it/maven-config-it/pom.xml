@@ -4,11 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kie.it</groupId>
-    <artifactId>active-structure-id-it</artifactId>
+    <artifactId>maven-config-it</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <description>Use active-structure-ids configuration to limit definition-structure pairs to be generated.
-    </description>
+    <description>Test the 'settingsFile' and 'useSeparateRepository' Maven config options in projectStructure</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

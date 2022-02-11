@@ -29,6 +29,7 @@
         <quarkus.settings/>
         <springboot.settings/>
         <separateRepository>false</separateRepository>
+        <quarkus.config.file></quarkus.config.file>
     </properties>
 
     <dependencies>
@@ -91,6 +92,31 @@
                                 </configSets>
                             </projectStructure>
                             <projectStructure>
+                                <id>quarkus-mvn-with-registry</id>
+                                <generate>
+                                    <type>MAVEN_PLUGIN</type>
+                                    <mavenPluginConfig>
+                                        <groupId>${quarkus.platform.groupId}</groupId>
+                                        <artifactId>quarkus-maven-plugin</artifactId>
+                                        <version>${version.quarkus.platform}</version>
+                                        <goal>create</goal>
+                                    </mavenPluginConfig>
+                                    <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+                                    <quarkusConfigFile>${quarkus.config.file}</quarkusConfigFile>
+                                    <settingsFile>${quarkus.settings}</settingsFile>
+                                    <useSeparateRepository>${separateRepository}</useSeparateRepository>
+                                </generate>
+                                <commonConfig>
+                                    <reusableConfig>clean-main-sources-resources-and-readme</reusableConfig>
+                                </commonConfig>
+                                <configSets>
+                                    <configSet>
+                                        <id>scesim</id>
+                                        <reusableConfig>kogito-scesim</reusableConfig>
+                                    </configSet>
+                                </configSets>
+                            </projectStructure>
+                            <projectStructure>
                                 <id>quarkus-cli</id>
                                 <generate>
                                     <type>QUARKUS_CLI</type>
@@ -100,6 +126,23 @@
                                         <version>${version.quarkus.platform}</version>
                                     </quarkusPlatformGav>
                                     <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+                                </generate>
+                                <commonConfig>
+                                    <reusableConfig>clean-main-sources-resources-and-readme</reusableConfig>
+                                </commonConfig>
+                                <configSets>
+                                    <configSet>
+                                        <id>scesim</id>
+                                        <reusableConfig>kogito-scesim</reusableConfig>
+                                    </configSet>
+                                </configSets>
+                            </projectStructure>
+                            <projectStructure>
+                                <id>quarkus-cli-with-registry</id>
+                                <generate>
+                                    <type>QUARKUS_CLI</type>
+                                    <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+                                    <quarkusConfigFile>${quarkus.config.file}</quarkusConfigFile>
                                 </generate>
                                 <commonConfig>
                                     <reusableConfig>clean-main-sources-resources-and-readme</reusableConfig>

@@ -223,6 +223,9 @@ public class GenerateProjectMojo
         if (structure.getGenerate().getQuarkusExtensions() != null && !structure.getGenerate().getQuarkusExtensions().isEmpty()) {
             formatter.format(" -x %s", structure.getGenerate().getQuarkusExtensions());
         }
+        if (structure.getGenerate().getQuarkusConfigFile() != null) {
+            formatter.format(" --config=%s", structure.getGenerate().getQuarkusConfigFile().getAbsolutePath());
+        }
         if (structure.getGenerate().getQuarkusPlatformGav() != null) {
             formatter.format(" --platform-bom %s:%s:%s",
                     structure.getGenerate().getQuarkusPlatformGav().getGroupId(),
@@ -279,6 +282,9 @@ public class GenerateProjectMojo
         determineLocalRepo(structure).ifPresent(file -> formatter.format(" -Dmaven.repo.local=%s", file.getAbsolutePath()));
         if (structure.getGenerate().getQuarkusExtensions() != null && !structure.getGenerate().getQuarkusExtensions().isEmpty()) {
             formatter.format(" -Dextensions=%s", structure.getGenerate().getQuarkusExtensions());
+        }
+        if (structure.getGenerate().getQuarkusConfigFile() != null) {
+            formatter.format(" -Dquarkus.tools.config=%s", structure.getGenerate().getQuarkusConfigFile().getAbsolutePath());
         }
         if (structure.getGenerate().getQuarkusPlatformGav() != null) {
             formatter

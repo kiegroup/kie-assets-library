@@ -65,6 +65,7 @@ public class GenerateProjectCommandTest extends AbstractMojoTest<GenerateProject
                 String.format(" %s:%s", definition.getGroupId(), definition.getArtifactId()),
                 String.format(" --package-name %s", definition.getPackageName()),
                 String.format(" -x %s", structure.getGenerate().getQuarkusExtensions()),
+                String.format(" --config=%s", structure.getGenerate().getQuarkusConfigFile().getAbsolutePath()),
                 String.format(" --platform-bom %s:%s:%s", quarkusPlatformGav.getGroupId(), quarkusPlatformGav.getArtifactId(), quarkusPlatformGav.getVersion())));
     }
 
@@ -80,6 +81,7 @@ public class GenerateProjectCommandTest extends AbstractMojoTest<GenerateProject
                         String.format(" -DprojectArtifactId=%s", definition.getArtifactId()),
                         String.format(" -DpackageName=%s", definition.getPackageName()),
                         String.format(" -Dextensions=%s", structure.getGenerate().getQuarkusExtensions()),
+                        String.format(" -Dquarkus.tools.config=%s", structure.getGenerate().getQuarkusConfigFile().getAbsolutePath()),
                         String.format(" -DplatformGroupId=%s", quarkusPlatformGav.getGroupId()),
                         String.format(" -DplatformArtifactId=%s", quarkusPlatformGav.getArtifactId()),
                         String.format(" -DplatformVersion=%s", quarkusPlatformGav.getVersion())));

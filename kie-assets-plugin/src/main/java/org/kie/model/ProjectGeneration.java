@@ -28,6 +28,7 @@ public class ProjectGeneration {
     private MavenPluginConfig mavenPluginConfig;
     private String quarkusExtensions;
     private Artifact quarkusPlatformGav;
+    private File quarkusConfigFile;
     private File settingsFile;
     private boolean useSeparateRepository;
 
@@ -77,6 +78,14 @@ public class ProjectGeneration {
 
     public void setQuarkusPlatformGav(Artifact quarkusPlatformGav) {
         this.quarkusPlatformGav = quarkusPlatformGav;
+    }
+
+    public File getQuarkusConfigFile() {
+        return quarkusConfigFile;
+    }
+
+    public void setQuarkusConfigFile(File quarkusConfigFile) {
+        this.quarkusConfigFile = quarkusConfigFile;
     }
 
     public File getSettingsFile() {

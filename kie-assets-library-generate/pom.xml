@@ -177,21 +177,21 @@
         <profile>
             <id>decisions-capability</id>
             <properties>
-                <quarkus.extensions>kogito-quarkus-decisions</quarkus.extensions>
+                <quarkus.extensions>kogito-quarkus-decisions,quarkus-resteasy,quarkus-resteasy-jackson</quarkus.extensions>
                 <springboot.starters>decisions</springboot.starters>
             </properties>
         </profile>
         <profile>
             <id>prediction-capability</id>
             <properties>
-                <quarkus.extensions>kogito-quarkus-predictions,quarkus-smallrye-health</quarkus.extensions>
+                <quarkus.extensions>kogito-quarkus-predictions,quarkus-smallrye-health,quarkus-resteasy,quarkus-resteasy-jackson</quarkus.extensions>
                 <springboot.starters>predictions</springboot.starters>
             </properties>
         </profile>
         <profile>
             <id>decisions-processes-capability</id>
             <properties>
-                <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-processes</quarkus.extensions>
+                <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-processes,quarkus-resteasy,quarkus-resteasy-jackson</quarkus.extensions>
                 <springboot.starters>decisions,processes</springboot.starters>
             </properties>
         </profile>

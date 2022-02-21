@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -101,7 +102,64 @@ public class GenerateProjectMojo
             setFinalNameInPom(definition, structure);
             addPomProperties(definition, structure);
             addMavenConfigFile(definition, structure);
+            writeModuleIntoGroupingPom(definition, structure);
         };
+    }
+
+    /**
+     * Writes a module denoting the generated projects for given definition and structure combination into a grouping project.
+     * Grouping project is created per ProjectStructure, so grouping all ProjectDefinitions that were generated with given structure.
+     * <p />
+     * The grouping project is named to indicate for which structure the project was created:
+     * 
+     * <pre>
+     * [structure.id]-grouping-project-pom.xml
+     * </pre>
+     * 
+     * So it needs to be executed using the -f maven option to execute the file directly.
+     * <p />
+     * The file is located in {@linkplain #outputDirectory} folder, so all modules are referenced just by the module name
+     * (no relative paths in <module></module> element are needed).
+     *
+     * @param definition ProjectDefinition to process
+     * @param structure ProjectStructure to process
+     * @throws MojoExecutionException
+     */
+    private void writeModuleIntoGroupingPom(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
+        String moduleName = GeneratedProjectUtils.getTargetProjectName(definition, structure);
+        Path root = outputDirectory.toPath();
+        if (!Files.isDirectory(root.resolve(moduleName))) {
+            throw new MojoExecutionException(String.format("Could not find directory with name %s in directory %s.", moduleName, outputDirectory.getAbsolutePath()));
+        }
+        Model m = getGroupingPomModelStub(structure);
+        PomManipulationUtils.manipulatePom(m, mavenProject -> {
+            mavenProject.getModules().add(moduleName);
+        });
+    }
+
+    /**
+     * Make a pom project stub for the grouping pom or reuse existing pom.
+     *
+     * @param structure structure to base the stub on
+     * @return Model denoting the new pom to be created.
+     */
+    private Model getGroupingPomModelStub(ProjectStructure structure) throws MojoExecutionException {
+        String groupingProjectName = structure.getId() + "-grouping-project";
+        Path pathToGroupingPom = outputDirectory.toPath().resolve(groupingProjectName + "-pom.xml");
+        Model m = null;
+        if (!Files.exists(pathToGroupingPom)) {
+            m = new Model();
+            m.setPomFile(pathToGroupingPom.toFile());
+            m.setGroupId(project.getGroupId());
+            m.setArtifactId(groupingProjectName);
+            m.setVersion(project.getVersion());
+            m.setModelVersion(project.getModelVersion());
+            m.setPackaging("pom");
+            m.setDescription("Grouping pom project for modules of ProjectStructure with id " + structure.getId());
+        } else {
+            m = PomManipulationUtils.loadPomModel(pathToGroupingPom);
+        }
+        return m;
     }
 
     /**
@@ -308,7 +366,7 @@ public class GenerateProjectMojo
      */
     private void addPomDependencies(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
         Path pomFile = getPathToPom(definition, structure);
-        PomManipulationUtils.manipulatePom(pomFile, project -> project.getDependencies().addAll(
+        PomManipulationUtils.manipulatePom(PomManipulationUtils.loadPomModel(pomFile), project -> project.getDependencies().addAll(
                 getActiveMojoSetup().getActiveConfigSetResolver().apply(definition, structure).stream()
                         .flatMap(it -> it.getDependencies().stream())
                         .collect(Collectors.toList())));
@@ -323,7 +381,7 @@ public class GenerateProjectMojo
      */
     private void addPomProperties(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
         Path pomFile = getPathToPom(definition, structure);
-        PomManipulationUtils.manipulatePom(pomFile, project -> getActiveMojoSetup().getActiveConfigSetResolver().apply(definition, structure).stream()
+        PomManipulationUtils.manipulatePom(PomManipulationUtils.loadPomModel(pomFile), project -> getActiveMojoSetup().getActiveConfigSetResolver().apply(definition, structure).stream()
                 .flatMap(it -> it.getProperties().entrySet().stream())
                 .forEach(it -> project.getProperties().put(it.getKey(), it.getValue())));
     }
@@ -341,7 +399,7 @@ public class GenerateProjectMojo
             return;
         }
         Path pathToPom = getPathToPom(definition, structure);
-        PomManipulationUtils.manipulatePom(pathToPom, project -> project.getBuild().setFinalName(definition.getFinalName()));
+        PomManipulationUtils.manipulatePom(PomManipulationUtils.loadPomModel(pathToPom), project -> project.getBuild().setFinalName(definition.getFinalName()));
     }
 
     /**

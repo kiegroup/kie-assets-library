@@ -28,4 +28,4 @@ jobs:
           name: maven-plugin-IT
           path: kie-assets-plugin/target/it/*/build.log
       - name: Build generated projects
-        run: for project in ./kie-assets-library-generate/target/*/pom.xml; do mvn clean package -f $project; done
+        run: for project in ./kie-assets-library-generate/target/*-grouping-project-pom.xml; do mvn clean package -f $project; done

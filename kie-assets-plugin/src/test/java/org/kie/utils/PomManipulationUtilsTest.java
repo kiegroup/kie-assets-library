@@ -35,7 +35,7 @@ public class PomManipulationUtilsTest {
 
     @Test
     public void loadSimplePomModel() throws MojoExecutionException {
-        Model pomModel = PomManipulationUtils.getPomModel(Path.of(getClass().getResource("/pom-manipulation-utils/simple-pom.xml").getFile()).toAbsolutePath());
+        Model pomModel = PomManipulationUtils.loadPomModel(Path.of(getClass().getResource("/pom-manipulation-utils/simple-pom.xml").getFile()).toAbsolutePath());
         Assert.assertThat(pomModel.getGroupId(), Matchers.equalTo("org.acme"));
         Assert.assertThat(pomModel.getArtifactId(), Matchers.equalTo("simple-pom"));
     }
@@ -44,20 +44,20 @@ public class PomManipulationUtilsTest {
     public void loadInvalidPomModel() throws MojoExecutionException {
         exceptionGrabber.expect(MojoExecutionException.class);
         exceptionGrabber.expectMessage("Error while opening generated pom: ");
-        PomManipulationUtils.getPomModel(Path.of(getClass().getResource("/pom-manipulation-utils/invalid-pom.xml").getFile()).toAbsolutePath());
+        PomManipulationUtils.loadPomModel(Path.of(getClass().getResource("/pom-manipulation-utils/invalid-pom.xml").getFile()).toAbsolutePath());
     }
 
     @Test
     public void manipulateSimplePomModel() throws MojoExecutionException, IOException {
         Path pomFile = Path.of(getClass().getResource("/pom-manipulation-utils/simple-pom.xml").getFile()).toAbsolutePath();
-        Model pomModel = PomManipulationUtils.getPomModel(pomFile);
+        Model pomModel = PomManipulationUtils.loadPomModel(pomFile);
         Assert.assertThat(pomModel.getGroupId(), Matchers.equalTo("org.acme"));
         Assert.assertThat(pomModel.getArtifactId(), Matchers.equalTo("simple-pom"));
         Assert.assertThat(pomModel.getProperties(), Matchers.aMapWithSize(0));
         File tmpCpy = File.createTempFile("pom-manipulation-test", null);
         FileUtils.copyFile(pomFile.toFile(), tmpCpy);
-        PomManipulationUtils.manipulatePom(tmpCpy.toPath(), it -> it.getProperties().put("test.prop", "value"));
-        Model pomModelAfterSave = PomManipulationUtils.getPomModel(tmpCpy.toPath());
+        PomManipulationUtils.manipulatePom(PomManipulationUtils.loadPomModel(tmpCpy.toPath()), it -> it.getProperties().put("test.prop", "value"));
+        Model pomModelAfterSave = PomManipulationUtils.loadPomModel(tmpCpy.toPath());
         Assert.assertThat(pomModelAfterSave.getProperties(), Matchers.aMapWithSize(1));
         Assert.assertThat(pomModelAfterSave.getProperties(), Matchers.hasEntry("test.prop", "value"));
     }

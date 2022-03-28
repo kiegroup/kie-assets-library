@@ -1,14 +1,12 @@
-# kie-asset-library-poc
-PoC for KIE asset library
+# KIE Assets Library
+This repository enables to generate projects based on file assets with the use of kie-assets-plugin.
 
 ## Description
-This repository shows off the possibilities of usage of kie-asset-plugin.
+kie-assets-plugin is a plugin to be used to transform any provided assets (DMN, BPMN,..) into a maven project.
 
-It is a plugin to be used to transform any provided assets (DMN, BPMN,..) into a maven project.
-
-This is achieved by configuring archetype to be used for a particular project-type.
-Ultimate value is in using several archetypes across portfolio, when this
-plugin allows to easily build various projects using a single asset group.
+This is achieved by configuring project generation method to be used (archetype generation, Quarkus CLI, Maven plugin, ...) for a particular project-type.
+Ultimate value is in using several methods to generate projects across portfolio, when this
+plugin allows to easily build various types for a single asset group.
 
 ## Usage
 ### kie-assets-library-assets

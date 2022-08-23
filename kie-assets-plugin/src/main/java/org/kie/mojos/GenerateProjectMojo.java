@@ -181,6 +181,9 @@ public class GenerateProjectMojo
             case MAVEN_PLUGIN:
                 generateUsingMavenPlugin(definition, structure);
                 break;
+            case KN_CLI:
+                generateUsingKnCli(definition, structure);
+                break;
         }
     }
 
@@ -253,6 +256,17 @@ public class GenerateProjectMojo
     }
 
     /**
+     * Execute kn CLI command as a process.
+     *
+     * @param definition
+     * @param structure
+     * @throws MojoExecutionException
+     */
+    private void generateUsingKnCli(ProjectDefinition definition, ProjectStructure structure) throws MojoExecutionException {
+        new CliUtils(getLog()).executeCliCommand(getKnCliCreateAppCommand(definition, structure), outputDirectory);
+    }
+
+    /**
      * Execute Maven plugin command as a process.
      * 
      * @param definition
@@ -265,7 +279,7 @@ public class GenerateProjectMojo
 
     /**
      * Get string Quarkus CLI command to generate new project based on provided configuration.
-     * 
+     *
      * @param definition
      * @param structure
      * @return string command
@@ -298,6 +312,41 @@ public class GenerateProjectMojo
         }
         if (structure.getGenerate().useSeparateRepository()) {
             throw new RuntimeException("Quarkus CLI does not support separate repositories.");
+        }
+        return formatter.toString();
+    }
+
+    /**
+     * Get string Quarkus CLI command to generate new project based on provided configuration.
+     *
+     * @param definition
+     * @param structure
+     * @return string command
+     */
+    String getKnCliCreateAppCommand(ProjectDefinition definition, ProjectStructure structure) {
+        Formatter formatter = new Formatter();
+        formatter
+                .format("kn workflow create")
+                .format(" --name %s", GeneratedProjectUtils.getTargetProjectName(definition, structure));
+        if (structure.getGenerate().getQuarkusExtensions() != null && !structure.getGenerate().getQuarkusExtensions().isEmpty()) {
+            formatter.format(" --extension %s", structure.getGenerate().getQuarkusExtensions());
+        }
+        if (structure.getGenerate().getQuarkusConfigFile() != null) {
+            throw new RuntimeException("kn CLI does not support Quarkus Config File");
+        }
+        if (structure.getGenerate().getQuarkusPlatformGav() != null) {
+            formatter
+                    .format(" --quarkus-platform-group-id %s", structure.getGenerate().getQuarkusPlatformGav().getGroupId())
+                    .format(" --quarkus-version %s", structure.getGenerate().getQuarkusPlatformGav().getVersion());
+        }
+        if (structure.getGenerate().getProperties() != null && !structure.getGenerate().getProperties().isEmpty()) {
+            throw new RuntimeException("kn CLI does not support additional custom properties.");
+        }
+        if (structure.getGenerate().getSettingsFile() != null) {
+            throw new RuntimeException("kn CLI does not support custom settingsFile.");
+        }
+        if (structure.getGenerate().useSeparateRepository()) {
+            throw new RuntimeException("kn CLI does not support separate repositories.");
         }
         return formatter.toString();
     }

@@ -30,6 +30,14 @@
             <plugin>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-assets-plugin</artifactId>
+                <configuration>
+                    <activeStructures>
+                        <activeStructure>!kn-cli</activeStructure>
+                    </activeStructures>
+                    <activeDefinitions>
+                        <activeDefinition>!serverless-workflow-1</activeDefinition>
+                    </activeDefinitions>
+                </configuration>
                 <executions>
                     <execution>
                         <id>generate-projects</id>
@@ -194,6 +202,27 @@
                 <quarkus.extensions>kogito-quarkus-decisions,kogito-quarkus-processes,quarkus-resteasy,quarkus-resteasy-jackson</quarkus.extensions>
                 <springboot.starters>decisions,processes</springboot.starters>
             </properties>
+        </profile>
+        <profile>
+            <id>kn-cli</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.kie</groupId>
+                            <artifactId>kie-assets-plugin</artifactId>
+                            <configuration>
+                                <activeStructures>
+                                    <activeStructure>kn-cli</activeStructure>
+                                </activeStructures>
+                                <activeDefinitions>
+                                    <activeDefinition>serverless-workflow-1</activeDefinition>
+                                </activeDefinitions>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
         </profile>
     </profiles>
 

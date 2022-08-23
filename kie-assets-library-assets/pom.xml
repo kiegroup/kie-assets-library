@@ -246,6 +246,23 @@
                                     </copyResources>
                                 </config>
                             </projectDefinition>
+                            <projectDefinition>
+                                <id>serverless-workflow-1</id>
+                                <groupId>org.kie</groupId>
+                                <artifactId>serverless-workflow-1</artifactId>
+                                <packageName>org.acme.package1</packageName>
+                                <finalName>runner</finalName>
+                                <config>
+                                    <copyResources>
+                                        <resource>
+                                            <directory>${assets.basedir}/src/main/resources/serverless-workflow/</directory>
+                                            <includes>
+                                                <include>*</include>
+                                            </includes>
+                                        </resource>
+                                    </copyResources>
+                                </config>
+                            </projectDefinition>
                         </projectDefinitions>
                     </configuration>
                 </plugin>

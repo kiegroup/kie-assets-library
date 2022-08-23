@@ -155,6 +155,21 @@
                                 </configSets>
                             </projectStructure>
                             <projectStructure>
+                                <id>kn-cli</id>
+                                <generate>
+                                    <type>KN_CLI</type>
+                                    <quarkusPlatformGav>
+                                        <groupId>${quarkus.platform.groupId}</groupId>
+                                        <artifactId>${quarkus.platform.artifactId}</artifactId>
+                                        <version>${version.quarkus.platform}</version>
+                                    </quarkusPlatformGav>
+                                    <quarkusExtensions>${quarkus.extensions}</quarkusExtensions>
+                                </generate>
+                                <commonConfig>
+                                    <reusableConfig>clean-main-sources-resources-and-readme</reusableConfig>
+                                </commonConfig>
+                            </projectStructure>
+                            <projectStructure>
                                 <id>springboot</id>
                                 <generate>
                                     <type>ARCHETYPE</type>

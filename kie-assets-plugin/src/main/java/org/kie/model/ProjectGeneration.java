@@ -107,6 +107,7 @@ public class ProjectGeneration {
     public enum Type {
         ARCHETYPE,
         MAVEN_PLUGIN,
-        QUARKUS_CLI;
+        QUARKUS_CLI,
+        KN_CLI;
     }
 }

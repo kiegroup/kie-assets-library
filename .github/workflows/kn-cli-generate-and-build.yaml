@@ -1,4 +1,4 @@
-name: kn cli :: Generate Projects And Build
+name: kn CLI - Generate Projects And Build
 
 on:
   push:
@@ -20,24 +20,20 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: install kn cli
-        uses: redhat-actions/openshift-tools-installer@v1`
+        uses: redhat-actions/openshift-tools-installer@v1
         with:
           kn: "latest"
-      - name: Install go-task
-        uses: jaxxstorm/action-install-gh-release@v1.5.0
-        with: # Grab the latest version
-          repo: kiegroup/kie-tools
-          platform: linux
-          arch: x86-64
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate all kn-cli defined projects
-        run: mvn clean --batch-mode --update-snapshots package -Pkn-cli # use verify to run integration tests of maven plugin
-      - name: Archive IT logs
-        uses: actions/upload-artifact@v2
-        if: always() && !cancelled()
+      - name: download kn cli plugin
+        uses: dsaltares/fetch-gh-release-asset@1.0.0
         with:
-          name: maven-plugin-IT
-          path: kie-assets-plugin/target/it/*/build.log
+          repo: 'kiegroup/kie-tools'
+          version: 'tags/0.22.0'
+          regex: true
+          file: "kn-workflow-linux-amd64-.*"
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Make plugin executable
+        run: "sudo /bin/sh -c 'cp kn-workflow* /usr/bin/kn-workflow && chmod +x /usr/bin/kn-workflow'"
+      - name: Generate all kn-cli defined projects
+        run: mvn clean --batch-mode --update-snapshots package -Pserverless-workflow-capability -Dactive.structures=kn-cli -Dquarkus.extensions=""
       - name: Build generated projects
         run: for project in ./kie-assets-library-generate/target/*-grouping-project-pom.xml; do mvn clean package -f $project; done

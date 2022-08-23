@@ -1,4 +1,4 @@
-name: Generate Projects And Build
+name: Kjar - Generate Projects And Build
 
 on:
   push:
@@ -19,13 +19,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Generate all defined projects
-        run: mvn clean --batch-mode --update-snapshots verify # use verify to run integration tests of maven plugin
-      - name: Archive IT logs
-        uses: actions/upload-artifact@v2
-        if: always() && !cancelled()
-        with:
-          name: maven-plugin-IT
-          path: kie-assets-plugin/target/it/*/build.log
+      - name: Generate all quarkus CLI defined projects
+        run: mvn clean --batch-mode --update-snapshots package -Dactive.structures=kjar
       - name: Build generated projects
         run: for project in ./kie-assets-library-generate/target/*-grouping-project-pom.xml; do mvn clean package -f $project; done

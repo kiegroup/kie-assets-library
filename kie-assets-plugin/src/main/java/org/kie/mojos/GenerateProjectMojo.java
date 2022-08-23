@@ -327,7 +327,8 @@ public class GenerateProjectMojo
         Formatter formatter = new Formatter();
         formatter
                 .format("kn workflow create")
-                .format(" --name %s", GeneratedProjectUtils.getTargetProjectName(definition, structure));
+                .format(" --name %s", GeneratedProjectUtils.getTargetProjectName(definition, structure))
+                .format(" --verbose");
         if (structure.getGenerate().getQuarkusExtensions() != null && !structure.getGenerate().getQuarkusExtensions().isEmpty()) {
             formatter.format(" --extension %s", structure.getGenerate().getQuarkusExtensions());
         }

@@ -92,8 +92,7 @@ plugin allows to easily build various types for a single asset group.
       <properties>...</properties>
     </generate>
     ```
-    * NOTE: Requires Jbang installed. By default the install is enabled, disable using `-Dskip.install.quarkus.cli`.
-      Make sure `jbang` is then on path.
+    * NOTE: Requires Jbang installed. By default the install is disabled, enable using `-Dinstall.quarkus.cli`.
 
 * Each project defined as `projectDefinition` is generated in `kie-assets-library-assets/target`. Project name is composed
     from `projectDefinition->artifactId` and `projectStructure->id`, to allow Cartesian product project generation out of the box.
@@ -297,9 +296,9 @@ Example build commands:
 ```shell
 mvn clean package -Dactive.definitions=dmn-generated -Dactive.structures=quarkus,kjar -Dactive.config.sets=scesim
 ```
-* Or combination with defined profiles in poms:
+* Or a predefined profile in kie-assets-library-generate pom:
 ```shell
-mvn clean package -Pdmn -Dactive.structures=quarkus -Dactive.config.sets=scesim
+mvn clean package -Pserverless-workflow-capability -Dactive.structures=kn-cli
 ```
 
 ### kie-assets-plugin

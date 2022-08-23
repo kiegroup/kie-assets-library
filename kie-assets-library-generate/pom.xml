@@ -26,18 +26,32 @@
     </properties>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- excluding explicitly structures and definitions by default -->
+                    <groupId>org.kie</groupId>
+                    <artifactId>kie-assets-plugin</artifactId>
+                    <configuration>
+                        <activeStructures>
+                            <!-- kn CLI installation not automated -->
+                            <activeStructure>!kn-cli</activeStructure>
+                            <!-- quarkus CLI not installed by default -->
+                            <activeStructure>!quarkus-cli</activeStructure>
+                            <activeStructure>!quarkus-cli-with-registry</activeStructure>
+                        </activeStructures>
+                        <activeDefinitions>
+                            <!-- serverless workflow assets make sense only for subset of structures -->
+                            <activeDefinition>!serverless-workflow-1</activeDefinition>
+                        </activeDefinitions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-assets-plugin</artifactId>
-                <configuration>
-                    <activeStructures>
-                        <activeStructure>!kn-cli</activeStructure>
-                    </activeStructures>
-                    <activeDefinitions>
-                        <activeDefinition>!serverless-workflow-1</activeDefinition>
-                    </activeDefinitions>
-                </configuration>
                 <executions>
                     <execution>
                         <id>generate-projects</id>
@@ -52,60 +66,6 @@
         </plugins>
     </build>
     <profiles>
-        <profile>
-            <id>kjar</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.kie</groupId>
-                            <artifactId>kie-assets-plugin</artifactId>
-                            <configuration combine.self="append">
-                                <activeStructures combine.children="append">
-                                    <activeStructure>kjar</activeStructure>
-                                </activeStructures>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>dmn</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.kie</groupId>
-                            <artifactId>kie-assets-plugin</artifactId>
-                            <configuration combine.self="append">
-                                <activeDefinitions combine.children="append">
-                                    <activeDefinition>dmn-generated</activeDefinition>
-                                </activeDefinitions>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>dmn2</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.kie</groupId>
-                            <artifactId>kie-assets-plugin</artifactId>
-                            <configuration combine.self="append">
-                                <activeDefinitions combine.children="append">
-                                    <activeDefinition>dmn-and-bpmn-generated</activeDefinition>
-                                </activeDefinitions>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
         <profile>
             <id>scesim</id>
             <build>
@@ -128,7 +88,7 @@
             <id>install-quarkus-cli</id>
             <activation>
                 <property>
-                    <name>!skip.install.quarkus.cli</name>
+                    <name>install.quarkus.cli</name>
                 </property>
             </activation>
             <properties>
@@ -204,7 +164,10 @@
             </properties>
         </profile>
         <profile>
-            <id>kn-cli</id>
+            <id>serverless-workflow-capability</id>
+            <properties>
+                <quarkus.extensions>kogito-quarkus-serverless-workflow</quarkus.extensions>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -212,8 +175,9 @@
                             <groupId>org.kie</groupId>
                             <artifactId>kie-assets-plugin</artifactId>
                             <configuration>
-                                <activeStructures>
-                                    <activeStructure>kn-cli</activeStructure>
+                                <activeStructures combine.children="append">
+                                    <activeStructure>!kjar</activeStructure>
+                                    <activeStructure>!springboot</activeStructure>
                                 </activeStructures>
                                 <activeDefinitions>
                                     <activeDefinition>serverless-workflow-1</activeDefinition>
@@ -225,5 +189,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

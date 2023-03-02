@@ -246,6 +246,12 @@
                                     </copyResources>
                                 </config>
                             </projectDefinition>
+                            <projectDefinition>
+                                <id>optaplanner</id>
+                                <groupId>org.acme</groupId>
+                                <artifactId>optaplanner-quarkus-quickstart</artifactId>
+                                <packageName>org.acme.optaplanner.quarkus.quickstart</packageName>
+                            </projectDefinition>
                         </projectDefinitions>
                     </configuration>
                 </plugin>
